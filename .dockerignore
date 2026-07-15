@@ -27,3 +27,6 @@ README.md
 
 # material de trabajo (no es codigo del build)
 _material/
+# Tubería de repos escaparate: no forma parte de las imágenes desplegables
+public-mirror/
+scripts/publish-public.mjs
