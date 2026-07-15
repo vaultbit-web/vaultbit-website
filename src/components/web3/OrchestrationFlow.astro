@@ -1,0 +1,41 @@
+---
+import type { ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+const criteria = service.frontier?.criteria ?? [];
+---
+<section class="fr-section is-darker fr-has-bg" style="--fr-bg:url('/assets/web3/frontier-divider-orchestration.jpeg')">
+  <div class="container">
+    <div class="fr-head" data-reveal>
+      <span class="frontier-eyebrow">Cómo lo montamos</span>
+      <h2>Tú diriges la visión. Nosotros dirigimos la ejecución.</h2>
+      <p>Un solo interlocutor de la idea al lanzamiento. Montamos el equipo de nuestra red y lo coordinamos hasta producción.</p>
+    </div>
+
+    <div class="fr-flow">
+      {service.process.map((p, i) => (
+        <div class="fr-step" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+          <div class="fr-step-num fr-chrome-num">{p.step}</div>
+          <div class="fr-step-body">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {criteria.length > 0 && (
+      <div class="fr-stats" data-reveal>
+        {criteria.map((c) => (
+          <div class="fr-stat">
+            <div class="v fr-chrome-num">{c.value}</div>
+            <div class="l">{c.label}</div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

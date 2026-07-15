@@ -1,0 +1,147 @@
+---
+import LegalLayout from '~/layouts/LegalLayout.astro';
+import { SITE_LEGAL_NAME, CONTACT, SITE_URL, LEGAL } from '~/data/organization';
+---
+<LegalLayout
+  title="Aviso legal"
+  description="Aviso legal de VaultBit Advisory. Información requerida por la LSSI-CE y datos identificativos del titular del sitio."
+  breadcrumbLabel="Aviso legal"
+  breadcrumbHref="/aviso-legal"
+  lastUpdate="23 de junio de 2026"
+>
+  <h2>1. Datos identificativos del titular</h2>
+  <p>
+    En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad
+    de la Información y Comercio Electrónico (LSSI-CE), se informa al usuario de los siguientes
+    datos identificativos:
+  </p>
+  <dl>
+    <dt>Titular del sitio</dt>
+    <dd>Daniel Brosed Giral, profesional autónomo</dd>
+    <dt>Marca comercial</dt>
+    <dd>{SITE_LEGAL_NAME}</dd>
+    <dt>Domicilio fiscal</dt>
+    <dd>{LEGAL.domicilio}</dd>
+    <dt>NIF</dt>
+    <dd>{LEGAL.nif}</dd>
+    <dt>Correo de contacto</dt>
+    <dd><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd>
+    <dt>Sitio web</dt>
+    <dd><a href={SITE_URL}>{SITE_URL.replace('https://','')}</a></dd>
+    <dt>Actividad</dt>
+    <dd>Consultoría tecnológica sobre arquitectura de seguridad, herencia digital y trazabilidad fiscal de criptoactivos. {LEGAL.iae}</dd>
+  </dl>
+
+  <h2>2. Naturaleza y alcance de la actividad</h2>
+  <p>
+    {SITE_LEGAL_NAME} es la marca comercial bajo la que Daniel Brosed Giral, profesional autónomo,
+    presta servicios de consultoría tecnológica en custodia, herencia y fiscalidad de criptoactivos.
+    La actividad consiste en el diseño y la asesoría sobre arquitecturas técnicas de custodia,
+    protocolos de transmisión patrimonial digital y trazabilidad operativa para cumplimiento fiscal.
+  </p>
+  <div class="legal-callout">
+    <strong>Aviso de transparencia.</strong> VaultBit Advisory <strong>NO es</strong> asesor financiero
+    registrado en la CNMV, <strong>NO es</strong> despacho de abogados ni profesional colegiado, y
+    <strong>NO es</strong> entidad de custodia de criptoactivos (CASP/VASP) bajo el Reglamento (UE)
+    2023/1114 (MiCA). La ejecución de cualquier acto jurídico (firma de testamento, presentación de
+    declaraciones tributarias, custodia centralizada de fondos) corresponde a los profesionales
+    colegiados o entidades reguladas con quienes el cliente decida contratar tales servicios.
+  </div>
+  <p>
+    Determinados servicios complementarios de naturaleza legal o fiscal (asesoría fiscal de
+    criptoactivos, planificación patrimonial, sucesiones u otros) no los presta {SITE_LEGAL_NAME},
+    sino asesorías y despachos independientes con los que colabora. {SITE_LEGAL_NAME} puede percibir
+    una contraprestación por la captación o intermediación comercial de dichos profesionales. Esta
+    colaboración se realiza de forma transparente y no incrementa el precio que el cliente abona
+    directamente al profesional por su servicio. Cualquier recomendación de un colaborador con el que
+    exista relación comercial retribuida se identifica como tal conforme al artículo 20 de la LSSI-CE.
+  </p>
+
+  <h2>3. Objeto y aceptación</h2>
+  <p>
+    El presente Aviso Legal regula el acceso y uso del sitio web {SITE_URL} (en adelante, "el Sitio").
+    El acceso y la navegación por el Sitio implican la aceptación sin reservas del presente Aviso Legal,
+    así como de la Política de Privacidad y la Política de Cookies, accesibles desde el pie de página.
+  </p>
+  <p>
+    El usuario se compromete a hacer un uso adecuado de los contenidos y servicios del Sitio y a no
+    emplearlos para incurrir en actividades ilícitas, lesivas de derechos o intereses de terceros, o
+    que de cualquier forma puedan dañar, inutilizar, sobrecargar o deteriorar el Sitio o impedir su
+    normal utilización.
+  </p>
+
+  <h2>4. Propiedad intelectual e industrial</h2>
+  <p>
+    Todos los contenidos del Sitio (textos, gráficos, logotipos, fotografías, diseños, código fuente,
+    estructura, imágenes, sonidos, marcas, nombres comerciales y signos distintivos) son titularidad
+    exclusiva de {SITE_LEGAL_NAME} o de terceros que han autorizado su uso. La marca "VaultBit Advisory"
+    y sus elementos identificativos están protegidos.
+  </p>
+  <p>
+    Queda expresamente prohibida la reproducción total o parcial, transformación, distribución,
+    comunicación pública, puesta a disposición o cualquier otra forma de explotación de los contenidos
+    del Sitio sin autorización expresa y por escrito de {SITE_LEGAL_NAME}, salvo en los supuestos
+    legalmente previstos para uso personal y privado del usuario.
+  </p>
+
+  <h2>5. Limitación de responsabilidad</h2>
+  <p>
+    La información publicada en el Sitio tiene <strong>carácter exclusivamente orientativo y técnico</strong>.
+    {SITE_LEGAL_NAME} no asume responsabilidad por las decisiones patrimoniales, financieras, fiscales,
+    legales o de cualquier otra naturaleza que el usuario pudiera adoptar basándose únicamente en dicha
+    información sin contratación previa de los servicios profesionales pertinentes.
+  </p>
+  <p>
+    {SITE_LEGAL_NAME} realiza esfuerzos razonables para mantener la información actualizada y libre de
+    errores, pero no garantiza la inexistencia de inexactitudes, errores u omisiones, ni la disponibilidad
+    ininterrumpida del Sitio. Asimismo, no se responsabiliza de los daños o perjuicios derivados de la
+    presencia de virus o cualesquiera otros elementos lesivos en el Sitio o servidores que lo alojan.
+  </p>
+
+  <h3>5.1. Limitación de responsabilidad sobre servicios orquestados</h3>
+  <div class="legal-callout">
+    <p>
+      Daniel Brosed Giral (operando bajo la marca VaultBit) presta servicios exclusivos de consultoría
+      técnica, auditoría de seguridad, arquitectura digital y orquestación tecnológica. VaultBit NO es un
+      despacho de abogados, una asesoría fiscal ni una notaría, y no ejerce asesoramiento jurídico o
+      financiero regulado. Aquellos servicios ofrecidos en esta web que requieran la intervención legal de
+      fedatarios públicos, abogados colegiados o fiscalistas serán ejecutados de forma independiente por
+      profesionales o despachos externos colaboradores. El titular de esta web no asume responsabilidad
+      civil, fiscal ni penal por las negligencias, demoras o contingencias derivadas de la ejecución
+      profesional de dichos terceros.
+    </p>
+  </div>
+
+  <h2>6. Hipervínculos</h2>
+  <p>
+    El Sitio puede contener enlaces a páginas web de terceros (notarios, fiscalistas colaboradores, fabricantes
+    de hardware wallets, plataformas como Cal.com o LinkedIn, entre otros). Estos enlaces se proporcionan
+    a título informativo. {SITE_LEGAL_NAME} no asume responsabilidad sobre el contenido, políticas o
+    prácticas de dichos terceros.
+  </p>
+  <p>
+    El establecimiento de un hipervínculo desde otra página web hacia el Sitio requerirá la autorización
+    previa y por escrito de {SITE_LEGAL_NAME}, no implicará en ningún caso relación entre las partes ni
+    aceptación o aprobación de los contenidos o servicios del enlazante.
+  </p>
+
+  <h2>7. Modificaciones</h2>
+  <p>
+    {SITE_LEGAL_NAME} se reserva el derecho a modificar, sin previo aviso, el contenido, estructura,
+    funcionalidad, condiciones de acceso o servicios del Sitio cuando lo considere oportuno, así como
+    a actualizar el presente Aviso Legal. Los usuarios deberán consultar periódicamente esta página para
+    informarse de las eventuales modificaciones.
+  </p>
+
+  <h2>8. Legislación aplicable y jurisdicción</h2>
+  <p>
+    El presente Aviso Legal se rige por la legislación española. Para la resolución de cualquier
+    controversia derivada del acceso o uso del Sitio, las partes se someten expresamente a la
+    jurisdicción de los Juzgados y Tribunales del domicilio fiscal del titular del sitio, salvo cuando
+    la ley aplicable disponga lo contrario en relación con consumidores y usuarios.
+  </p>
+  <p>
+    En caso de disputa, antes de acudir a la vía judicial, las partes podrán intentar una solución
+    amistosa mediante comunicación escrita al correo de contacto facilitado en el apartado 1.
+  </p>
+</LegalLayout>

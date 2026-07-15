@@ -1,0 +1,276 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ServiceIcon from '~/components/ServiceIcon.astro';
+import ServiceFunnel from '~/components/ServiceFunnel.astro';
+import { SERVICE_DETAIL_LIST } from '~/data/service-details';
+import { TEST_AUTOCUSTODIA } from '~/data/organization';
+
+// El Heritage Protocol es el producto estrella y se renderiza aparte arriba.
+// Los demás se muestran como satélites del producto estrella.
+const heritage = SERVICE_DETAIL_LIST.find((s) => s.slug === 'heritage-protocol');
+const satellites = SERVICE_DETAIL_LIST.filter((s) => s.slug !== 'heritage-protocol');
+---
+<BaseLayout
+  title="Servicios · VaultBit"
+  description="Custodia, herencia y fiscalidad de tus criptomonedas. El Protocolo de Herencia es el plan más completo; el Diagnóstico y la Arquitectura de Custodia son los pasos previos. También Web3 para empresas."
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Servicios', href: '/servicios' },
+    ]} />
+  </div>
+
+  <!-- ───── HERO PRODUCTO ESTRELLA ───── -->
+  {heritage && (
+    <section class="section section-light star-section">
+      <div class="container">
+        <div class="text-center mb-8">
+          <span class="eyebrow">Nuestro plan más completo</span>
+          <h1 class="h2-section mt-4">Protocolo de Herencia</h1>
+          <p class="body-text-light mt-4 max-w-2xl mx-auto">
+            Dejamos tus criptomonedas guardadas hoy y preparadas para tu familia el día de mañana. El Protocolo de Herencia tiene tres niveles, según lo que necesites.
+          </p>
+        </div>
+
+        <a class={`star-card`} href={`/servicios/${heritage.slug}`}>
+          <span class="star-badge">El plan completo · 3 niveles</span>
+          <div class="star-card-content">
+            <ServiceIcon type={heritage.icon} size={72} variant="light" />
+            <div class="star-card-body">
+              <h2 class="h2-section">{heritage.name}</h2>
+              <p class="star-tagline">{heritage.tagline}</p>
+              <div class="star-tiers-summary">
+                <span class="star-tier-chip"><strong>Esencial</strong></span>
+                <span class="star-tier-chip star-tier-chip-featured"><strong>Patrimonio</strong></span>
+                <span class="star-tier-chip"><strong>Legado</strong></span>
+              </div>
+              <span class="star-link">
+                Ver los tres niveles comparados
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- ───── SATÉLITES ───── -->
+  <section class="section section-light satellites-section">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Todos nuestros servicios</span>
+        <h2 class="h2-section mt-4">Servicios que encajan entre sí</h2>
+        <p class="body-text-light mt-4 max-w-2xl mx-auto">
+          Puedes contratar cada servicio por separado o combinarlos dentro del Protocolo de Herencia. El Diagnóstico es el paso previo; el resto, piezas que encajan según tu caso.
+        </p>
+      </div>
+
+      <div class="satellites-grid">
+        {satellites.map((s) => (
+          <a class="satellite-card card-light" href={`/servicios/${s.slug}`}>
+            <ServiceIcon type={s.icon} size={48} variant="light" />
+            <div class="satellite-card-body">
+              <span class="satellite-card-eyebrow">{s.eyebrow}</span>
+              <h3 class="h3-card">{s.name}</h3>
+              <p class="satellite-card-text">{s.tagline}</p>
+            </div>
+            <div class="satellite-card-foot">
+              <span class="satellite-link">
+                Ver detalle
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── FUNNEL ───── -->
+  <ServiceFunnel />
+
+  <!-- ───── LEAD MAGNET BANNER ───── -->
+  <section class="section section-dark hero-decor leadmagnet-section">
+    <div class="container">
+      <div class="leadmagnet-card">
+        <div class="leadmagnet-body">
+          <span class="eyebrow">Test rápido</span>
+          <h2 class="h2-section mt-4">Conoce tu situación en {TEST_AUTOCUSTODIA.durationMinutes} minutos</h2>
+          <p class="body-text mt-4 max-w-2xl">
+            Haz el test para ver cómo tienes hoy tus criptomonedas y qué se adapta mejor a lo que necesitas. Sin compromiso.
+          </p>
+        </div>
+        <div class="leadmagnet-cta">
+          <a class="btn btn-primary btn-lg" href={TEST_AUTOCUSTODIA.url}>
+            Hacer el test ({TEST_AUTOCUSTODIA.durationMinutes} min)
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ───── PRODUCTO ESTRELLA ───── */
+  .star-section { padding-top: 56px; padding-bottom: 32px; }
+  @media (min-width: 768px) { .star-section { padding-top: 80px; padding-bottom: 40px; } }
+
+  .star-card {
+    position: relative;
+    display: block;
+    padding: 32px 28px;
+    background: #fff;
+    border: 1px solid rgba(242,118,26,0.35);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 0 0 1px rgba(242,118,26,0.12), 0 18px 36px -8px rgba(242,118,26,0.18);
+    text-decoration: none;
+    color: inherit;
+    margin-top: 28px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .star-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px rgba(242,118,26,0.2), 0 26px 52px -12px rgba(242,118,26,0.24);
+  }
+  @media (min-width: 768px) { .star-card { padding: 48px 40px; } }
+
+  .star-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--brand-orange-500);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .star-card-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .star-card-content { grid-template-columns: auto 1fr; gap: 36px; }
+  }
+  .star-card-body { display: flex; flex-direction: column; gap: 14px; }
+  .star-tagline { font-size: 17px; color: var(--anthracite-400); line-height: 1.55; margin: 0; }
+
+  .star-tiers-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .star-tier-chip {
+    font-size: 13px;
+    color: var(--anthracite-400);
+    background: rgba(46,55,64,0.04);
+    border: 1px solid rgba(46,55,64,0.1);
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    line-height: 1;
+  }
+  .star-tier-chip strong { color: var(--anthracite-950); font-weight: 700; margin-right: 6px; }
+  .star-tier-chip-featured {
+    background: rgba(242,118,26,0.08);
+    border-color: rgba(242,118,26,0.3);
+  }
+  .star-tier-chip-featured strong { color: var(--brand-orange-500); }
+
+  .star-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--brand-orange-500);
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 6px;
+    transition: gap 0.2s ease;
+  }
+  .star-card:hover .star-link { gap: 12px; }
+
+  /* ───── SATÉLITES ───── */
+  .satellites-section { padding-top: 56px; padding-bottom: 40px; }
+  @media (min-width: 768px) { .satellites-section { padding-top: 72px; padding-bottom: 56px; } }
+
+  .satellites-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 36px;
+  }
+  @media (min-width: 640px) { .satellites-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .satellites-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .satellite-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 22px;
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .satellite-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(0,0,0,0.12);
+    border-color: rgba(242,118,26,0.25);
+  }
+  .satellite-card-body { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .satellite-card-eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--brand-orange-500);
+  }
+  .satellite-card-text { font-size: 13px; color: var(--anthracite-400); line-height: 1.6; margin: 0; }
+  .satellite-card-foot { padding-top: 12px; border-top: 1px solid rgba(46,55,64,0.08); }
+  .satellite-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand-orange-500);
+    font-weight: 600;
+    font-size: 13px;
+    transition: gap 0.2s ease;
+  }
+  .satellite-card:hover .satellite-link { gap: 10px; }
+
+  /* ───── LEAD MAGNET ───── */
+  .leadmagnet-section { padding-top: 56px; padding-bottom: 80px; }
+  @media (min-width: 768px) { .leadmagnet-section { padding-top: 72px; padding-bottom: 96px; } }
+
+  .leadmagnet-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 36px 28px;
+    background: rgba(28,33,38,0.7);
+    border: 1px solid rgba(242,118,26,0.25);
+    border-radius: var(--radius-xl);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .leadmagnet-card { grid-template-columns: 1fr auto; gap: 40px; padding: 48px 44px; }
+  }
+  .leadmagnet-body { display: flex; flex-direction: column; gap: 4px; }
+  .leadmagnet-cta { display: flex; justify-content: flex-start; }
+  @media (min-width: 900px) { .leadmagnet-cta { justify-content: flex-end; } }
+</style>

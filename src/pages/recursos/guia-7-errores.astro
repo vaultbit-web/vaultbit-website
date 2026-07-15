@@ -1,0 +1,243 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
+import PdfMockupCard from '~/components/PdfMockupCard.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { FOUNDER, SITE_URL } from '~/data/organization';
+
+const url = `${SITE_URL}/recursos/guia-7-errores`;
+
+const articleSchema = {
+  '@type': 'Article',
+  '@id': `${url}#article`,
+  url,
+  headline: '7 errores que destruyen patrimonio cripto · y cómo no cometerlos',
+  description: 'Guía técnica gratuita escrita por el fundador de VaultBit Advisory. Los siete fallos más comunes que destruyen patrimonio digital y el protocolo concreto para evitarlos.',
+  inLanguage: 'es-ES',
+  author: { '@id': FOUNDER.id },
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  datePublished: '2026-04-27',
+  dateModified: '2026-04-27',
+  image: `${SITE_URL}/og/default.jpg`,
+};
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Qué incluye la guía gratuita?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Un PDF de 16 páginas con los 7 errores más comunes de custodia cripto, los datos reales que los respaldan, el protocolo técnico para evitar cada uno, una checklist final y un glosario. Está escrito en español por el fundador de VaultBit Advisory.' },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Es realmente gratuito?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Sí. Solo te pedimos email para enviártelo y, si quieres, recibir contenido futuro. Puedes darte de baja en cualquier momento.' },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Para quién está escrita?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Para holders de bitcoin u otros criptoactivos en España con patrimonio significativo, profesionales que quieren ordenar su situación, y cualquiera que dude si su custodia es lo bastante robusta. No requiere conocimiento técnico previo.' },
+    },
+  ],
+};
+---
+<BaseLayout
+  title="Guía gratuita: 7 errores que destruyen patrimonio cripto"
+  description="Descarga la guía técnica de VaultBit Advisory. 16 páginas, los 7 fallos más comunes de custodia cripto y el protocolo para evitarlos. Por Daniel Brosed Giral."
+  canonical={url}
+  ogImage={`${SITE_URL}/og/default.jpg`}
+  schemas={[articleSchema, faqSchema]}
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Recursos', href: '/recursos' },
+      { label: 'Guía 7 errores', href: '/recursos/guia-7-errores' },
+    ]} />
+  </div>
+
+  <!-- ───── HERO ───── -->
+  <section class="section section-dark hero-decor lm-hero">
+    <div class="container">
+      <div class="lm-grid">
+        <div class="lm-content">
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Guía gratuita · Descarga inmediata</span>
+          <h1 class="h1-hero mt-6">
+            7 errores que destruyen <strong>patrimonio cripto.</strong>
+          </h1>
+          <p class="lm-tagline mt-6">
+            Una guía técnica honesta. Sin marketing. Sin humo. El protocolo concreto para que no te pase a ti.
+          </p>
+          <ul class="lm-bullets mt-8">
+            <li><strong>16 páginas</strong> · maquetadas con la estética VaultBit</li>
+            <li><strong>Datos reales</strong> · Mt. Gox, FTX, QuadrigaCX, Howells, Bybit 2025</li>
+            <li><strong>Protocolo accionable</strong> por cada error, no solo diagnóstico</li>
+            <li><strong>Checklist final</strong> de 15 puntos para autoevaluación</li>
+            <li><strong>Por Daniel Brosed Giral</strong>, fundador de VaultBit Advisory</li>
+          </ul>
+
+          <div class="lm-form-wrap mt-8">
+            <LeadMagnetForm />
+            <p class="micro-text mt-4 lm-trust">
+              <span class="lm-trust-dot"></span>
+              Sin spam · Cero compromiso · Baja con un click
+            </p>
+          </div>
+        </div>
+
+        <aside class="lm-mockup" aria-label="Vista previa de la guía PDF">
+          <PdfMockupCard rotate={-1.5} />
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── PREVIEW DEL CONTENIDO ───── -->
+  <section class="section section-light">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Qué vas a aprender</span>
+        <h2 class="h2-section mt-4">Los 7 errores, en resumen.</h2>
+      </div>
+
+      <ol class="lm-errors">
+        <li><span class="num">01</span><div><strong>Delegar la custodia en un exchange.</strong><p>Mt. Gox, FTX, Bybit. La industria castiga sistemáticamente a quien confía en intermediarios.</p></div></li>
+        <li><span class="num">02</span><div><strong>Una sola copia de la frase semilla.</strong><p>James Howells y los 8.000 BTC en el vertedero. La redundancia geográfica no es opcional.</p></div></li>
+        <li><span class="num">03</span><div><strong>Digitalizar la seed (foto, Drive, WhatsApp).</strong><p>Una clave que toca internet deja de ser privada. 158.000 wallets comprometidas en 2025.</p></div></li>
+        <li><span class="num">04</span><div><strong>No tener protocolo de herencia.</strong><p>QuadrigaCX y los 190M$ bloqueados. Hasta el 47% del valor cripto heredable se pierde.</p></div></li>
+        <li><span class="num">05</span><div><strong>Anarquía en la trazabilidad fiscal.</strong><p>Modelo 721, FIFO, AEAT. Lo que no documentas hoy te detona como sanción mañana.</p></div></li>
+        <li><span class="num">06</span><div><strong>Comprar hardware wallet en vendedor no oficial.</strong><p>La cadena de suministro es vector de ataque. Compra solo en el sitio oficial del fabricante.</p></div></li>
+        <li><span class="num">07</span><div><strong>Ignorar el riesgo físico personal.</strong><p>Wrench attack y exposición pública. El modelo de amenaza ya no es solo cibernético.</p></div></li>
+      </ol>
+
+      <div class="text-center mt-12">
+        <a class="btn btn-primary btn-lg" href="#descarga">
+          Descargar guía completa (gratis)
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── SOBRE EL AUTOR ───── -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="lm-author">
+        <div class="lm-author-photo">
+          <img src="/images/founder/daniel-brosed.jpg" alt={`${FOUNDER.name}, fundador de VaultBit Advisory`} width="160" height="160" decoding="async" loading="lazy" />
+        </div>
+        <div>
+          <span class="eyebrow">Sobre el autor</span>
+          <h2 class="h2-section mt-4">{FOUNDER.name}</h2>
+          <p class="body-text mt-4">
+            Antes de fundar VaultBit Advisory trabajó como auxiliar de enfermería en UCI rotando entre
+            hospitales de Barcelona y Huesca. Holdeaba bitcoin con sus ahorros hasta que perdió su frase
+            semilla por una mala custodia en papel. De esa pérdida nace VaultBit, para que no le pase a nadie más.
+          </p>
+          <a class="btn btn-ghost mt-6" href="/#historia">Leer la historia completa</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-darker">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto">
+        <ComplianceNotice variant="banner" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lm-hero { padding-top: 56px; padding-bottom: 56px; }
+  @media (min-width: 768px) { .lm-hero { padding-top: 88px; padding-bottom: 88px; } }
+  .lm-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 1024px) { .lm-grid { grid-template-columns: 1.2fr 1fr; gap: 72px; } }
+  .lm-tagline { font-size: clamp(17px, 2.4vw, 21px); color: var(--anthracite-100); line-height: 1.5; }
+  .lm-bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .lm-bullets li { font-size: 14px; color: var(--anthracite-200); padding-left: 20px; position: relative; }
+  .lm-bullets li::before {
+    content: '✓'; color: var(--brand-orange-400); position: absolute; left: 0; top: 0; font-weight: 700;
+  }
+  .lm-bullets strong { color: #fff; }
+
+  .lm-form-wrap { max-width: 540px; }
+  .lm-trust { display: inline-flex; align-items: center; gap: 8px; }
+  .lm-trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse-dot 2s ease-in-out infinite; }
+
+  .lm-mockup { display: flex; justify-content: center; align-items: center; }
+
+  /* Errors list */
+  .lm-errors {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 880px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .lm-errors { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  .lm-errors li {
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.1);
+    border-radius: var(--radius-md);
+    padding: 22px;
+    display: flex;
+    gap: 18px;
+    box-shadow: var(--shadow-soft);
+  }
+  .lm-errors .num {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    background: rgba(242,118,26,0.1);
+    color: var(--brand-orange-500);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .lm-errors strong { color: var(--anthracite-950); font-size: 15px; display: block; margin-bottom: 4px; }
+  .lm-errors p { color: var(--anthracite-400); font-size: 13px; line-height: 1.55; margin: 0; }
+
+  /* Author */
+  .lm-author {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .lm-author { grid-template-columns: 200px 1fr; gap: 56px; } }
+  .lm-author-photo {
+    width: 180px; height: 180px;
+    margin: 0 auto;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid rgba(242,118,26,0.25);
+    box-shadow: var(--shadow-xl);
+  }
+  @media (min-width: 768px) { .lm-author-photo { margin: 0; } }
+  .lm-author-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+  }
+</style>

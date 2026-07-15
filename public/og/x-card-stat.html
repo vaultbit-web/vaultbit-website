@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>VaultBit · 47% del valor cripto heredable se pierde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --anthracite-950:#0D0F11;
+    --anthracite-900:#15181B;
+    --anthracite-800:#1E2227;
+    --anthracite-200:#9CA3AB;
+    --anthracite-100:#D5D9DD;
+    --orange-500:#F2761A;
+    --orange-400:#FF8A33;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  html,body{width:1080px;height:1080px;overflow:hidden;background:#000;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:#fff;
+    background:
+      radial-gradient(circle at 20% 100%, rgba(242,118,26,0.20), transparent 55%),
+      radial-gradient(circle at 100% 0%, rgba(242,118,26,0.10), transparent 50%),
+      linear-gradient(135deg, #0D0F11 0%, #15181B 100%);
+    position:relative;
+    padding:64px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  body::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:60px 60px;
+    pointer-events:none;
+  }
+  .top{display:flex;align-items:center;justify-content:space-between;z-index:2;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:10px;
+    background:linear-gradient(135deg, var(--orange-500), var(--orange-400));
+    display:flex;align-items:center;justify-content:center;
+    color:#000;font-weight:800;font-size:18px;letter-spacing:-0.5px;
+    box-shadow: 0 0 0 1px rgba(242,118,26,0.3), 0 8px 24px -4px rgba(242,118,26,0.4);
+  }
+  .brand-text{font-weight:600;font-size:16px;letter-spacing:0.16em;text-transform:uppercase;color:#fff;}
+  .brand-sub{font-weight:400;font-size:13px;letter-spacing:0.06em;color:var(--anthracite-200);margin-top:2px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 14px;
+    border:1px solid rgba(242,118,26,0.4);
+    background:rgba(242,118,26,0.08);
+    border-radius:999px;
+    font-size:12px;font-weight:600;letter-spacing:0.12em;color:var(--orange-400);text-transform:uppercase;
+  }
+  .eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--orange-400);box-shadow:0 0 12px var(--orange-400);}
+
+  .main{z-index:2;display:flex;flex-direction:column;gap:36px;}
+  .stat-label{
+    font-size:14px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--anthracite-200);
+    font-weight:600;
+  }
+  .stat-number{
+    font-size:340px;
+    line-height:0.85;
+    font-weight:800;
+    letter-spacing:-12px;
+    background:linear-gradient(135deg, var(--orange-500) 0%, var(--orange-400) 60%, #FFB373 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+    margin-left:-14px;
+  }
+  .stat-number sup{
+    font-size:140px;
+    vertical-align:super;
+    margin-left:8px;
+    letter-spacing:-4px;
+  }
+  .stat-claim{
+    font-size:42px;
+    line-height:1.2;
+    font-weight:600;
+    color:#fff;
+    letter-spacing:-1px;
+    max-width:920px;
+  }
+  .stat-claim .accent{color:var(--orange-400);}
+
+  .stat-source{
+    font-size:14px;
+    color:var(--anthracite-200);
+    font-weight:400;
+    letter-spacing:0.02em;
+    border-left:2px solid rgba(255,255,255,0.18);
+    padding-left:14px;
+  }
+
+  .bottom{
+    display:flex;align-items:center;justify-content:space-between;z-index:2;
+    padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .bottom-left{display:flex;flex-direction:column;gap:4px;}
+  .bottom-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--anthracite-200);font-weight:600;}
+  .bottom-value{font-size:20px;color:#fff;font-weight:500;letter-spacing:-0.3px;}
+  .bottom-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 22px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:12px;
+    color:#fff;font-weight:500;font-size:16px;
+  }
+  .bottom-cta .arrow{color:var(--orange-400);}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Custodia · Herencia · Fiscalidad cripto · España</div>
+      </div>
+    </div>
+    <span class="eyebrow"><span class="eyebrow-dot"></span>Dato citable</span>
+  </header>
+
+  <section class="main">
+    <span class="stat-label">Hasta el</span>
+    <div class="stat-number">47<sup>%</sup></div>
+    <p class="stat-claim">
+      del valor cripto heredable <span class="accent">se pierde</span> por ausencia de
+      protocolo de transmisión.
+    </p>
+    <p class="stat-source">
+      Estimaciones agregadas Coincover (2024). Mt. Gox, QuadrigaCX, James Howells y miles de
+      casos privados sin acceso recuperable.
+    </p>
+  </section>
+
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Diagnóstico gratuito</span>
+      <span class="bottom-value">vaultbit.es/diagnostico</span>
+    </div>
+    <div class="bottom-cta">
+      90 segundos <span class="arrow">→</span>
+    </div>
+  </footer>
+</body>
+</html>

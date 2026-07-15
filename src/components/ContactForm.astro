@@ -1,0 +1,367 @@
+---
+/**
+ * Formulario de contacto reutilizable que escribe directamente a Supabase.
+ * Garantiza que NO se pierda ningún lead aunque el usuario no envíe el mailto.
+ *
+ * Uso:
+ *   <ContactForm
+ *     table="partner_applications"
+ *     buttonLabel="Postularme"
+ *     successMsg="Recibido. Daniel te contactará en 48h."
+ *     mailtoFallback="info@vaultbit.es"
+ *     extraFields={[{name:'partner_type', label:'Tipo', type:'select', options:[...]}]}
+ *   />
+ */
+
+interface ExtraField {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'url' | 'textarea' | 'select';
+  required?: boolean;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+  maxLength?: number;
+}
+
+interface Props {
+  table: 'investor_interest' | 'partner_applications';
+  source?: string;
+  buttonLabel?: string;
+  successMsg?: string;
+  mailtoFallback?: string;
+  mailtoSubject?: string;
+  showName?: boolean;
+  showOrganization?: boolean;
+  showLinkedin?: boolean;
+  showMessage?: boolean;
+  extraFields?: ExtraField[];
+  variant?: 'dark' | 'light';
+  /** Casilla opcional, separada y NO premarcada, de consentimiento para ceder los datos a un partner (RGPD art. 6.1.a). */
+  partnerConsent?: boolean;
+  partnerConsentLabel?: string;
+}
+
+const {
+  table,
+  source = '',
+  buttonLabel = 'Enviar',
+  successMsg = '✓ Recibido. Te contactaremos en breve.',
+  mailtoFallback = 'info@vaultbit.es',
+  mailtoSubject = 'Contacto desde vaultbit.es',
+  showName = true,
+  showOrganization = false,
+  showLinkedin = false,
+  showMessage = true,
+  extraFields = [],
+  variant = 'dark',
+  partnerConsent = false,
+  partnerConsentLabel = 'Autorizo que VaultBit ceda mis datos de contacto a la asesoría o despacho colaborador especializado para que me preste el servicio legal o fiscal. Es opcional, puedo no marcarlo y revocarlo cuando quiera.',
+} = Astro.props;
+
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
+---
+<form
+  class={`contact-form contact-form-${variant}`}
+  data-table={table}
+  data-source={source}
+  data-mailto={mailtoFallback}
+  data-subject={mailtoSubject}
+  id={formId}
+  novalidate
+>
+  {showName && (
+    <div class="cf-field">
+      <label for={`${formId}-name`}>Nombre <span class="cf-req">*</span></label>
+      <input id={`${formId}-name`} name="name" type="text" required maxlength="200" autocomplete="name" />
+    </div>
+  )}
+
+  <div class="cf-field">
+    <label for={`${formId}-email`}>Email profesional <span class="cf-req">*</span></label>
+    <input id={`${formId}-email`} name="email" type="email" required maxlength="320" autocomplete="email" inputmode="email" />
+  </div>
+
+  {showOrganization && (
+    <div class="cf-field">
+      <label for={`${formId}-org`}>Organización / Despacho</label>
+      <input id={`${formId}-org`} name="organization" type="text" maxlength="200" autocomplete="organization" />
+    </div>
+  )}
+
+  {showLinkedin && (
+    <div class="cf-field">
+      <label for={`${formId}-linkedin`}>LinkedIn (opcional)</label>
+      <input id={`${formId}-linkedin`} name="linkedin" type="url" maxlength="300" placeholder="https://linkedin.com/in/..." />
+    </div>
+  )}
+
+  {extraFields.map((f) => (
+    <div class="cf-field">
+      <label for={`${formId}-${f.name}`}>{f.label} {f.required && <span class="cf-req">*</span>}</label>
+      {f.type === 'select' ? (
+        <select id={`${formId}-${f.name}`} name={f.name} required={f.required}>
+          <option value="">Selecciona…</option>
+          {(f.options || []).map((opt) => (
+            <option value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      ) : f.type === 'textarea' ? (
+        <textarea id={`${formId}-${f.name}`} name={f.name} required={f.required} maxlength={f.maxLength || 2000} rows="3" placeholder={f.placeholder}></textarea>
+      ) : (
+        <input
+          id={`${formId}-${f.name}`}
+          name={f.name}
+          type={f.type || 'text'}
+          required={f.required}
+          maxlength={f.maxLength || 200}
+          placeholder={f.placeholder}
+        />
+      )}
+    </div>
+  ))}
+
+  {showMessage && (
+    <div class="cf-field">
+      <label for={`${formId}-message`}>Mensaje</label>
+      <textarea id={`${formId}-message`} name="message" maxlength="2000" rows="4" placeholder="Cuéntanos brevemente tu interés."></textarea>
+    </div>
+  )}
+
+  <label class="cf-consent">
+    <input type="checkbox" name="consent" required />
+    <span>
+      Acepto el tratamiento de mis datos según la
+      <a href="/privacidad">política de privacidad</a>.
+    </span>
+  </label>
+
+  {partnerConsent && (
+    <label class="cf-consent cf-consent-partner">
+      <input type="checkbox" name="partner_consent" />
+      <span>{partnerConsentLabel}</span>
+    </label>
+  )}
+
+  <button type="submit" class="btn btn-primary cf-submit">
+    {buttonLabel}
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+    </svg>
+  </button>
+
+  <p class="cf-error" role="alert" hidden></p>
+  <p class="cf-success" role="status" hidden>{successMsg}</p>
+  <p class="cf-fallback-hint">
+    También puedes escribirnos directamente a
+    <a href={`mailto:${mailtoFallback}?subject=${encodeURIComponent(mailtoSubject)}`}>{mailtoFallback}</a>.
+  </p>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 540px;
+  }
+  .cf-field { display: flex; flex-direction: column; gap: 6px; }
+  .cf-field label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .cf-req { color: var(--brand-orange-500); }
+
+  .cf-field input,
+  .cf-field select,
+  .cf-field textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-size: 16px; /* 16px evita el zoom automático de iOS al enfocar */
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .cf-field textarea { resize: vertical; min-height: 88px; }
+
+  /* Dark variant (sobre fondos antracita) */
+  .contact-form-dark .cf-field label { color: var(--anthracite-200); }
+  .contact-form-dark .cf-field input,
+  .contact-form-dark .cf-field select,
+  .contact-form-dark .cf-field textarea {
+    background: rgba(13,15,17,0.45);
+    border: 1px solid rgba(74,85,98,0.4);
+    color: #fff;
+  }
+  .contact-form-dark .cf-field input::placeholder,
+  .contact-form-dark .cf-field textarea::placeholder { color: var(--anthracite-200); }
+  .contact-form-dark .cf-field input:focus,
+  .contact-form-dark .cf-field select:focus,
+  .contact-form-dark .cf-field textarea:focus {
+    outline: 2px solid rgba(242,118,26,0.4); outline-offset: 2px;
+    border-color: var(--brand-orange-500);
+    background: rgba(13,15,17,0.7);
+  }
+  .contact-form-dark .cf-consent { color: var(--anthracite-200); }
+  .contact-form-dark .cf-fallback-hint { color: var(--anthracite-200); }
+
+  /* Light variant */
+  .contact-form-light .cf-field label { color: var(--anthracite-400); }
+  .contact-form-light .cf-field input,
+  .contact-form-light .cf-field select,
+  .contact-form-light .cf-field textarea {
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.18);
+    color: var(--anthracite-950);
+  }
+  .contact-form-light .cf-field input:focus,
+  .contact-form-light .cf-field select:focus,
+  .contact-form-light .cf-field textarea:focus {
+    outline: 2px solid rgba(242,118,26,0.4); outline-offset: 2px;
+    border-color: var(--brand-orange-500);
+  }
+
+  .cf-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .cf-consent input { margin-top: 3px; flex-shrink: 0; accent-color: var(--brand-orange-500); }
+  .cf-consent a { color: var(--brand-orange-400); text-decoration: underline; }
+  .cf-consent-partner { font-size: 12px; opacity: 0.9; }
+
+  .cf-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+  @media (min-width: 600px) { .cf-submit { width: auto; align-self: flex-start; } }
+
+  .cf-error {
+    color: var(--error);
+    font-size: 13px;
+    margin: 0;
+    background: rgba(220,38,38,0.08);
+    border: 1px solid rgba(220,38,38,0.3);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+  }
+  .cf-success {
+    color: var(--success);
+    font-size: 13px;
+    margin: 0;
+    background: rgba(22,163,74,0.10);
+    border: 1px solid rgba(22,163,74,0.35);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+  }
+  .cf-fallback-hint {
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .cf-fallback-hint a { color: var(--brand-orange-400); }
+</style>
+
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON, formId }}>
+  (function () {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    const errorEl = form.querySelector('.cf-error');
+    const successEl = form.querySelector('.cf-success');
+    const submitBtn = form.querySelector('.cf-submit');
+    const table = form.dataset.table;
+    const source = form.dataset.source || '';
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+      successEl.hidden = true;
+    }
+    function clearMessages() { errorEl.hidden = true; successEl.hidden = true; }
+    function getUtm() {
+      const p = new URLSearchParams(window.location.search);
+      return {
+        utm_source: p.get('utm_source'),
+        utm_medium: p.get('utm_medium'),
+        utm_campaign: p.get('utm_campaign'),
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+      };
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+
+      const fd = new FormData(form);
+      const payload = {};
+      for (const [k, v] of fd.entries()) {
+        // Las casillas de consentimiento no se persisten aquí (no hay columna):
+        // su valor legal es la acción afirmativa del usuario en el navegador.
+        if (k === 'consent' || k === 'partner_consent') continue;
+        const val = v.toString().trim();
+        if (val) payload[k] = val;
+      }
+
+      // Validaciones cliente
+      if (!payload.email) { showError('El email es obligatorio.'); return; }
+      const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(payload.email);
+      if (!emailOk) { showError('El email no parece válido. Revísalo.'); return; }
+      if (!fd.get('consent')) { showError('Necesitamos tu consentimiento para tratar tus datos.'); return; }
+
+      const utm = getUtm();
+      Object.assign(payload, utm);
+      if (source && !payload.source) payload.source = source;
+
+      submitBtn.disabled = true;
+      const orig = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Enviando...';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.warn('Supabase form error:', errText);
+          showError('Ha habido un problema enviando tus datos. Inténtalo de nuevo o escríbenos al email.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = orig;
+          return;
+        }
+
+        try {
+          if (typeof fbq !== 'undefined') {
+            fbq('trackCustom', 'ContactSubmit', { table, source });
+          }
+        } catch (_) {}
+
+        successEl.hidden = false;
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = orig;
+      } catch (err) {
+        showError('Error de conexión. Inténtalo de nuevo o escríbenos al email.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = orig;
+      }
+    });
+  })();
+</script>

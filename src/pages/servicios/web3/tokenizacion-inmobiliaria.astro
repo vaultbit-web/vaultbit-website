@@ -1,0 +1,396 @@
+---
+// Página flagship del servicio "Tokenización inmobiliaria" (pillar: /servicios/web3-b2b).
+// Dedicada y autocontenida (no usa Web3SectorLayout) para poder ser rica y posicionar en SEO.
+// Voz híbrida: hero y ganchos cercanos; cuerpo profesional con keywords (liquidez,
+// fraccionamiento, CNMV/MiCA). Compliance: diseñamos y dirigimos; NO emitimos valores, NO
+// captamos inversión, NO asesoramos sobre inversiones. Copy SIN guiones largos (—) entre palabras.
+import fs from 'node:fs';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+const slug = 'tokenizacion-inmobiliaria';
+const url = `${SITE_URL}/servicios/web3/${slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink('Interés: Proyectos Web3 · Tokenización inmobiliaria. (Cuéntanos en una línea qué inmueble tienes en mente)');
+const wa = waLink('Hola, vengo de la web de Vaultbit. Tengo un inmueble que quiero tokenizar y quiero que me ayudéis. Os cuento:');
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== slug);
+
+// Imágenes tolerantes: la sección gana fondo cinematográfico solo si el archivo existe.
+const exists = (p: string) => fs.existsSync(`${process.cwd()}/public${p}`);
+const bgActivos = '/assets/web3/frontier-inmo-activos.jpeg';
+const bgLegal = '/assets/web3/frontier-inmo-legal.jpeg';
+const bgCasos = '/assets/web3/frontier-inmo-casos.jpeg';
+const bgCta = '/assets/web3/frontier-inmo-cta.jpeg';
+const hasActivosBg = exists(bgActivos);
+const hasLegalBg = exists(bgLegal);
+const hasCasosBg = exists(bgCasos);
+const hasCtaBg = exists(bgCta);
+const iconExists = (name: string) => exists(`/assets/web3/icons/icon-step-${name}.png`);
+
+// ─── Datos de las secciones ───
+const assets = [
+  { icon: 'piso', h3: 'Tokenizar un piso', text: 'Una vivienda en propiedad o en alquiler. Se reparte su valor económico en participaciones digitales para que varios partícipes accedan a una parte del activo sin venderlo entero.' },
+  { icon: 'casa', h3: 'Tokenizar una casa', text: 'Una vivienda unifamiliar. Útil cuando se busca liquidez sobre el activo sin tener que venderlo en bloque.' },
+  { icon: 'chalet', h3: 'Tokenizar un chalet', text: 'Una segunda residencia o vivienda de alto valor. Permite fraccionar y estructurar la propiedad económica entre varias personas.' },
+  { icon: 'edificio', h3: 'Tokenizar un edificio entero', text: 'Un edificio en rentas. Se fracciona su valor para que varios partícipes accedan a una parte y el titular obtenga liquidez sin desprenderse del inmueble completo.' },
+  { icon: 'urbanizacion', h3: 'Tokenizar una urbanización', text: 'Una promoción o un conjunto residencial. Permite estructurar y dar salida ordenada a fases del proyecto.' },
+];
+
+const steps = [
+  { title: 'Sesión de encaje y viabilidad', body: 'Miramos tu activo y tu objetivo, y te decimos de frente si tokenizar aporta algo o si con una estructura clásica te vale. Aquí se decide, con los profesionales habilitados, la calificación legal del token.' },
+  { title: 'Estructura legal y vehículo', body: 'Se elige el vehículo que sostiene el inmueble (sociedad, préstamo participativo u otro) y el título se firma ante notario. El inmueble se inscribe donde corresponde, en el Registro de la Propiedad.' },
+  { title: 'Diseño técnico del proyecto', body: 'Diseñamos las reglas: el contrato inteligente, cómo se reparten las participaciones digitales y cómo se distribuyen las rentas, si las hubiera. Definimos la red y la tokenómica.' },
+  { title: 'Dirección del desarrollo', body: 'Montamos y dirigimos al equipo de confianza que lo construye, y lo auditamos. Tú tratas con un solo interlocutor y nosotros respondemos del conjunto.' },
+  { title: 'Lanzamiento y traspaso', body: 'La emisión, el registro del valor (ERIR) y la custodia los realizan entidades habilitadas; nosotros coordinamos, verificamos y te dejamos el proyecto en marcha.' },
+];
+
+const legalCards = [
+  { kicker: 'Calificación', h3: '¿Security token o MiCA?', text: 'Si el token es transmisible y da derechos económicos (rentas o plusvalía), suele ser un valor negociable: se rige por la Ley de los Mercados de Valores y MiFID II, bajo supervisión de la CNMV. MiCA, el reglamento europeo de criptoactivos, no se aplica a esos casos.' },
+  { kicker: 'Lo real', h3: 'El notario manda en el inmueble', text: 'La blockchain no se salta la realidad física: el inmueble y sus derechos reales siempre pasan por notario y Registro de la Propiedad. El token representa un derecho económico sobre el vehículo, no la escritura.' },
+  { kicker: 'Nuestro papel', h3: 'Qué hacemos nosotros', text: 'No emitimos valores, no captamos inversión ni asesoramos sobre inversiones. Trabajamos para que tu proyecto cumpla el marco que le corresponda, con los profesionales y entidades habilitados.' },
+];
+
+const risks = [
+  { kicker: 'Regulatorio', h3: 'La calificación lo cambia todo', text: 'Según cómo se estructure, el token cae bajo CNMV/MiFID o bajo MiCA. Estructurarlo mal es el mayor riesgo. Por eso la calificación legal se resuelve al principio, no al final.' },
+  { kicker: 'Liquidez', h3: 'Liquidez no es lo mismo que venta segura', text: 'Fraccionar facilita entrar y salir, pero el mercado secundario puede ser estrecho: puede no haber comprador al precio que esperas. La liquidez es una posibilidad, no una garantía.' },
+  { kicker: 'Tecnología', h3: 'Plataforma, contrato y custodia', text: 'Un contrato inteligente con fallos o una custodia mal llevada son riesgos reales. Se mitigan con auditoría del código y entidades de custodia habilitadas, no con promesas.' },
+  { kicker: 'Valoración', h3: 'El activo hay que valorarlo bien', text: 'El token vale lo que valga el inmueble que hay detrás. Una valoración independiente y realista es parte del proyecto, no un trámite.' },
+];
+
+const casos = [
+  { h3: 'Un edificio en rentas', text: 'Un propietario quiere liquidez sobre parte de su edificio sin venderlo entero ni perder la gestión. Se estructura el vehículo y pueden participar varias personas.' },
+  { h3: 'Una promoción a medias', text: 'Un promotor necesita dar salida ordenada a una fase de su proyecto. Tokenizar puede ayudar a estructurar esa entrada, dentro del marco que aplique.' },
+  { h3: 'Un patrimonio familiar', text: 'Una familia quiere repartir y dar liquidez a un inmueble común sin trocearlo físicamente ni forzar una venta. Encaja con nuestra práctica de custodia y herencia.' },
+];
+
+const faqs = [
+  { q: '¿Es legal tokenizar un inmueble en España?', a: 'Sí, con condiciones. Depende de cómo se estructure el token. Si da derechos económicos y es transmisible, suele ser un valor negociable sujeto a la Ley de los Mercados de Valores, MiFID II y la supervisión de la CNMV. El inmueble físico siempre pasa por notario y Registro de la Propiedad. Cada proyecto se analiza de forma individual con los profesionales habilitados.' },
+  { q: '¿El token me convierte en dueño del piso?', a: 'No directamente. En España no se tokeniza la propiedad registral: el token representa un derecho económico sobre el vehículo que posee el inmueble (por ejemplo, una sociedad o un préstamo participativo). La titularidad del inmueble sigue formalizándose ante notario.' },
+  { q: '¿Desde cuánto se puede entrar?', a: 'Eso lo fija cada proyecto y su estructura, no Vaultbit. Nosotros diseñamos y dirigimos el proyecto técnico; no captamos inversión ni comercializamos participaciones. El ticket y las condiciones los establece quien emite, con las entidades habilitadas.' },
+  { q: '¿Es seguro?', a: 'Toda inversión conlleva riesgo, incluida la pérdida total o parcial del capital. Hay riesgos regulatorios, de liquidez, tecnológicos y de valoración. Se trabajan con buena estructura legal, auditoría del contrato y custodia habilitada, pero ningún proyecto serio promete seguridad ni rentabilidad.' },
+  { q: '¿Qué rentabilidad da?', a: 'No publicamos rentabilidades ni las prometemos: sería incorrecto y, además, no es nuestro papel. La rentabilidad depende del inmueble, del mercado y de la estructura. Cualquier decisión de inversión corresponde al inversor y a sus asesores.' },
+  { q: '¿Cómo se vende un token, hay liquidez?', a: 'La idea del fraccionamiento es facilitar la entrada y la salida frente a vender un inmueble entero. Pero la liquidez real depende de que exista un mercado secundario y compradores. Es una posibilidad que hay que estructurar, no algo automático.' },
+  { q: '¿Un token inmobiliario es lo mismo que un NFT?', a: 'No. Un token inmobiliario que da derechos económicos suele ser un valor (security token) y se rige por la normativa de mercados de valores. Un NFT es, en general, un activo único sin esos derechos. La diferencia es jurídica, no solo técnica.' },
+  { q: '¿Cuánto cuesta tokenizar y qué impuestos hay?', a: 'El coste depende del vehículo, del marco legal y de la complejidad técnica; te lo decimos claro tras la sesión de encaje. La fiscalidad la lleva un asesor habilitado: nosotros coordinamos, no firmamos la parte fiscal.' },
+];
+
+// ─── SEO / meta ───
+const metaTitle = 'Tokenización inmobiliaria en España: piso, edificio o urbanización · VaultBit';
+const metaDescription =
+  'Diseñamos y dirigimos el proyecto técnico para tokenizar un inmueble (piso, casa, chalet, edificio o urbanización) en participaciones digitales: liquidez y fraccionamiento, con el marco legal (CNMV/MiCA) y los profesionales habilitados. No emitimos valores ni captamos inversión.';
+const keywords = [
+  'tokenización inmobiliaria',
+  'tokenización inmobiliaria España',
+  'tokenización de activos inmobiliarios',
+  'tokenizar un inmueble',
+  'tokenizar un piso',
+  'tokenizar un edificio',
+  'tokenizar una vivienda',
+  'cómo tokenizar un inmueble',
+  'real estate tokenization España',
+  'tokenización inmobiliaria CNMV MiCA',
+];
+const ogImage = `${SITE_URL}/og/og-web3-tokenizacion-inmobiliaria.jpg`;
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: 'Tokenización inmobiliaria',
+  description: metaDescription,
+  serviceType: 'Tokenización inmobiliaria',
+  category: 'Diseño y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Activos que se pueden tokenizar',
+    itemListElement: assets.map((a) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: a.h3 },
+    })),
+  },
+};
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: 'Cómo tokenizar un inmueble, paso a paso',
+  description: 'Proceso de diseño y dirección de un proyecto de tokenización inmobiliaria con VaultBit Advisory.',
+  inLanguage: 'es-ES',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+  })),
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={url}
+  keywords={keywords.join(', ')}
+  ogImage={ogImage}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: 'Tokenización inmobiliaria', href: `/servicios/web3/${slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── 1 · HERO (voz cercana) ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style="background-image:url('/assets/web3/sector-inmobiliario.jpeg')" aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">Proyectos Web3 · Tokenización inmobiliaria</span>
+          <h1>Un inmueble, repartido en <strong>participaciones digitales.</strong></h1>
+          <p class="fh-sub">Un edificio entero cuesta mucho y cuesta venderlo. La tokenización inmobiliaria reparte su valor en participaciones pequeñas para darle liquidez. Nosotros diseñamos y dirigimos el proyecto técnico. No emitimos valores ni captamos inversión.</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 2 · Qué es ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Qué es</span>
+          <h2>Qué es la tokenización inmobiliaria</h2>
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:20px">
+          Tokenizar un inmueble es repartir su valor económico en muchas participaciones digitales (tokens) que se registran sobre blockchain, para que sea más fácil fraccionarlo y darle liquidez.
+        </p>
+        <p class="fr-prose" data-reveal style="margin-top:18px">
+          Y aquí lo que casi nadie dice claro: el token no es la escritura. Representa un derecho económico sobre el vehículo que posee el inmueble, por ejemplo una sociedad o un préstamo participativo, no la propiedad registral. El inmueble físico sigue exigiendo notario y Registro de la Propiedad. Entenderlo bien es lo que separa un proyecto serio de un problema.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 3 · Qué se puede tokenizar (fondo cinematográfico) ───── -->
+    <section class:list={['fr-section', hasActivosBg ? 'fr-has-bg' : 'is-darker']} style={hasActivosBg ? `--fr-bg:url('${bgActivos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Tipos de activo</span>
+          <h2>Qué se puede tokenizar: del piso a la urbanización</h2>
+          <p>No todo necesita tokenizarse, pero casi cualquier inmueble con valor y con un objetivo claro puede estructurarse así. Estos son los casos más habituales.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {assets.map((a, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {iconExists(a.icon) && (
+                <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${a.icon}.png`} alt="" width="96" height="96" loading="lazy" decoding="async" />
+              )}
+              <h3>{a.h3}</h3>
+              <p>{a.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 4 · Cómo lo hacemos, paso a paso ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El proceso</span>
+          <h2>Cómo dirigimos la tokenización de tu inmueble, paso a paso</h2>
+          <p>Un único interlocutor. Diseñamos, coordinamos a los profesionales habilitados y dirigimos al equipo que lo construye.</p>
+        </div>
+        <div class="fr-flow">
+          {steps.map((s, i) => (
+            <div class="fr-step" data-reveal>
+              <div class="fr-step-num fr-chrome-num">{i + 1}</div>
+              <div class="fr-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 5 · ¿Es legal? (fondo cinematográfico) ───── -->
+    <section class:list={['fr-section', hasLegalBg ? 'fr-has-bg' : 'is-darker']} style={hasLegalBg ? `--fr-bg:url('${bgLegal}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Marco legal</span>
+          <h2>¿Es legal tokenizar un inmueble en España?</h2>
+          <p>Sí, con condiciones, y depende de cómo se estructure el token. Esta es la parte donde una consultoría aporta de verdad, y donde una plataforma genérica te deja solo.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {legalCards.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{c.kicker}</span>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:28px">
+          El reglamento europeo MiCA solo cubre los criptoactivos puros y no se aplica a los tokens que sean instrumentos financieros, que siguen rigiéndose por MiFID II. La calificación concreta de cada proyecto se analiza de forma individual con asesoramiento profesional independiente.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 6 · Riesgos sin letra pequeña ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Hablemos claro</span>
+          <h2>Los riesgos, sin letra pequeña</h2>
+          <p>Tokenizar no es magia ni dinero fácil. Estos son los riesgos reales y cómo se trabajan. Quien no te los cuenta es a quien deberías mirar con cuidado.</p>
+        </div>
+        <div class="fr-grid cols-4">
+          {risks.map((r, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{r.kicker}</span>
+              <h3>{r.h3}</h3>
+              <p>{r.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 7 · Por qué Vaultbit / garantía ───── -->
+    <section class="fr-section">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Por qué Vaultbit</span>
+          <h2>Dirigimos el proyecto. No tocamos las llaves.</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Diseño y dirección técnica, con responsabilidades separadas.</h3>
+          <p>Nuestro papel es estructurar el proyecto y coordinar a quien tiene el título: el notario formaliza el inmueble, las entidades habilitadas emiten y custodian, los asesores firman lo legal y lo fiscal. Nosotros respondemos del diseño y de la dirección técnica, y separamos siempre quién diseña de quién ejecuta y custodia.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No emitimos valores ni comercializamos instrumentos financieros.</li>
+          <li>No captamos inversión ni buscamos inversores para tu proyecto.</li>
+          <li>No asesoramos sobre inversiones ni recomendamos qué comprar.</li>
+          <li>No prometemos rentabilidades ni publicamos cifras de retorno.</li>
+          <li>No tocamos tus llaves ni custodiamos los activos: eso es de entidades habilitadas.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 8 · Casos de uso (fondo cinematográfico) ───── -->
+    <section class:list={['fr-section', hasCasosBg ? 'fr-has-bg' : 'is-darker']} style={hasCasosBg ? `--fr-bg:url('${bgCasos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde encaja</span>
+          <h2>Casos donde la tokenización aporta liquidez</h2>
+          <p>Escenarios reales en los que estructurar el activo en participaciones tiene sentido. Cada uno se valida antes de construir nada.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {casos.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 9 · FAQ ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Preguntas frecuentes</span>
+          <h2>Preguntas frecuentes sobre tokenización inmobiliaria</h2>
+        </div>
+        <div class="fr-faq" data-reveal>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 10 · CTA final (fondo cinematográfico) ───── -->
+    <section class:list={['fr-cta', hasCtaBg && 'has-bg']} style={hasCtaBg ? `--cta-bg:url('${bgCta}')` : undefined}>
+      <div class="container">
+        <h2 data-reveal>¿Tienes un inmueble que quieres tokenizar?</h2>
+        <p data-reveal>30 minutos para mirarlo contigo y decirte de frente si la tokenización aporta algo, qué estructura haría falta y por dónde empezaríamos. Sin presentación de ventas.</p>
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="tokenizacion" />
+        </div>
+
+        <div class="fr-cta-extras" data-reveal>
+          <details class="fr-disclosure">
+            <summary>Aviso legal e informativo</summary>
+            <div class="fr-disclosure-body">
+              <p style="font-size:13px;line-height:1.7;color:var(--steel-300);margin:4px 0 0">
+                Esta página tiene carácter informativo y divulgativo. No es asesoramiento jurídico, fiscal ni de inversión, ni una oferta o recomendación de comprar, suscribir o vender ningún producto financiero, valor, criptoactivo o token. VaultBit Advisory diseña y dirige proyectos técnicos de tokenización: no emite valores, no comercializa instrumentos financieros, no capta inversión ni presta servicios de inversión reservados a entidades autorizadas. La emisión, el registro y la custodia, así como la formalización del inmueble ante notario y su inscripción en el Registro de la Propiedad, corresponden a los profesionales y entidades habilitados. La tokenización puede implicar instrumentos financieros sujetos a la normativa de mercados de valores (Ley 6/2023, MiFID II, supervisión de la CNMV) o criptoactivos sujetos al Reglamento (UE) 2023/1114 (MiCA), según la calificación de cada caso. Toda inversión conlleva riesgos, incluida la pérdida total o parcial del capital; las rentabilidades pasadas no garantizan rentabilidades futuras. Cualquier decisión de inversión es responsabilidad exclusiva del inversor. Los datos personales se tratan conforme al RGPD (UE) 2016/679 y a la normativa de prevención del blanqueo de capitales (Ley 10/2010).
+              </p>
+            </div>
+          </details>
+
+          <details class="fr-disclosure">
+            <summary>Aviso de transparencia</summary>
+            <div class="fr-disclosure-body">
+              <ComplianceNotice variant="colaboracion" />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+  /* La rejilla de tipos de activo: la maqueta 3D va arriba de cada tarjeta. */
+  .web3-frontier .fr-card .fr-step-ico-img { width: 96px; height: 96px; margin-bottom: 14px; }
+</style>

@@ -1,0 +1,681 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import StickyDiagBar from '~/components/StickyDiagBar.astro';
+import ServiceFunnel from '~/components/ServiceFunnel.astro';
+import VideoEmbed from '~/components/VideoEmbed.astro';
+import { SERVICES, ORGANIZATION, SITE_URL, SITE_NAME, CONTACT } from '~/data/organization';
+import { SERVICE_DETAILS_CORE } from '~/data/service-details';
+import { FAQ_HOME } from '~/data/faqs';
+
+const services = SERVICE_DETAILS_CORE;
+const wa = `https://wa.me/${CONTACT.whatsappRaw}`;
+const cal = CONTACT.calCom;
+
+// Iconos de marca (set naranja, trazo casi negro + toque naranja) por servicio.
+const SVC_ICON: Record<string, string> = {
+  'heritage-protocol': '/assets/icons/naranja/n-07.png',
+  'arquitectura-custodia': '/assets/icons/naranja/n-01.png',
+  'diagnostico-360': '/assets/icons/naranja/n-10.png',
+};
+
+const professionalServiceSchema = {
+  '@type': 'ProfessionalService',
+  '@id': `${SITE_URL}/#professional-service`,
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: ORGANIZATION.description,
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  serviceType: [
+    'Consultoría de custodia de bitcoin',
+    'Protocolo de herencia de criptoactivos',
+    'Trazabilidad fiscal de criptomonedas',
+    'Consultoría Web3 para empresas',
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Servicios VaultBit Advisory',
+    itemListElement: SERVICES.map((s) => ({
+      '@type': 'Offer',
+      url: `${SITE_URL}/servicios/${s.slug}`,
+      name: s.name,
+      availability: 'https://schema.org/InStock',
+      itemOffered: {
+        '@type': 'Service',
+        name: s.name,
+        description: s.shortDescription,
+      },
+    })),
+  },
+  disclaimer: ORGANIZATION.disclaimer,
+};
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: FAQ_HOME.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title="VaultBit · Custodia y herencia de bitcoin en España"
+  description="Te ayudamos a guardar tu bitcoin a salvo y a dejar preparado que tu familia pueda recibirlo el día de mañana. Trato cercano y en lenguaje claro. El control de tus claves es siempre tuyo."
+  ogImage={`${SITE_URL}/og/og-home.jpg`}
+  schemas={[professionalServiceSchema, faqSchema]}
+  preloadImage="/assets/hero/hero-home-1280.webp"
+  preloadImageType="image/webp"
+  preloadImageSrcset="/assets/hero/hero-home-768.webp 768w, /assets/hero/hero-home-1280.webp 1280w, /assets/hero/hero-home-1920.webp 1920w, /assets/hero/hero-home-2560.webp 2560w"
+  preloadImageSizes="100vw"
+>
+  <StickyDiagBar />
+
+  <!-- ───── HERO ───── -->
+  <section class="section section-dark hero hero-with-bg" aria-label="Hero">
+    <div class="hero-bg" aria-hidden="true">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="
+            /assets/hero/hero-home-768.webp 768w,
+            /assets/hero/hero-home-1280.webp 1280w,
+            /assets/hero/hero-home-1920.webp 1920w,
+            /assets/hero/hero-home-2560.webp 2560w
+          "
+          sizes="100vw"
+        />
+        <img
+          src="/assets/hero/hero-home-1920.jpeg"
+          srcset="
+            /assets/hero/hero-home-768.jpeg 768w,
+            /assets/hero/hero-home-1280.jpeg 1280w,
+            /assets/hero/hero-home-1920.jpeg 1920w,
+            /assets/hero/hero-home-2560.jpeg 2560w
+          "
+          sizes="100vw"
+          alt=""
+          width="2752"
+          height="1536"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+      <div class="hero-bg-overlay"></div>
+    </div>
+
+    <div class="container hero-container">
+      <div class="hero-text">
+        <span class="hero-kicker">Custodia y herencia de bitcoin · España</span>
+
+        <h1 class="h1-hero">
+          Tus criptomonedas, <strong>en orden y a salvo.</strong> Para hoy y para tu familia.
+        </h1>
+
+        <p class="body-text mt-6 max-w-prose">
+          Montamos tu custodia y tu herencia de bitcoin de principio a fin, algo que en España
+          casi nadie hace. Guardamos tus criptomonedas a salvo y dejamos preparado el legado para
+          tu familia, para el día que tú faltes o ya no puedas decidir.
+        </p>
+
+        <p class="hero-keys">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Nunca vemos tus claves. El control es siempre tuyo.
+        </p>
+
+        <div class="hero-ctas mt-8">
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener">
+            Cuéntame tu caso
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            </svg>
+          </a>
+          <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+        </div>
+
+        <p class="micro-text mt-6 hero-trust">
+          Primera conversación sin compromiso. Lo que hablemos queda entre nosotros.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── VÍDEO DE PRESENTACIÓN ───── -->
+  <VideoEmbed videoId="RyEIy0YKqOU" />
+
+  <!-- ───── CÓMO TE PODEMOS AYUDAR ───── -->
+  <section class="section section-light ayuda" id="ayuda" aria-label="Cómo te podemos ayudar">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="ayuda-kicker">Cómo te podemos ayudar</span>
+        <h2 class="h2-section mt-4">Esto es lo que hacemos por ti</h2>
+        <p class="body-text-light mt-4 max-w-2xl mx-auto">
+          Primero ponemos a salvo tus criptomonedas. Luego dejamos preparado tu legado. Todo con los protocolos que hoy casi nadie está aplicando.
+        </p>
+      </div>
+
+      <div class="ayuda-grid">
+        <article class="ayuda-item">
+          <img class="ayuda-icon" src="/assets/icons/naranja/n-02.png" alt="" width="56" height="56" loading="lazy" decoding="async" />
+          <h3 class="h3-card">Guardamos bien tus criptomonedas</h3>
+          <p>Montamos un sistema seguro para tus claves, con copias bien repartidas, para que no pierdas nada por un descuido.</p>
+        </article>
+        <article class="ayuda-item">
+          <img class="ayuda-icon" src="/assets/icons/naranja/n-04.png" alt="" width="56" height="56" loading="lazy" decoding="async" />
+          <h3 class="h3-card">Dejamos preparado tu legado</h3>
+          <p>Con un notario, dejamos listo cómo tu familia recibe y entiende tus criptomonedas el día que tú no estés.</p>
+        </article>
+        <article class="ayuda-item">
+          <img class="ayuda-icon" src="/assets/icons/naranja/n-16.png" alt="" width="56" height="56" loading="lazy" decoding="async" />
+          <h3 class="h3-card">Ponemos en orden tu fiscalidad</h3>
+          <p>Ordenamos tus operaciones y trabajamos con un asesor para que todo quede claro con Hacienda.</p>
+        </article>
+      </div>
+
+      <p class="ayuda-cierre mt-12">
+        Esto, que hoy casi nadie está haciendo bien, nosotros lo dejamos montado y coordinado. Y siempre tratas con una persona.
+      </p>
+    </div>
+  </section>
+
+  <!-- ───── HISTORIA — núcleo narrativo ───── -->
+  <!-- ───── HISTORIA (teaser → /historia) ───── -->
+  <section class="section section-darker historia-teaser" aria-label="La historia">
+    <div class="container historia-teaser-grid">
+      <div class="historia-teaser-photo">
+        <img
+          src="/images/founder/daniel-brosed.jpg"
+          alt="Daniel Brosed, fundador de Vaultbit"
+          width="900"
+          height="1125"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="historia-teaser-text">
+        <span class="hero-kicker">La historia</span>
+        <h2 class="h2-section mt-4">Monté esto porque yo lo perdí primero</h2>
+        <p class="body-text mt-4">
+          Guardaba mi bitcoin en una cartera fría y apunté las claves en un papel. Un día ese papel desapareció y ya nadie pudo recuperarlo. Por eso existe Vaultbit.
+        </p>
+        <a class="historia-teaser-link mt-6" href="/historia">
+          Conoce mi historia
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── EMBUDO DE TRES ESCALONES ───── -->
+  <ServiceFunnel />
+
+  <!-- ───── SERVICIOS (Heritage estrella + 2 satélites del funnel) ───── -->
+  <section class="section section-light" id="servicios">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Servicios</span>
+        <h2 class="h2-section mt-4">Nuestros servicios</h2>
+        <p class="body-text-light mt-4 max-w-2xl mx-auto">
+          Se pueden contratar sueltos o combinar en un solo plan. El más completo es el Protocolo de Herencia: deja tus criptomonedas guardadas y preparadas para tu familia. Antes está el Diagnóstico, para ver tu caso, y la Arquitectura de Custodia, para guardar bien tus claves.
+        </p>
+      </div>
+
+      <div class="grid grid-3">
+        {services.map((s) => (
+          <a class={`service-card card-light ${s.productEstrella ? 'service-card-hero' : ''}`} href={`/servicios/${s.slug}`}>
+            {SVC_ICON[s.slug] && <img class="svc-png-icon" src={SVC_ICON[s.slug]} alt="" width="56" height="56" loading="lazy" decoding="async" />}
+            <div class="service-card-body-wrap">
+              <span class="service-card-eyebrow">{s.eyebrow}</span>
+              <h3 class="h3-card">{s.name}</h3>
+              <p class="service-card-body">{s.taglineHome || s.tagline}</p>
+            </div>
+            <div class="service-card-foot">
+              <span class="service-link">
+                Ver detalle
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p class="addons-link mt-8 text-center">
+        ¿Tienes empresa o un caso fiscal complejo? <a href="/servicios">Mira también lo que hacemos para empresas →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ───── FAQ ───── -->
+  <section class="section section-light">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2 class="h2-section mt-4">Lo que la gente nos pregunta</h2>
+      </div>
+      <div class="faq-list">
+        {FAQ_HOME.map((f) => (
+          <details class="faq-item">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── CTA FINAL ───── -->
+  <section class="section section-dark hero-decor cta-final">
+    <div class="container text-center">
+      <h2 class="h2-section">Hablemos cuando te venga bien</h2>
+      <p class="body-text mt-4 max-w-2xl mx-auto">
+        Una conversación tranquila para conocernos y entender tu caso. Si vemos que podemos ayudarte, seguimos. Si no, te lo digo con franqueza.
+      </p>
+      <div class="mt-8 flex justify-center gap-4 flex-wrap">
+        <a class="btn btn-primary" href={cal} target="_blank" rel="noopener">
+          Cuéntame tu caso
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  /* ───── HERO ───── */
+  .hero { padding-top: 72px; padding-bottom: 56px; }
+  @media (min-width: 640px) { .hero { padding-top: 96px; padding-bottom: 80px; } }
+  @media (min-width: 1024px) { .hero { padding-top: 128px; padding-bottom: 112px; } }
+
+  .btn-lg { padding: 16px 28px; min-height: 54px; font-size: 15px; }
+
+  .hero-kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--anthracite-200);
+  }
+  .hero-trust {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--anthracite-200);
+  }
+  .trust-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .hero-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(242,118,26,0.12);
+    border: 1px solid rgba(242,118,26,0.35);
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+  }
+  .hero-keys svg { color: var(--brand-orange-400); flex-shrink: 0; }
+
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-text .h1-hero { margin-top: 16px; }
+  @media (min-width: 640px) { .hero-text .h1-hero { margin-top: 20px; } }
+
+  /* Hero con imagen de fondo a sección completa */
+  .hero-with-bg {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--anthracite-950);
+    min-height: 560px;
+  }
+  @media (min-width: 640px) { .hero-with-bg { min-height: 620px; } }
+  @media (min-width: 1024px) { .hero-with-bg { min-height: 680px; } }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero-bg picture,
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .hero-bg img {
+    object-fit: cover;
+    /* En móvil centramos los cubos en el tercio derecho-superior; en desktop hacia la derecha */
+    object-position: 75% 35%;
+  }
+  @media (min-width: 768px) {
+    .hero-bg img { object-position: 70% center; }
+  }
+  @media (min-width: 1024px) {
+    .hero-bg img { object-position: 72% center; }
+  }
+  /* Overlay para asegurar contraste y legibilidad del texto a la izquierda */
+  .hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    /* Mobile primero: oscurecimiento vertical fuerte para que el texto se lea sobre cualquier zona */
+    background:
+      linear-gradient(
+        180deg,
+        rgba(13, 17, 21, 0.85) 0%,
+        rgba(13, 17, 21, 0.65) 35%,
+        rgba(13, 17, 21, 0.55) 60%,
+        rgba(13, 17, 21, 0.90) 100%
+      );
+  }
+  @media (min-width: 768px) {
+    /* Tablet y desktop: gradient lateral para conservar la luz naranja a la derecha */
+    .hero-bg-overlay {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(13, 17, 21, 0.92) 0%,
+          rgba(13, 17, 21, 0.78) 35%,
+          rgba(13, 17, 21, 0.45) 65%,
+          rgba(13, 17, 21, 0.20) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(13, 17, 21, 0.20) 0%,
+          rgba(13, 17, 21, 0.00) 40%,
+          rgba(13, 17, 21, 0.00) 60%,
+          rgba(13, 17, 21, 0.35) 100%
+        );
+    }
+  }
+  .hero-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: inherit;
+  }
+  .hero-with-bg .hero-text { max-width: 640px; }
+
+  /* ───── EXPLICATIVO (lenguaje claro) ───── */
+  .explainer { padding-top: 64px; padding-bottom: 64px; }
+  @media (min-width: 1024px) { .explainer { padding-top: 96px; padding-bottom: 96px; } }
+  .explainer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .explainer-grid { grid-template-columns: 1fr 1.1fr; gap: 64px; }
+  }
+  .explainer-media {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(46,55,64,0.4);
+    box-shadow: 0 24px 48px -16px rgba(0,0,0,0.4);
+    aspect-ratio: 4 / 5;
+    background: var(--anthracite-950);
+  }
+  @media (min-width: 1024px) {
+    .explainer-media { aspect-ratio: 4 / 5; }
+  }
+  .explainer-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .explainer-text .body-text { color: var(--anthracite-200); }
+  .explainer-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(46,55,64,0.4);
+  }
+  .explainer-header-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--anthracite-200);
+    font-weight: 600;
+  }
+  .explainer-header-pill {
+    background: rgba(22,163,74,0.15);
+    color: var(--success);
+    border: 1px solid rgba(22,163,74,0.30);
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .explainer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .explainer-list li {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .explainer-num {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    background: rgba(242,118,26,0.12);
+    color: var(--brand-orange-400);
+    border: 1px solid rgba(242,118,26,0.30);
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .explainer-list strong {
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.45;
+    margin-bottom: 6px;
+  }
+  .explainer-list p {
+    color: var(--anthracite-200);
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .explainer-footnote {
+    background: rgba(242,118,26,0.06);
+    border: 1px solid rgba(242,118,26,0.25);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    color: var(--anthracite-200);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .explainer-footnote strong {
+    color: var(--brand-orange-500);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    display: inline;
+    margin-right: 6px;
+  }
+
+  /* ───── CÓMO TE PODEMOS AYUDAR ───── */
+  .ayuda-kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--anthracite-400);
+  }
+  .ayuda-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-top: 48px;
+  }
+  @media (min-width: 768px) { .ayuda-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; } }
+  .ayuda-item { text-align: left; }
+  .ayuda-icon { width: 56px; height: 56px; display: block; margin-bottom: 16px; }
+  .ayuda-item .h3-card { color: var(--anthracite-950); }
+  .ayuda-item p { font-size: 15px; line-height: 1.65; color: var(--anthracite-400); margin: 10px 0 0; }
+  .ayuda-cierre {
+    text-align: center;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--anthracite-400);
+  }
+
+  /* ───── HISTORIA (teaser) ───── */
+  .historia-teaser-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+  @media (min-width: 900px) { .historia-teaser-grid { grid-template-columns: 0.8fr 1fr; gap: 56px; } }
+  .historia-teaser-photo {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--anthracite-800);
+    box-shadow: var(--shadow-deep);
+  }
+  .historia-teaser-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .historia-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-orange-400); font-weight: 600; }
+  .historia-teaser-link:hover { gap: 12px; color: var(--brand-orange-500); }
+  .historia-teaser-link svg { transition: transform 0.2s ease; }
+
+  /* ───── SERVICIOS ───── */
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(0,0,0,0.12), 0 8px 16px -8px rgba(242,118,26,0.15);
+    border-color: rgba(242,118,26,0.3);
+  }
+  .service-card:hover :global(.svc-icon-light) {
+    transform: scale(1.06);
+    background: rgba(242,118,26,0.16);
+    border-color: rgba(242,118,26,0.4);
+  }
+  .service-card-hero {
+    border: 1px solid rgba(242,118,26,0.3);
+    box-shadow: 0 0 0 1px rgba(242,118,26,0.1), var(--shadow-soft);
+  }
+  .service-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--brand-orange-500);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.04em;
+  }
+  .svc-png-icon { width: 56px; height: 56px; display: block; }
+  .service-card-body-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .service-card-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brand-orange-500);
+  }
+  .service-card-body { font-size: 14px; line-height: 1.65; color: var(--anthracite-400); margin: 0; }
+  .service-card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(46,55,64,0.1);
+  }
+  .price-tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(46,55,64,0.08);
+    color: var(--anthracite-400);
+    border: 1px solid rgba(46,55,64,0.15);
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand-orange-500);
+    font-weight: 600;
+    font-size: 14px;
+    transition: gap 0.2s ease;
+  }
+  .service-card:hover .service-link { gap: 10px; }
+
+  .addons-link { font-size: 14px; color: var(--anthracite-400); }
+  .addons-link a { font-weight: 600; }
+
+  /* ───── FAQ ───── */
+  .faq-list { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .faq-item {
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.12);
+    border-radius: var(--radius-md);
+    padding: 0;
+  }
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 22px;
+    font-weight: 600;
+    color: var(--anthracite-950);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    color: var(--brand-orange-500);
+    font-size: 20px;
+    font-weight: 300;
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p { padding: 0 22px 20px; margin: 0; color: var(--anthracite-400); font-size: 15px; line-height: 1.65; }
+</style>

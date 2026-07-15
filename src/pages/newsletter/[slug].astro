@@ -1,0 +1,602 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import NewsletterCountdown from '~/components/NewsletterCountdown.astro';
+import { SITE_URL, FOUNDER, CONTACT } from '~/data/organization';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('newsletter', ({ data }) => !data.draft);
+  return posts.map((post) => {
+    const others = posts.filter((p) => p.slug !== post.slug);
+    const currentKeywords = new Set((post.data.keywords ?? []).map((k) => k.toLowerCase()));
+    const scored = others
+      .map((p) => {
+        const overlap = (p.data.keywords ?? []).reduce(
+          (n, k) => (currentKeywords.has(k.toLowerCase()) ? n + 1 : n),
+          0,
+        );
+        return { post: p, overlap };
+      })
+      .sort((a, b) => {
+        if (b.overlap !== a.overlap) return b.overlap - a.overlap;
+        return b.post.data.date.getTime() - a.post.data.date.getTime();
+      })
+      .slice(0, 2)
+      .map((s) => s.post);
+
+    return {
+      params: { slug: post.slug },
+      props: { post, related: scored },
+    };
+  });
+}
+
+interface Props {
+  post: CollectionEntry<'newsletter'>;
+  related: CollectionEntry<'newsletter'>[];
+}
+const { post, related } = Astro.props;
+const { Content } = await post.render();
+
+const isDropPending = Boolean(
+  post.data.dropDate && post.data.dropDate.getTime() > Date.now(),
+);
+
+function fmtShort(d: Date) {
+  return d.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+const url = `${SITE_URL}/newsletter/${post.slug}`;
+const datePublished = post.data.date.toISOString().slice(0, 10);
+const dateModified = (post.data.updated ?? post.data.date).toISOString().slice(0, 10);
+const heroImage = post.data.heroImage ? `${SITE_URL}${post.data.heroImage}` : `${SITE_URL}/og/default.jpg`;
+const ogImage = post.data.ogImage ? `${SITE_URL}${post.data.ogImage}` : heroImage;
+
+const articleSchema = {
+  '@type': 'BlogPosting',
+  '@id': `${url}#article`,
+  url,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  headline: post.data.title,
+  description: post.data.description,
+  inLanguage: 'es-ES',
+  author: { '@id': FOUNDER.id },
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  datePublished,
+  dateModified,
+  image: {
+    '@type': 'ImageObject',
+    url: heroImage,
+    width: 1920,
+    height: 1080,
+  },
+  keywords: post.data.keywords?.join(', '),
+  isPartOf: { '@type': 'Blog', '@id': `${SITE_URL}/newsletter#blog` },
+};
+
+const breadcrumbSchema = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Newsletter', item: `${SITE_URL}/newsletter` },
+    { '@type': 'ListItem', position: 3, name: post.data.title },
+  ],
+};
+
+const faqSchema =
+  post.data.faqs && post.data.faqs.length > 0
+    ? {
+        '@type': 'FAQPage',
+        mainEntity: post.data.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+
+const extraSchemas = isDropPending
+  ? []
+  : [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
+
+const fmtDate = post.data.date.toLocaleDateString('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+<BaseLayout
+  title={isDropPending ? `${post.data.title} · Próximamente · Newsletter` : `${post.data.title} · Newsletter`}
+  description={post.data.description}
+  canonical={post.data.canonicalExternal ?? url}
+  ogImage={ogImage}
+  ogType={isDropPending ? 'website' : 'article'}
+  schemas={extraSchemas}
+  datePublished={datePublished}
+  dateModified={dateModified}
+  keywords={post.data.keywords?.join(', ')}
+  noindex={isDropPending}
+>
+  {isDropPending && post.data.dropDate && (
+    <NewsletterCountdown
+      dropDate={post.data.dropDate}
+      title={post.data.title}
+      excerpt={post.data.excerpt ?? post.data.description}
+      heroImage={post.data.heroImage ?? '/og/default.jpg'}
+      heroAlt={post.data.heroAlt ?? post.data.title}
+      issueNumber={post.data.issueNumber ?? 0}
+    />
+  )}
+
+  {!isDropPending && (
+  <>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Newsletter', href: '/newsletter' },
+      { label: post.data.title, href: `/newsletter/${post.slug}` },
+    ]} />
+  </div>
+
+  <article class="article-wrap">
+    <header class="article-header container">
+      <p class="article-eyebrow">
+        <a href="/newsletter">VaultBit Newsletter</a>
+      </p>
+      <h1 class="article-title">{post.data.title}</h1>
+      <p class="article-lead">{post.data.description}</p>
+      <p class="article-meta">
+        <span>{post.data.author}</span>
+        <span aria-hidden="true">·</span>
+        <time datetime={datePublished}>{fmtDate}</time>
+        {post.data.readingTimeMin && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{post.data.readingTimeMin} min lectura</span>
+          </>
+        )}
+      </p>
+    </header>
+
+    {post.data.heroImage && (
+      <figure class="article-hero">
+        <img
+          src={post.data.heroImage}
+          alt={post.data.heroAlt ?? post.data.title}
+          width="1920"
+          height="1080"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+    )}
+
+    <div class="article-body container">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="article-cta">
+        <div class="article-cta-inner">
+          <p class="article-cta-eyebrow">¿Quieres aplicarlo a tu caso?</p>
+          <h2 class="article-cta-title">Diagnóstico 360º</h2>
+          <p class="article-cta-desc">
+            Una hora ordenada con el fundador. Mapa patrimonial por escrito en 48 h.
+            Su coste se descuenta de la puesta en marcha del Protocolo de Herencia si contratas en 30 días.
+          </p>
+          <div class="article-cta-actions">
+            <a class="btn btn-primary" href="/servicios/diagnostico-360">Ver Diagnóstico 360º</a>
+            <a class="btn btn-ghost" href={CONTACT.calCom} target="_blank" rel="noopener">Reservar llamada · 30 min</a>
+          </div>
+        </div>
+      </aside>
+
+      {post.data.faqs && post.data.faqs.length > 0 && (
+        <section class="article-faq" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" class="faq-heading">Preguntas frecuentes</h2>
+          <div class="faq-list">
+            {post.data.faqs.map((f) => (
+              <article class="faq-item">
+                <h3 class="faq-q">{f.q}</h3>
+                <p class="faq-a">{f.a}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section class="article-related" aria-labelledby="related-heading">
+          <h2 id="related-heading" class="related-heading">Sigue leyendo</h2>
+          <ul class="related-list">
+            {related.map((r) => (
+              <li>
+                <a class="related-card" href={`/newsletter/${r.slug}`}>
+                  {r.data.heroImage && (
+                    <div class="related-card-img">
+                      <img
+                        src={r.data.heroImage}
+                        alt={r.data.heroAlt ?? r.data.title}
+                        loading="lazy"
+                        decoding="async"
+                        width="480"
+                        height="270"
+                      />
+                    </div>
+                  )}
+                  <div class="related-card-body">
+                    <p class="related-meta">
+                      <time datetime={r.data.date.toISOString().slice(0, 10)}>{fmtShort(r.data.date)}</time>
+                      {r.data.readingTimeMin && <span> · {r.data.readingTimeMin} min</span>}
+                    </p>
+                    <h3 class="related-title">{r.data.title}</h3>
+                    <p class="related-desc">{r.data.description}</p>
+                    <span class="related-cta">Leer →</span>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <nav class="article-back">
+        <a href="/newsletter">← Volver al newsletter</a>
+      </nav>
+    </div>
+  </article>
+  </>
+  )}
+</BaseLayout>
+
+<style>
+  .article-wrap {
+    background: var(--surface-light);
+    color: var(--anthracite-400);
+    padding-bottom: 64px;
+  }
+  @media (min-width: 768px) { .article-wrap { padding-bottom: 96px; } }
+
+  .article-header {
+    text-align: center;
+    padding-top: 48px;
+    padding-bottom: 28px;
+    max-width: 820px;
+  }
+  @media (min-width: 768px) {
+    .article-header { padding-top: 64px; padding-bottom: 40px; }
+  }
+  .article-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand-orange-500);
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+  .article-eyebrow a { color: inherit; text-decoration: none; }
+  .article-title {
+    font-size: clamp(28px, 4.5vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -1px;
+    color: var(--anthracite-950);
+    margin: 0 0 16px;
+    font-weight: 700;
+  }
+  .article-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--anthracite-400);
+    margin: 0 auto 18px;
+    max-width: 60ch;
+  }
+  .article-meta {
+    font-size: 13px;
+    color: var(--anthracite-400);
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .article-hero {
+    margin: 0 auto 40px;
+    max-width: 1180px;
+    padding: 0 var(--container-px);
+  }
+  @media (min-width: 1024px) { .article-hero { padding: 0 var(--container-px-lg); } }
+  .article-hero img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    display: block;
+  }
+
+  .article-body { max-width: 760px; }
+
+  .prose {
+    color: var(--anthracite-700, #2E3740);
+    font-size: 18px;
+    line-height: 1.75;
+  }
+  .prose :global(p) {
+    margin: 0 0 1.25em;
+    color: #2E3740;
+  }
+  .prose :global(h2) {
+    font-size: clamp(22px, 3vw, 28px);
+    line-height: 1.3;
+    color: var(--anthracite-950);
+    margin: 2.2em 0 0.6em;
+    letter-spacing: -0.4px;
+    font-weight: 700;
+  }
+  .prose :global(h3) {
+    font-size: 20px;
+    color: var(--anthracite-950);
+    margin: 1.8em 0 0.5em;
+    font-weight: 600;
+  }
+  .prose :global(a) {
+    color: var(--brand-orange-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+  }
+  .prose :global(a:hover) { color: var(--brand-orange-400); }
+  .prose :global(strong) { color: var(--anthracite-950); font-weight: 600; }
+  .prose :global(em) { color: var(--anthracite-700, #2E3740); }
+  .prose :global(ul), .prose :global(ol) {
+    padding-left: 1.4em;
+    margin: 0 0 1.25em;
+  }
+  .prose :global(li) { margin: 0.4em 0; }
+  .prose :global(blockquote) {
+    margin: 1.5em 0;
+    padding: 0.5em 1.2em;
+    border-left: 3px solid var(--brand-orange-500);
+    color: var(--anthracite-700, #2E3740);
+    font-style: italic;
+    background: rgba(242,118,26,0.04);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid rgba(46,55,64,0.15);
+    margin: 2.4em 0;
+  }
+  .prose :global(code) {
+    background: rgba(46,55,64,0.07);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.92em;
+    color: var(--anthracite-950);
+  }
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    margin: 1.5em 0;
+  }
+  /* Tablas del artículo: scroll horizontal propio (no desbordan ni se recortan en móvil) */
+  .prose :global(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 14px;
+  }
+  .prose :global(th), .prose :global(td) {
+    border: 1px solid rgba(46,55,64,0.14);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose :global(thead th) {
+    background: rgba(46,55,64,0.05);
+    color: var(--anthracite-950);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .prose :global(pre) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: rgba(46,55,64,0.06);
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 1.5em 0;
+  }
+  .prose :global(pre code) { background: none; padding: 0; }
+
+  .article-cta {
+    margin: 56px 0 32px;
+  }
+  .article-cta-inner {
+    background: linear-gradient(135deg, var(--anthracite-950) 0%, var(--anthracite-900) 100%);
+    color: #fff;
+    border-radius: var(--radius-xl);
+    padding: 32px 28px;
+    border: 1px solid rgba(242,118,26,0.25);
+    box-shadow: var(--shadow-xl);
+  }
+  @media (min-width: 640px) {
+    .article-cta-inner { padding: 40px 36px; }
+  }
+  .article-cta-eyebrow {
+    color: var(--brand-orange-400);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .article-cta-title {
+    font-size: clamp(22px, 3vw, 28px);
+    color: #fff;
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+  .article-cta-desc {
+    font-size: 15px;
+    color: var(--anthracite-100);
+    line-height: 1.65;
+    margin: 0 0 20px;
+  }
+  .article-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .article-faq {
+    margin: 48px 0 16px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(46,55,64,0.12);
+  }
+  .faq-heading {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--anthracite-400);
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+  .faq-list {
+    display: grid;
+    gap: 16px;
+  }
+  .faq-item {
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.10);
+    border-left: 3px solid var(--brand-orange-500);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    box-shadow: var(--shadow-soft);
+  }
+  .faq-q {
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--anthracite-950);
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .faq-a {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #2E3740;
+    margin: 0;
+  }
+
+  .article-related {
+    margin: 56px 0 16px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(46,55,64,0.12);
+  }
+  .related-heading {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--anthracite-400);
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 640px) {
+    .related-list { grid-template-columns: repeat(2, 1fr); }
+  }
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.10);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+  }
+  .related-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+    border-color: rgba(242,118,26,0.35);
+  }
+  .related-card-img {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--anthracite-900);
+  }
+  .related-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .related-card-body {
+    padding: 18px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .related-meta {
+    font-size: 11px;
+    color: var(--anthracite-400);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .related-title {
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--anthracite-950);
+    margin: 2px 0 4px;
+    letter-spacing: -0.2px;
+    font-weight: 600;
+  }
+  .related-desc {
+    font-size: 14px;
+    color: var(--anthracite-400);
+    line-height: 1.55;
+    margin: 0 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .related-cta {
+    margin-top: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand-orange-500);
+  }
+
+  .article-back {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 14px;
+  }
+  .article-back a {
+    color: var(--anthracite-400);
+    text-decoration: none;
+  }
+  .article-back a:hover { color: var(--brand-orange-500); }
+</style>

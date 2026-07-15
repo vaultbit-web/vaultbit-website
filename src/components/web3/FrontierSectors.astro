@@ -1,0 +1,22 @@
+---
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+---
+<section class="fr-section is-darker">
+  <div class="container">
+    <div class="fr-head" data-reveal>
+      <span class="frontier-eyebrow">Dónde aporta valor</span>
+      <h2>Sectores donde Web3 tiene sentido</h2>
+      <p>No todo proyecto necesita una cadena de bloques. Estos son los sectores donde la tokenización aporta liquidez, trazabilidad o confianza de verdad.</p>
+    </div>
+
+    <div class="fr-sectors-grid">
+      {WEB3_SECTORS.map((s, i) => (
+        <a class="fr-sector" href={`/servicios/web3/${s.slug}`} data-reveal style={`--reveal-delay:${i * 70}ms`} aria-label={`Web3 en ${s.tileName}`}>
+          <img class="fr-sector-img" src={s.image} alt="" width="1600" height="893" loading="lazy" decoding="async" />
+          <div class="fr-sector-veil" aria-hidden="true"></div>
+          <h3 class="fr-sector-name">{s.tileName}</h3>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

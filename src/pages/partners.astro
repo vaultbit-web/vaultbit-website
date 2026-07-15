@@ -1,0 +1,172 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import ContactForm from '~/components/ContactForm.astro';
+---
+<BaseLayout
+  title="Equipo multidisciplinar y red de profesionales · VaultBit Advisory"
+  description="Vaultbit Advisory coordina la parte técnica del patrimonio cripto con un equipo multidisciplinar de notarios, fiscalistas colegiados y proveedores de custodia física certificados."
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Equipo y red profesional', href: '/partners' },
+    ]} />
+  </div>
+
+  <section class="section section-dark hero-decor">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Equipo multidisciplinar</span>
+        <h1 class="h1-hero mt-6">Una <strong>consultoría 360º</strong> con muchos profesionales detrás.</h1>
+        <p class="body-text mt-6">
+          Vaultbit Advisory coordina la parte técnica de tu patrimonio cripto. La parte legal,
+          fiscal y de custodia física la firma siempre un profesional colegiado o una entidad
+          regulada, cada uno con plena responsabilidad en su línea. Trabajamos con un equipo
+          multidisciplinar estable de notarios, fiscalistas especializados en criptoactivos
+          y proveedores de custodia física certificada.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="h2-section text-center">Perfiles profesionales del equipo</h2>
+      <p class="body-text-light mt-4 max-w-2xl mx-auto text-center">
+        Trabajamos con un equipo multidisciplinar estable y, además, sumamos continuamente
+        nuevos profesionales colegiados a la red para reforzar cobertura territorial y especialización.
+      </p>
+      <div class="partners-grid mt-8">
+        <article class="partner-type card-light">
+          <h3>Consultoría y asesoría legal y fiscal en criptoactivos</h3>
+          <p>Más allá de la herencia: fiscalidad de criptomonedas, planificación patrimonial e
+            internacional y asesoría legal especializada en activos digitales. Coordinamos con
+            asesorías y despachos especializados; el asesor fiscal o el abogado presta y firma el
+            servicio con plena responsabilidad. Vaultbit no presta asesoramiento jurídico ni fiscal
+            de forma directa.</p>
+        </article>
+        <article class="partner-type card-light">
+          <h3>Despachos fiscales especializados</h3>
+          <p>Asesoría fiscal especializada en criptomonedas: Modelo 721, IRPF y conciliación de
+            operaciones DeFi. Reciben de nosotros el informe técnico ordenado y firman ante Hacienda
+            con plena responsabilidad.</p>
+        </article>
+        <article class="partner-type card-light">
+          <h3>Notarios y abogados de sucesiones</h3>
+          <p>Notarios y abogados de herencia de Bitcoin que integran nuestro Protocolo de Herencia
+            técnico dentro del testamento legal y de los protocolos de incapacitación. Garantizan que
+            los herederos puedan reclamar los criptoactivos con plena validez jurídica.</p>
+        </article>
+        <article class="partner-type card-light">
+          <h3>Custodios físicos certificados</h3>
+          <p>Proveedores de cajas de seguridad y bóvedas (Grado V o superior) para el resguardo
+            de fragmentos de frase semilla. Operamos como intermediarios del cliente: nosotros
+            nunca custodiamos.</p>
+        </article>
+        <article class="partner-type card-light">
+          <h3>Estudios de desarrollo Web3</h3>
+          <p>Para proyectos B2B de tokenización: equipos auditados de contratos inteligentes
+            a quienes derivamos la ejecución bajo nuestra supervisión técnica.</p>
+        </article>
+      </div>
+
+      <div class="partners-disclaimer mt-8">
+        <ComplianceNotice variant="colaboracion" />
+      </div>
+
+      <div class="partner-cta">
+        <div class="partner-cta-text">
+          <h3>¿Eres profesional y quieres sumarte a la red?</h3>
+          <p>
+            Si encajas con alguno de los perfiles anteriores y te interesa trabajar con un flujo
+            de derivación profesionalizado, postúlate. Operamos con acuerdos privados
+            alineados con la calidad del trabajo entregado.
+          </p>
+          <p class="partner-cta-cal">
+            ¿Prefieres una conversación directa primero?
+            <a href="https://cal.com/infovaultbit/30min" target="_blank" rel="noopener noreferrer">
+              Reserva 30 min con Daniel ↗
+            </a>
+          </p>
+        </div>
+        <div class="partner-cta-form">
+          <ContactForm
+            table="partner_applications"
+            source="page-partners"
+            buttonLabel="Enviar candidatura"
+            successMsg="✓ Recibido. Revisaremos tu candidatura y te contactaremos en menos de una semana."
+            mailtoFallback="info@vaultbit.es"
+            mailtoSubject="Postulación a Red de Partners VaultBit"
+            showOrganization={true}
+            showLinkedin={true}
+            extraFields={[
+              {
+                name: 'partner_type',
+                label: 'Tipo de colaboración',
+                type: 'select',
+                required: true,
+                options: [
+                  { value: 'fiscal', label: 'Despacho fiscal cripto' },
+                  { value: 'legal-fiscal', label: 'Consultoría / asesoría legal y fiscal cripto' },
+                  { value: 'sucesiones', label: 'Notario / abogado de sucesiones' },
+                  { value: 'custodia-fisica', label: 'Custodio físico / bóvedas' },
+                  { value: 'desarrollo-web3', label: 'Estudio de desarrollo Web3' },
+                  { value: 'otro', label: 'Otro' },
+                ],
+              },
+            ]}
+            variant="dark"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container">
+      <ComplianceNotice variant="banner" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .partners-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 768px) { .partners-grid { grid-template-columns: repeat(2, 1fr); } }
+  .partner-type h3 { font-size: 18px; color: var(--anthracite-950); margin: 0 0 10px; }
+  .partner-type p { font-size: 14px; line-height: 1.65; color: var(--anthracite-400); margin: 0; }
+
+  .partner-cta {
+    margin-top: 56px;
+    background: var(--anthracite-950);
+    color: #fff;
+    padding: 36px 28px;
+    border-radius: var(--radius-lg);
+    max-width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  @media (min-width: 768px) {
+    .partner-cta { grid-template-columns: 1fr 1fr; gap: 48px; padding: 48px; }
+  }
+  .partner-cta h3 { font-size: 22px; color: #fff; margin: 0 0 12px; }
+  .partner-cta p { color: var(--anthracite-200); margin: 0 0 16px; line-height: 1.65; font-size: 14px; }
+  .partner-cta-cal {
+    border-top: 1px solid rgba(46,55,64,0.4);
+    padding-top: 16px;
+    margin-top: 20px !important;
+    font-size: 13px;
+  }
+  .partner-cta-cal a { color: var(--brand-orange-400); font-weight: 600; }
+
+  .partners-disclaimer { display: flex; justify-content: center; }
+</style>

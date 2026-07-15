@@ -1,0 +1,43 @@
+---
+/**
+ * Icono de servicio. Usa el set de iconografía de marca (PNG):
+ *  - variant="dark"  → versión naranja (para fondos oscuros)
+ *  - variant="light" → versión negra (para fondos claros)
+ */
+interface Props {
+  type: 'heritage' | 'vault' | 'compass' | 'fiscal' | 'web3';
+  size?: number;
+  variant?: 'light' | 'dark';
+}
+const { type, size = 56, variant = 'light' } = Astro.props;
+
+// variant="dark"  → medallón oscuro → icono BLANCO + naranja (set blanca)
+// variant="light" → superficie clara → icono OSCURO + naranja (set naranja)
+const ICONS: Record<Props['type'], { dark: string; light: string }> = {
+  heritage: { dark: '/assets/icons/blanca/n-07.png', light: '/assets/icons/naranja/n-07.png' },
+  vault:    { dark: '/assets/icons/blanca/n-02.png', light: '/assets/icons/naranja/n-02.png' },
+  compass:  { dark: '/assets/icons/blanca/n-10.png', light: '/assets/icons/naranja/n-10.png' },
+  fiscal:   { dark: '/assets/icons/blanca/n-16.png', light: '/assets/icons/naranja/n-16.png' },
+  web3:     { dark: '/assets/icons/blanca/n-19.png', light: '/assets/icons/naranja/n-19.png' },
+};
+
+const src = ICONS[type][variant];
+---
+<img
+  class="svc-icon"
+  src={src}
+  alt=""
+  width={size}
+  height={size}
+  style={`width:${size}px; height:${size}px;`}
+  loading="lazy"
+  decoding="async"
+  aria-hidden="true"
+/>
+
+<style>
+  .svc-icon {
+    display: inline-block;
+    object-fit: contain;
+  }
+</style>

@@ -1,0 +1,101 @@
+---
+import { CONTACT, FOUNDER } from '~/data/organization';
+
+interface Props {
+  variant?: 'default' | 'compact' | 'inline';
+  showLabels?: boolean;
+}
+
+const { variant = 'default', showLabels = false } = Astro.props;
+---
+<div class={`social-links social-links-${variant}`} role="list">
+  <a
+    role="listitem"
+    href={CONTACT.linkedin}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="social-link"
+    aria-label={`LinkedIn de ${FOUNDER.name}`}
+    data-cta="social-linkedin"
+  >
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.42v1.57h.05c.48-.9 1.65-1.85 3.39-1.85 3.62 0 4.29 2.38 4.29 5.49v6.24zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+    </svg>
+    {showLabels && <span>LinkedIn</span>}
+  </a>
+
+  <a
+    role="listitem"
+    href={CONTACT.calCom}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="social-link"
+    aria-label={`Reservar reunión de 30 minutos con ${FOUNDER.givenName} vía Cal.com`}
+    data-cta="social-cal"
+  >
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <path d="M16 2v4M8 2v4M3 10h18"/>
+    </svg>
+    {showLabels && <span>Reservar 30 min</span>}
+  </a>
+
+  <a
+    role="listitem"
+    href={`mailto:${CONTACT.email}`}
+    class="social-link"
+    aria-label={`Enviar email a ${CONTACT.email}`}
+    data-cta="social-email"
+  >
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2"/>
+      <path d="m3 7 9 6 9-6"/>
+    </svg>
+    {showLabels && <span>{CONTACT.email}</span>}
+  </a>
+</div>
+
+<style>
+  .social-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: var(--radius-md);
+    background: rgba(46, 55, 64, 0.45);
+    border: 1px solid rgba(74, 85, 98, 0.4);
+    color: var(--anthracite-100);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+  }
+  .social-link:hover {
+    background: rgba(242, 118, 26, 0.12);
+    border-color: rgba(242, 118, 26, 0.5);
+    color: var(--brand-orange-400);
+    transform: translateY(-1px);
+  }
+  .social-link:active { transform: translateY(0); }
+
+  .social-links-inline .social-link {
+    width: auto;
+    padding: 10px 14px;
+    background: transparent;
+  }
+  .social-links-inline .social-link span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .social-links-compact { gap: 6px; }
+  .social-links-compact .social-link { width: 38px; height: 38px; }
+</style>

@@ -1,0 +1,353 @@
+---
+import { NAV_FOOTER_SERVICIOS, NAV_FOOTER_EMPRESA, NAV_FOOTER_LEGAL } from '~/data/nav';
+import { SITE_NAME, SITE_LEGAL_NAME, CONTACT, SITE_LAST_UPDATED } from '~/data/organization';
+
+const year = new Date().getFullYear();
+// Formato humano legible para mostrar como signal de freshness a usuarios y AI.
+const lastUpdatedHuman = new Date(SITE_LAST_UPDATED).toLocaleDateString('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-logos">
+          <a class="brand" href="/" aria-label={`${SITE_NAME} · inicio`}>
+            <img src="/images/logo-white.png" alt={SITE_NAME} class="brand-logo" width="200" height="52" decoding="async" loading="lazy" />
+          </a>
+        </div>
+        <p class="footer-tagline">
+          Te ayudamos a guardar tu bitcoin y a dejarlo preparado para tu familia. Con trato cercano y en lenguaje claro.
+        </p>
+        <p class="footer-contact">
+          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a><br/>
+          <a href={`https://wa.me/${CONTACT.whatsappRaw}`} target="_blank" rel="noopener">WhatsApp · {CONTACT.whatsapp}</a>
+        </p>
+      </div>
+
+      <div>
+        <h4>Servicios</h4>
+        <ul>
+          {NAV_FOOTER_SERVICIOS.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h4>Empresa</h4>
+        <ul>
+          {NAV_FOOTER_EMPRESA.map((i) => (
+            <li>
+              {i.external
+                ? <a href={i.href} target="_blank" rel="noopener noreferrer">{i.label} <span aria-hidden="true" class="ext">↗</span></a>
+                : <a href={i.href}>{i.label}</a>}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          {NAV_FOOTER_LEGAL.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-partners" aria-label="Con quién trabaja VaultBit">
+      <span class="footer-partners-label">Con quién trabajamos</span>
+      <div class="footer-partners-logos">
+        <a
+          href="https://www.yoseyomo.com?referral=lznutCqApy43"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-partner"
+          aria-label="Yoseyomo · hardware de custodia de frase semilla (abrir en nueva pestaña)"
+          title="Yoseyomo"
+        >
+          <img
+            src="/assets/partners/yoseyomo-logo-white.svg"
+            alt="Yoseyomo"
+            width="120"
+            height="26"
+            decoding="async"
+            loading="lazy"
+          />
+        </a>
+        <a
+          href="https://www.vault-solution.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-partner footer-partner-recolor"
+          aria-label="Vault Solution Barcelona · bóveda acorazada (abrir en nueva pestaña)"
+          title="Vault Solution Barcelona"
+        >
+          <img
+            src="/assets/partners/vault-solution-logo.png"
+            alt="Vault Solution Barcelona"
+            width="140"
+            height="26"
+            decoding="async"
+            loading="lazy"
+          />
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-disclaimer">
+      <p>
+        <strong>{SITE_LEGAL_NAME}</strong> es la marca bajo la que Daniel Brosed Giral presta servicios de consultoría en custodia, herencia y fiscalidad de bitcoin. La información de este sitio es orientativa. Puedes leer las condiciones completas en el <a href="/aviso-legal">aviso legal</a>.
+      </p>
+    </div>
+
+    <div class="footer-bottom">
+      <p>
+        © {year} {SITE_LEGAL_NAME}. Todos los derechos reservados.
+        <span class="footer-updated">
+          · Última actualización editorial:
+          <time datetime={SITE_LAST_UPDATED}>{lastUpdatedHuman}</time>
+        </span>
+      </p>
+      <a
+        class="ops-link"
+        href="https://app.vaultbit.es"
+        rel="nofollow noopener"
+        target="_blank"
+        aria-label="Acceso interno"
+        title="Acceso interno"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="14"
+          height="14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="4" y="11" width="16" height="9" rx="2" />
+          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          <circle cx="12" cy="15.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--anthracite-950);
+    color: var(--anthracite-200);
+    border-top: 1px solid rgba(46, 55, 64, 0.4);
+    padding: 48px 0 28px;
+    margin-top: 48px;
+  }
+  @media (min-width: 640px) {
+    .site-footer { padding: 64px 0 32px; margin-top: 64px; }
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 32px;
+    }
+  }
+  .footer-brand .brand {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .footer-brand-logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .brand-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255,255,255,0.18);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .brand-sync {
+    opacity: 0.92;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .brand-sync:hover { opacity: 1; transform: translateY(-1px); }
+  .brand-logo {
+    height: 38px;
+    width: auto;
+    max-width: 200px;
+    display: block;
+  }
+  .brand-logo-sync {
+    height: 32px;
+    width: auto;
+    max-width: 160px;
+    display: block;
+  }
+  @media (min-width: 480px) { .brand-logo-sync { height: 36px; } }
+  @media (max-width: 380px) { .brand-divider { display: none; } }
+  .footer-tagline {
+    font-size: 14px;
+    color: var(--anthracite-200);
+    margin: 0 0 12px;
+    max-width: 32ch;
+    line-height: 1.6;
+  }
+  .footer-contact { font-size: 13px; line-height: 1.8; margin: 0; }
+  .footer-contact a { color: var(--anthracite-100); }
+  .footer-contact a:hover { color: var(--brand-orange-400); }
+
+  .site-footer h4 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin: 0 0 16px;
+  }
+  .site-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .site-footer li a {
+    color: var(--anthracite-200);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 0;
+    min-height: 40px;
+    line-height: 1.5;
+  }
+  .site-footer li a:hover { color: var(--brand-orange-400); }
+  .site-footer li a:active { color: var(--brand-orange-500); }
+  .site-footer .ext {
+    font-size: 11px;
+    color: var(--anthracite-400);
+    margin-left: 4px;
+  }
+
+  .footer-partners {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(46,55,64,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  @media (min-width: 768px) {
+    .footer-partners {
+      flex-direction: row;
+      align-items: center;
+      gap: 32px;
+    }
+  }
+  .footer-partners-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--anthracite-400);
+    white-space: nowrap;
+  }
+  .footer-partners-logos {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .footer-partner {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .footer-partner:hover,
+  .footer-partner:focus-visible {
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  .footer-partner img {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+  @media (min-width: 640px) {
+    .footer-partner img { height: 26px; }
+  }
+  /* Recolor para logos a color (PNG) que necesitan adaptarse al fondo oscuro */
+  .footer-partner-recolor img {
+    filter: brightness(0) invert(1);
+  }
+
+  .footer-disclaimer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(46,55,64,0.4);
+  }
+  .footer-disclaimer p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--anthracite-400);
+    max-width: 80ch;
+    margin: 0;
+  }
+  .footer-disclaimer strong { color: var(--anthracite-100); font-weight: 600; }
+
+  .footer-bottom {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(46,55,64,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .footer-bottom p {
+    font-size: 12px;
+    color: var(--anthracite-400);
+    margin: 0;
+  }
+  .footer-updated {
+    color: var(--anthracite-400);
+    opacity: 0.85;
+  }
+  .footer-updated time { color: var(--anthracite-100); font-weight: 500; }
+  .ops-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: var(--anthracite-400);
+    opacity: 0.5;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+    text-decoration: none;
+  }
+  .ops-link:hover,
+  .ops-link:focus-visible {
+    opacity: 1;
+    color: var(--brand-orange-400);
+    background: rgba(242, 118, 26, 0.08);
+  }
+</style>

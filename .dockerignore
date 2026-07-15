@@ -1,0 +1,29 @@
+.git
+.gitignore
+.gitattributes
+node_modules
+.npm
+dist
+.astro
+.env
+.env.*
+*.local
+*.pdf
+*.n8n
+ANUNCIOS
+Imagenes y logo
+Manual*.pdf
+VaultBit_Style_Guide.md
+VaultBit_Funnel_Cinematografico.html
+_tmp.js
+_tmp_check.js
+create_ads_temp.js
+meta_campaign_creator.js
+update_ads_professional.js
+email_code.js
+README.md
+.claude
+*.log
+
+# material de trabajo (no es codigo del build)
+_material/

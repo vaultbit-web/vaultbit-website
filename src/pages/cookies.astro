@@ -1,0 +1,173 @@
+---
+import LegalLayout from '~/layouts/LegalLayout.astro';
+import { SITE_LEGAL_NAME, CONTACT } from '~/data/organization';
+---
+<LegalLayout
+  title="Política de cookies"
+  description="Política de cookies de VaultBit Advisory: tipos, finalidad, duración y gestión del consentimiento conforme al art. 22 LSSI-CE y la guía AEPD 2024."
+  breadcrumbLabel="Política de cookies"
+  breadcrumbHref="/cookies"
+  lastUpdate="27 de abril de 2026"
+>
+  <p>
+    Esta Política de Cookies explica qué son las cookies, cuáles utiliza el sitio web de
+    {SITE_LEGAL_NAME} (en adelante, "VaultBit Advisory") y cómo puedes gestionarlas, conforme al
+    artículo 22.2 de la Ley 34/2002 (LSSI-CE), el Reglamento (UE) 2016/679 (RGPD) y la guía de la
+    Agencia Española de Protección de Datos sobre uso de cookies actualizada en 2024.
+  </p>
+
+  <h2>1. ¿Qué son las cookies?</h2>
+  <p>
+    Una cookie es un pequeño archivo de texto que un sitio web almacena en el dispositivo del usuario
+    cuando este lo visita. Las cookies permiten reconocer al usuario en visitas posteriores, recordar
+    preferencias y mejorar la experiencia de navegación. Bajo el término genérico "cookies" también
+    se incluyen otras tecnologías similares como localStorage, sessionStorage, web beacons o píxeles
+    de seguimiento.
+  </p>
+
+  <h2>2. Tipos de cookies que utilizamos</h2>
+  <p>
+    Clasificamos las cookies según su titularidad, duración y finalidad de acuerdo con la guía de la
+    AEPD:
+  </p>
+
+  <h3>2.1. Por su titularidad</h3>
+  <ul>
+    <li><strong>Cookies propias</strong>: gestionadas por VaultBit Advisory desde nuestros propios dominios.</li>
+    <li><strong>Cookies de terceros</strong>: gestionadas por proveedores externos (Meta, Cal.com) cuyos servicios incluimos en el sitio con tu consentimiento.</li>
+  </ul>
+
+  <h3>2.2. Por su duración</h3>
+  <ul>
+    <li><strong>Cookies de sesión</strong>: se borran al cerrar el navegador.</li>
+    <li><strong>Cookies persistentes</strong>: permanecen en el dispositivo durante un periodo definido (de minutos a años).</li>
+  </ul>
+
+  <h3>2.3. Por su finalidad</h3>
+  <ul>
+    <li><strong>Técnicas o estrictamente necesarias</strong>: imprescindibles para el funcionamiento del sitio. No requieren consentimiento.</li>
+    <li><strong>De preferencias</strong>: recuerdan opciones del usuario (idioma, decisión sobre cookies).</li>
+    <li><strong>De medición / análisis</strong>: permiten conocer el uso agregado del sitio.</li>
+    <li><strong>De publicidad / marketing</strong>: permiten medir la eficacia de campañas. Requieren consentimiento explícito.</li>
+  </ul>
+
+  <h2>3. Detalle de cookies utilizadas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Titularidad</th>
+        <th>Finalidad</th>
+        <th>Duración</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>vb_consent_v1</code></td>
+        <td>Técnica · necesaria</td>
+        <td>Propia</td>
+        <td>Almacena la decisión del usuario sobre cookies (aceptar / rechazar) para no volver a mostrar el banner.</td>
+        <td>Persistente (localStorage)</td>
+      </tr>
+      <tr>
+        <td><code>vb_funnel_state</code></td>
+        <td>Técnica · necesaria</td>
+        <td>Propia</td>
+        <td>Mantiene el estado del cuestionario diagnóstico durante la sesión (paso actual, respuestas parciales).</td>
+        <td>Sesión (sessionStorage)</td>
+      </tr>
+      <tr>
+        <td><code>_fbp</code></td>
+        <td>Marketing · de terceros</td>
+        <td>Meta Platforms Ireland Ltd.</td>
+        <td>Identificador único del navegador para medir conversiones de Meta Ads. <strong>Solo se carga si el usuario acepta.</strong></td>
+        <td>Hasta 90 días</td>
+      </tr>
+      <tr>
+        <td><code>_fbc</code></td>
+        <td>Marketing · de terceros</td>
+        <td>Meta Platforms Ireland Ltd.</td>
+        <td>Identificador del clic en anuncio (parámetro <code>fbclid</code>). <strong>Solo se carga si el usuario acepta.</strong></td>
+        <td>Hasta 90 días</td>
+      </tr>
+      <tr>
+        <td>Cookies de Cal.com</td>
+        <td>Técnica · de terceros</td>
+        <td>Cal.com Inc.</td>
+        <td>Solo se cargan si el usuario decide reservar una reunión y entra al sitio de Cal.com (no en VaultBit).</td>
+        <td>Variable según Cal.com</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="legal-callout">
+    <strong>Sin consentimiento, sin tracking.</strong> Por defecto, el sitio NO carga cookies de
+    publicidad ni de medición. El píxel de Meta solo se ejecuta tras pulsar "Aceptar" en el banner
+    de cookies. Las cookies estrictamente necesarias para el funcionamiento (banner de consentimiento,
+    estado del funnel) se aplican siempre, conforme al artículo 22.2 de la LSSI-CE que las exime
+    de consentimiento.
+  </div>
+
+  <h2>4. Gestión del consentimiento</h2>
+  <p>
+    Al acceder por primera vez al sitio se muestra un banner que te permite:
+  </p>
+  <ul>
+    <li><strong>Aceptar</strong> el uso de cookies de medición y marketing.</li>
+    <li><strong>Rechazar</strong> todas las cookies no necesarias.</li>
+    <li><strong>Consultar</strong> el detalle de esta política antes de decidir.</li>
+  </ul>
+  <p>
+    Tu decisión se almacena durante un máximo de 24 meses, plazo recomendado por la guía AEPD 2024.
+    Tras ese periodo, o si lo solicitas explícitamente, se vuelve a pedir el consentimiento.
+  </p>
+
+  <h3>4.1. Cómo cambiar tu decisión</h3>
+  <p>
+    Puedes revocar o modificar tu consentimiento en cualquier momento mediante alguna de estas vías:
+  </p>
+  <ul>
+    <li>Borrar el almacenamiento local del navegador para nuestro dominio (<code>vaultbit.es</code>):
+      el banner volverá a aparecer en la próxima visita.</li>
+    <li>Configurar tu navegador para bloquear cookies (consulta la sección 4.2).</li>
+    <li>Escribirnos a <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> y solicitar baja del tracking.</li>
+  </ul>
+
+  <h3>4.2. Configuración por navegador</h3>
+  <p>
+    Cada navegador permite configurar el tratamiento de cookies. A continuación los enlaces oficiales:
+  </p>
+  <ul>
+    <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
+    <li><a href="https://support.mozilla.org/es/kb/Borrar%20cookies" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+    <li><a href="https://support.apple.com/es-es/HT201265" target="_blank" rel="noopener">Apple Safari</a></li>
+    <li><a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Microsoft Edge</a></li>
+  </ul>
+
+  <h2>5. Consecuencias de rechazar cookies</h2>
+  <p>
+    Si rechazas las cookies de marketing, las siguientes funcionalidades se ven limitadas:
+  </p>
+  <ul>
+    <li>No podremos atribuir tu visita a una campaña publicitaria concreta.</li>
+    <li>Las métricas agregadas de eficacia publicitaria serán menos precisas, pero el sitio funcionará con normalidad y podrás contratar todos los servicios.</li>
+  </ul>
+  <p>
+    El rechazo de cookies <strong>no afecta</strong> a tu capacidad de acceder a contenidos, completar
+    el diagnóstico, descargar la guía PDF o reservar reunión.
+  </p>
+
+  <h2>6. Modificaciones</h2>
+  <p>
+    Esta política puede ser actualizada para reflejar cambios técnicos, regulatorios o de proveedores.
+    Cuando los cambios sean sustanciales, volveremos a solicitar el consentimiento mediante el banner.
+  </p>
+
+  <h2>7. Contacto</h2>
+  <p>
+    Para cualquier consulta sobre esta Política de Cookies, escríbenos a
+    <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>. Para más información sobre el tratamiento
+    de datos personales asociado, consulta nuestra <a href="/privacidad">Política de Privacidad</a>.
+  </p>
+</LegalLayout>

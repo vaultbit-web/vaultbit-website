@@ -1,0 +1,39 @@
+---
+import fs from 'node:fs';
+import type { ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+
+// Marca cada tier con si su icono cromado existe ya en /public (comprobación en
+// build): así no se muestran iconos rotos hasta que se generen los PNG.
+const tiers = (service.frontier?.partnerTiers ?? []).map((t) => ({
+  ...t,
+  hasIcon: !!t.icon && fs.existsSync(`${process.cwd()}/public${t.icon}`),
+}));
+---
+<section class="fr-section">
+  <div class="container">
+    <div class="fr-head" data-reveal>
+      <span class="frontier-eyebrow">Red de partners curados</span>
+      <h2>El equipo que construye, ya verificado</h2>
+      <p>No improvisamos con quién trabaja en tu proyecto. Seleccionamos los perfiles que encajan de una red que hemos auditado, y respondemos de la coordinación.</p>
+    </div>
+
+    {tiers.length > 0 && (
+      <div class="fr-grid cols-3">
+        {tiers.map((t, i) => (
+          <article class="fr-tier" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            {t.hasIcon && (
+              <img class="fr-tier-icon" src={t.icon} alt="" width="72" height="72" loading="lazy" decoding="async" />
+            )}
+            <span class:list={['fr-tier-name', !t.hasIcon && 'with-marker']}>{t.name}</span>
+            <p class="fr-tier-role">{t.role}</p>
+          </article>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

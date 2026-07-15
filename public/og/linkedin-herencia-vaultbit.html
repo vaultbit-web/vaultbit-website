@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>VaultBit Advisory · Herencia Bitcoin en España · 7 fases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --anthracite-950: #0D0F11;
+    --anthracite-900: #13171A;
+    --anthracite-800: #1C2126;
+    --anthracite-700: #252C33;
+    --anthracite-600: #2E3740;
+    --anthracite-400: #4A5562;
+    --anthracite-200: #8A95A0;
+    --anthracite-100: #C5CBD1;
+    --brand-orange-600: #D4620E;
+    --brand-orange-500: #F2761A;
+    --brand-orange-400: #F5883A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--anthracite-950);
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 18% 12%, rgba(242, 118, 26, 0.10) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 92%, rgba(242, 118, 26, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.035 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    opacity: 0.5; pointer-events: none; z-index: 1; mix-blend-mode: overlay;
+  }
+  .canvas {
+    position: relative; z-index: 2;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 64px 64px 56px;
+  }
+
+  /* HEADER */
+  .header { display: flex; flex-direction: column; gap: 18px; }
+  .brand-row {
+    display: flex; align-items: center; gap: 14px;
+    color: var(--anthracite-100);
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--brand-orange-500);
+    border-radius: 9px;
+    display: grid; place-items: center;
+    color: #fff; font-weight: 800; font-size: 17px;
+    box-shadow: 0 6px 16px rgba(242,118,26,0.35);
+  }
+  .brand-name { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
+  .brand-tag {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--anthracite-200);
+    padding-left: 14px;
+    margin-left: 4px;
+    border-left: 1px solid rgba(255,255,255,0.12);
+  }
+
+  h1 {
+    font-size: 70px;
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -2.4px;
+    color: #fff;
+    margin-top: 12px;
+    max-width: 920px;
+  }
+  h1 .accent { font-weight: 800; color: #fff; }
+  h1 .accent::after {
+    content: '.'; color: var(--brand-orange-500);
+  }
+  .subtitle {
+    font-size: 18px;
+    color: var(--anthracite-100);
+    line-height: 1.5;
+    margin-top: 16px;
+    max-width: 880px;
+    font-weight: 400;
+  }
+  .subtitle .em { color: var(--brand-orange-400); font-weight: 600; }
+
+  /* GRID */
+  .grid {
+    flex: 1;
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .card {
+    background: var(--anthracite-800);
+    border: 1px solid rgba(46,55,64,0.7);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card.wide { grid-column: 1 / -1; }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(242,118,26,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .card-num {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--brand-orange-500);
+    background: rgba(242,118,26,0.10);
+    border: 1px solid rgba(242,118,26,0.25);
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  .card-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+  }
+  .card-body {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--anthracite-100);
+    font-weight: 400;
+    max-width: 460px;
+  }
+  .card.wide .card-title { font-size: 24px; }
+  .card.wide .card-body { max-width: 760px; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .footer-left {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .punchline {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .punchline .em { color: var(--brand-orange-400); }
+  .cta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--anthracite-100);
+    letter-spacing: 0.02em;
+  }
+  .cta strong { color: var(--brand-orange-400); font-weight: 700; }
+  .footer-right {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(242,118,26,0.10);
+    border: 1px solid rgba(242,118,26,0.30);
+    padding: 14px 20px;
+    border-radius: 14px;
+  }
+  .footer-right .arrow {
+    width: 32px; height: 32px;
+    background: var(--brand-orange-500);
+    color: #fff;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 18px;
+  }
+  .footer-right .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .footer-right .label small {
+    display: block;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--anthracite-100);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <header class="header">
+    <div class="brand-row">
+      <div class="logo-mark">V</div>
+      <div class="brand-name">VaultBit Advisory</div>
+      <div class="brand-tag">Guía técnica · Gratis · 22 págs</div>
+    </div>
+
+    <h1>Herencia Bitcoin en España. <span class="accent">7 fases</span></h1>
+
+    <p class="subtitle">
+      Si te ocurre algo hoy, <span class="em">¿podría tu familia acceder a tu Bitcoin?</span> El protocolo serio para que el patrimonio digital llegue a tus herederos sin perderse.
+    </p>
+  </header>
+
+  <ol class="grid">
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">01</span>
+      </div>
+      <h3 class="card-title">Inventario.</h3>
+      <p class="card-body">Mapa completo de tus criptoactivos, exchanges, wallets y herederos previstos antes de tocar nada.</p>
+    </li>
+
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">02</span>
+      </div>
+      <h3 class="card-title">Arquitectura Shamir.</h3>
+      <p class="card-body">División de la frase semilla en N fragmentos (2-de-3 o 3-de-5) según patrimonio y geografía familiar.</p>
+    </li>
+
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">03</span>
+      </div>
+      <h3 class="card-title">Dispersión.</h3>
+      <p class="card-body">Distribución física de fragmentos en ubicaciones independientes para resistir pérdida, robo y coacción.</p>
+    </li>
+
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">04</span>
+      </div>
+      <h3 class="card-title">Manual del Heredero.</h3>
+      <p class="card-body">Documento técnico paso a paso, sin jerga, que tu familia puede ejecutar sola el día de mañana.</p>
+    </li>
+
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">05</span>
+      </div>
+      <h3 class="card-title">Testamento y albacea digital.</h3>
+      <p class="card-body">Integración del protocolo en el testamento legal vigente con notario colegiado partner.</p>
+    </li>
+
+    <li class="card">
+      <div class="card-head">
+        <span class="card-num">06</span>
+      </div>
+      <h3 class="card-title">Capa fiscal sucesoria.</h3>
+      <p class="card-body">Modelo 650 ISD por CCAA, valoración a fecha de defunción y dossier para el fiscalista.</p>
+    </li>
+
+    <li class="card wide">
+      <div class="card-head">
+        <span class="card-num">07</span>
+      </div>
+      <h3 class="card-title">Prueba de vida y revisión anual.</h3>
+      <p class="card-body">Mantenimiento del protocolo vivo, no documento muerto en un cajón. El patrimonio cambia, los herederos cambian, el hardware envejece. Un protocolo sin revisión se convierte en un protocolo roto a los 18 meses.</p>
+    </li>
+  </ol>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <p class="punchline">Sin protocolo, hasta el <span class="em">47%</span> del valor cripto heredable se pierde.</p>
+      <p class="cta">Guía gratuita · 22 páginas · <strong>vaultbit.es/recursos/guia-herencia-bitcoin</strong></p>
+    </div>
+    <div class="footer-right">
+      <div class="arrow">→</div>
+      <div class="label">Descarga<small>la guía técnica completa</small></div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

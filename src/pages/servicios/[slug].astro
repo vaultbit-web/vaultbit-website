@@ -1,0 +1,17 @@
+---
+import ServiceLayout from '~/layouts/ServiceLayout.astro';
+import Web3Layout from '~/layouts/Web3Layout.astro';
+import { SERVICE_DETAILS, SERVICE_DETAIL_LIST } from '~/data/service-details';
+
+export function getStaticPaths() {
+  return SERVICE_DETAIL_LIST.map((s) => ({
+    params: { slug: s.slug },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+// El servicio Web3 usa el layout "Frontier" propio; el resto, el layout genérico.
+const isFrontier = service.slug === 'web3-b2b';
+---
+{isFrontier ? <Web3Layout service={service} /> : <ServiceLayout service={service} />}

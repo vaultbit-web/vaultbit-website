@@ -1,0 +1,386 @@
+---
+// Página flagship del servicio "Energía" (pillar: /servicios/web3-b2b).
+// Dedicada y autocontenida. Voz híbrida: hero cercano; cuerpo profesional con keywords
+// (trazabilidad del kWh, garantías de origen, comunidades energéticas, matching 24/7 EnergyTag).
+// Compliance: diseñamos y dirigimos; NO operamos el mercado, NO somos comercializadora, NO emitimos
+// garantías de origen (las emite la CNMC). La blockchain hace inmutable el dato, no lo hace verde
+// (problema del oráculo en la medición). Copy SIN guiones largos (—) entre palabras.
+import fs from 'node:fs';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+const slug = 'energia';
+const url = `${SITE_URL}/servicios/web3/${slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink('Interés: Proyectos Web3 · Energía. (Cuéntanos en una línea qué quieres trazar o montar)');
+const wa = waLink('Hola, vengo de la web de Vaultbit. Quiero un proyecto de blockchain en energía (trazabilidad del kWh, comunidad energética, matching 24/7) y quiero que me ayudéis. Os cuento:');
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== slug);
+
+const exists = (p: string) => fs.existsSync(`${process.cwd()}/public${p}`);
+const bgSectores = '/assets/web3/frontier-energia-sectores.jpeg';
+const bgMatching = '/assets/web3/frontier-energia-matching.jpeg';
+const bgCasos = '/assets/web3/frontier-energia-casos.jpeg';
+const bgCta = '/assets/web3/frontier-energia-cta.jpeg';
+const hasSectoresBg = exists(bgSectores);
+const hasMatchingBg = exists(bgMatching);
+const hasCasosBg = exists(bgCasos);
+const hasCtaBg = exists(bgCta);
+const iconExists = (name: string) => exists(`/assets/web3/icons/icon-step-${name}.png`);
+
+// ─── Datos de las secciones ───
+const capacidades = [
+  { icon: 'garantia-origen', h3: 'Trazabilidad del origen del kWh', text: 'Apuntar de qué activo renovable sale cada kWh y cuándo se generó, en un registro inmutable que se apoya en el sistema oficial de Garantías de Origen de la CNMC y lo complementa con granularidad horaria, sin sustituirlo.' },
+  { icon: 'comunidad', h3: 'Comunidades energéticas y autoconsumo colectivo', text: 'Diseñamos la capa de medición, reparto y trazabilidad auditable entre los participantes, dentro del marco del RD 244/2019.' },
+  { icon: 'prosumer', h3: 'Reparto y liquidación auditables', text: 'Registro y liquidación transparentes del reparto de energía entre participantes, sin habilitar una venta libre de kWh que la ley española no permite fuera de las figuras tasadas.' },
+  { icon: 'reloj', h3: 'Matching horario 24/7', text: 'Diseñamos la infraestructura que casa consumo y generación limpia hora a hora según el estándar EnergyTag, para que el "100% renovable" resista una auditoría.' },
+  { icon: 'panel-solar', h3: 'Tokenización de renovables con capa de confianza', text: 'Diseñamos el proyecto técnico de tokenización de activos renovables con trazabilidad real y reglas anti doble conteo. La parte de valores la encuadra el cliente con la CNMV y sus asesores.' },
+];
+
+const steps = [
+  { title: 'Diagnóstico y encaje honesto', body: 'Miramos tu caso y tu objetivo, y te decimos de frente si blockchain aporta algo o si con una base de datos normal te vale. No vendemos tecnología que no necesitas.' },
+  { title: 'Encaje legal y modelo de datos', body: 'Definimos en qué figura encajas (autoconsumo colectivo, comunidad energética, venta de excedentes) y qué se mide y cómo se nombra, para no chocar con la CNMC, MITECO ni la regulación del sector eléctrico.' },
+  { title: 'Capa de medición fiable en origen', body: 'Aquí está lo difícil: contador, sensores, sello de tiempo y firma del dato, porque la confianza del kWh nace del medidor, no de la blockchain. Reducimos el error y la manipulación en el origen.' },
+  { title: 'Desarrollo dirigido', body: 'Elegimos la red (normalmente permisionada), diseñamos los contratos de reparto y liquidación y la integración con tus sistemas, y dirigimos al equipo de confianza que lo construye y lo audita.' },
+  { title: 'Lanzamiento, matching y traspaso', body: 'Lo ponemos en marcha, dejamos el matching horario y el reporting listos, formamos a tu equipo y te traspasamos el sistema. Tú tratas con un solo interlocutor.' },
+];
+
+const matching = [
+  { kicker: 'El problema', h3: 'El balance anual', text: 'Con las garantías de origen, el "100% renovable" se cuadra a escala anual, aunque de noche consumas energía gris. Ese desajuste temporal es la puerta del greenwashing.' },
+  { kicker: 'La solución', h3: 'Certificado horario 24/7', text: 'El estándar EnergyTag casa consumo y generación limpia hora a hora. Diseñamos la infraestructura para que tu "100% renovable" resista una auditoría, no solo un titular.' },
+];
+
+const casos = [
+  { h3: 'Origen renovable trazable', text: 'Una comercializadora pequeña o un promotor renovable quiere demostrar de qué planta sale su energía y cuándo, más allá de la garantía de origen anual. Se diseña la captura en origen y el registro por horas, apoyado en el sistema oficial de la CNMC.' },
+  { h3: 'Comunidad energética con reparto auditable', text: 'Un grupo de vecinos en autoconsumo colectivo quiere repartir la energía generada de forma transparente y sin discusiones. Se diseña la medición y el contrato de reparto por coeficientes, dentro del RD 244/2019, con liquidación auditable.' },
+  { h3: 'Tokenización de un parque renovable', text: 'Un promotor quiere abrir su parque solar a financiación tokenizada sin caer en greenwashing ni doble conteo. Vaultbit diseña la capa de confianza (trazabilidad verificable + reglas anti doble conteo + gobernanza); la estructura de valores la encuadra el cliente con la CNMV.' },
+];
+
+const faqs = [
+  { q: '¿Qué es la blockchain aplicada a la energía?', a: 'Es apuntar en un registro compartido e inmutable de dónde viene cada kWh, por qué activo pasa y cuándo, con sello de tiempo y autoría. Da integridad y transparencia al histórico del origen de la energía. No es operar el mercado ni emitir certificados oficiales.' },
+  { q: '¿Cómo traza la blockchain el origen de cada kWh?', a: 'Registrando los datos del contador y de la planta de forma que, una vez escritos, no se puedan alterar sin que se note. La fiabilidad nace del medidor en origen; la blockchain solo hace ese dato inmutable y auditable, no lo convierte en verdad.' },
+  { q: '¿Vaultbit emite garantías de origen o certifica mi energía verde?', a: 'No. Las Garantías de Origen las emite y gestiona en exclusiva la CNMC (Circular 1/2018). Nosotros diseñamos la capa de trazabilidad que se apoya en ese sistema oficial; nunca lo sustituimos ni emitimos un "certificado verde" propio.' },
+  { q: '¿Qué es el matching horario 24/7 y por qué importa?', a: 'Es casar consumo y generación limpia hora a hora, no solo a escala anual. El balance anual con garantías de origen deja decir "100% renovable" aunque de noche consumas energía gris; el matching horario (estándar EnergyTag) lo evita y reduce el greenwashing. Es el nivel máximo de trazabilidad del origen del kWh.' },
+  { q: '¿Puedo vender mi energía a mis vecinos (P2P) en España?', a: 'No de forma libre. La ley canaliza el "vecino a vecino" por autoconsumo colectivo o comunidad energética (reparto por coeficientes, no venta libre) y los excedentes por el mercado o compensación. Nosotros aportamos la capa de trazabilidad y liquidación, no habilitamos una venta que la ley no permite.' },
+  { q: '¿Qué es el autoconsumo colectivo y cómo lo mejora la blockchain?', a: 'Es compartir una instalación de generación entre varios consumidores con un acuerdo de reparto (RD 244/2019). La blockchain añade un registro auditable e inmutable de cuánto genera y consume cada uno, para que el reparto sea transparente y sin discusiones.' },
+  { q: '¿Se puede tokenizar un activo renovable sin problemas legales?', a: 'Se puede diseñar el proyecto técnico, pero con cuidado: si el token implica captar inversión con expectativa de rentabilidad, probablemente sea un valor negociable (LMVSI / MiFID II, supervisión CNMV) y no un simple token MiCA. Nosotros diseñamos la parte técnica; la estructuración financiera la asume el cliente con la CNMV y sus asesores.' },
+  { q: '¿La blockchain garantiza que mi energía es 100% renovable o neutra en carbono?', a: 'No, y desconfía de quien lo prometa. La blockchain garantiza la integridad del registro, no la veracidad del dato físico ni la neutralidad climática. Cualquier afirmación ambiental se ajusta a la normativa europea anti greenwashing; tokenizar un crédito dudoso no lo vuelve válido.' },
+];
+
+// ─── SEO / meta ───
+const metaTitle = 'Blockchain en energía: trazabilidad del origen de cada kWh · VaultBit Advisory';
+const metaDescription =
+  'Diseñamos y dirigimos el proyecto técnico para trazar el origen de tu energía con blockchain: registro inmutable del kWh, matching horario 24/7 (EnergyTag), comunidades energéticas y autoconsumo colectivo. No operamos el mercado ni emitimos garantías de origen.';
+const keywords = [
+  'blockchain energía',
+  'blockchain en el sector eléctrico',
+  'trazabilidad energética blockchain',
+  'garantías de origen blockchain',
+  'comunidad energética blockchain',
+  'autoconsumo colectivo blockchain',
+  'tokenización energía renovable',
+  'P2P energía blockchain',
+  'matching horario 24/7 energía',
+  'certificados de origen blockchain',
+];
+const ogImage = `${SITE_URL}/og/og-web3-energia.jpg`;
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: 'Blockchain en energía: trazabilidad del origen del kWh',
+  description: metaDescription,
+  serviceType: 'Trazabilidad energética y registro con blockchain',
+  category: 'Diseño y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Qué se puede hacer con blockchain en energía',
+    itemListElement: capacidades.map((c) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: c.h3 },
+    })),
+  },
+};
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: 'Cómo dirigimos un proyecto de blockchain en energía, paso a paso',
+  description: 'Proceso de diseño y dirección de un proyecto de trazabilidad energética con VaultBit Advisory.',
+  inLanguage: 'es-ES',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+  })),
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={url}
+  keywords={keywords.join(', ')}
+  ogImage={ogImage}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: 'Energía', href: `/servicios/web3/${slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── 1 · HERO ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style="background-image:url('/assets/web3/sector-energia.jpeg')" aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">Proyectos Web3 · Energía</span>
+          <h1>De dónde viene cada kWh, <strong>con pruebas.</strong></h1>
+          <p class="fh-sub">Demostrar de qué planta renovable sale cada kWh y cuándo se generó, con un registro que no se puede cambiar a posteriori. Eso es la trazabilidad energética con blockchain. Nosotros diseñamos y dirigimos el proyecto técnico. No operamos el mercado ni emitimos garantías de origen.</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 2 · Qué es ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Qué es</span>
+          <h2>Qué es la blockchain aplicada a la energía</h2>
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:20px">
+          La trazabilidad energética con blockchain es apuntar en un registro compartido e inmutable de dónde viene cada kWh, de qué activo renovable sale y cuándo se generó, con sello de tiempo y autoría.
+        </p>
+        <p class="fr-prose" data-reveal style="margin-top:18px">
+          Y aquí lo que casi nadie dice claro: la blockchain hace inmutable lo que se apunta, no convierte tu energía en verde. La fiabilidad nace del contador en origen, no de estar en la cadena. Operar el mercado o emitir certificados oficiales no es esto, ni es nuestro papel.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 3 · Qué se puede hacer (fondo) ───── -->
+    <section class:list={['fr-section', hasSectoresBg ? 'fr-has-bg' : 'is-darker']} style={hasSectoresBg ? `--fr-bg:url('${bgSectores}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde aplica</span>
+          <h2>Qué se puede hacer: del origen del kWh a las comunidades energéticas</h2>
+          <p>No todo necesita blockchain, pero hay casos donde un registro común e inmutable cambia las reglas. Estos son los más sólidos.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {capacidades.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {iconExists(c.icon) && (
+                <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${c.icon}.png`} alt="" width="96" height="96" loading="lazy" decoding="async" />
+              )}
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 4 · Cómo lo dirigimos, paso a paso ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El proceso</span>
+          <h2>Cómo dirigimos tu proyecto de energía con blockchain, paso a paso</h2>
+          <p>Un único interlocutor. Diseñamos, encajamos lo legal y dirigimos al equipo que lo construye.</p>
+        </div>
+        <div class="fr-flow">
+          {steps.map((s, i) => (
+            <div class="fr-step" data-reveal>
+              <div class="fr-step-num fr-chrome-num">{i + 1}</div>
+              <div class="fr-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 5 · Matching horario 24/7 (fondo) ───── -->
+    <section class:list={['fr-section', hasMatchingBg ? 'fr-has-bg' : 'is-darker']} style={hasMatchingBg ? `--fr-bg:url('${bgMatching}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El estándar que viene</span>
+          <h2>De las garantías de origen al certificado horario 24/7</h2>
+          <p>El nivel máximo de trazabilidad del origen del kWh, y el diferencial entre un "100% renovable" de titular y uno que aguanta una auditoría.</p>
+        </div>
+        <div class="fr-grid">
+          {matching.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{c.kicker}</span>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:28px">
+          Nosotros diseñamos la infraestructura que casa consumo y generación hora a hora según el estándar EnergyTag. No emitimos el certificado, lo hace la entidad habilitada; nuestro papel es que el dato entre fiable y el matching sea auditable.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 6 · Los límites, sin humo ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Hablemos claro</span>
+          <h2>Los límites, sin humo: la blockchain no convierte el kWh en verde</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Hace inmutable el dato. No lo convierte en verdad.</h3>
+          <p>Un registro inmutable no significa un dato verdadero. Si el contador miente, la cadena guarda la mentira para siempre. Por eso la confianza del kWh nace del medidor en origen, no de estar "en blockchain". Y ninguna cadena convierte un kWh gris en verde ni valida un crédito de carbono dudoso. Quien te lo promete, no te está contando esto.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No emitimos garantías de origen ni certificamos tu energía: eso lo hace en exclusiva la CNMC.</li>
+          <li>No operamos el mercado eléctrico ni somos tu comercializadora.</li>
+          <li>No habilitamos vender kWh libremente a tus vecinos: la ley no lo permite fuera de las figuras tasadas.</li>
+          <li>No prometemos rentabilidad con tokens ni "energía neutra certificada en blockchain".</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 7 · Por qué Vaultbit ───── -->
+    <section class="fr-section">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Por qué Vaultbit</span>
+          <h2>Diseñamos y dirigimos. No somos tu comercializadora.</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Consultoría independiente y agnóstica. No te vendemos nuestra caja.</h3>
+          <p>El mercado serio de energía ya abandonó el cripto-hype: los proyectos que solo vendían "blockchain" están muertos. Nosotros estructuramos el proyecto, elegimos la red y la tecnología que de verdad te encajan y coordinamos al equipo técnico de confianza que lo construye y lo audita. Tú tratas con un solo interlocutor, y como no vendemos energía ni operamos el mercado, no hay conflicto de interés.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No te atamos a una plataforma ni a una red propia: elegimos la que encaje contigo.</li>
+          <li>No tenemos conflicto de interés: no comercializamos energía ni operamos el mercado.</li>
+          <li>Lo que es de otros se queda en otros: la emisión de garantías de origen, lo legal y lo fiscal, a quien corresponde.</li>
+          <li>No te vendemos tecnología que no necesitas: si con una base de datos normal te vale, te lo decimos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 8 · Casos (fondo) ───── -->
+    <section class:list={['fr-section', hasCasosBg ? 'fr-has-bg' : 'is-darker']} style={hasCasosBg ? `--fr-bg:url('${bgCasos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde encaja</span>
+          <h2>Casos donde la trazabilidad energética aporta de verdad</h2>
+          <p>Escenarios reales en los que un registro común e inmutable cambia las reglas. Cada uno se valida antes de construir nada.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {casos.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 9 · FAQ ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Preguntas frecuentes</span>
+          <h2>Preguntas frecuentes sobre blockchain en energía</h2>
+        </div>
+        <div class="fr-faq" data-reveal>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 10 · CTA final (fondo) ───── -->
+    <section class:list={['fr-cta', hasCtaBg && 'has-bg']} style={hasCtaBg ? `--cta-bg:url('${bgCta}')` : undefined}>
+      <div class="container">
+        <h2 data-reveal>¿Quieres trazar el origen de tu energía?</h2>
+        <p data-reveal>30 minutos para mirar tu caso y decirte de frente si blockchain aporta algo, qué haría falta y por dónde empezar. Sin presentación de ventas.</p>
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="energia" />
+        </div>
+
+        <div class="fr-cta-extras" data-reveal>
+          <details class="fr-disclosure">
+            <summary>Aviso legal e informativo</summary>
+            <div class="fr-disclosure-body">
+              <p style="font-size:13px;line-height:1.7;color:var(--steel-300);margin:4px 0 0">
+                VaultBit Advisory diseña, dirige y coordina el proyecto técnico de trazabilidad y registro (web3) en energía. No es comercializadora, distribuidora ni productora de energía, no opera el mercado eléctrico, no emite garantías de origen ni certifica. Las Garantías de Origen de la electricidad las emite y gestiona en exclusiva la CNMC. El autoconsumo colectivo y las comunidades energéticas se rigen por el RD 244/2019, la Ley 24/2013 del Sector Eléctrico y las Directivas (UE) 2018/2001 y 2019/944; no existe la venta libre de energía entre particulares fuera de esas figuras. La tokenización de activos con captación de inversión puede constituir un valor negociable (Ley 6/2023, MiFID II, supervisión de la CNMV) o quedar bajo el Reglamento (UE) 2023/1114 (MiCA), según la calificación de cada caso. La tecnología blockchain garantiza la integridad del dato registrado, no la veracidad de la medición física ni que la energía sea renovable o neutra en carbono; cualquier afirmación ambiental se ajusta a la normativa europea contra el blanqueo ecológico. Contenido informativo, no es asesoramiento jurídico, fiscal ni de inversión.
+              </p>
+            </div>
+          </details>
+
+          <details class="fr-disclosure">
+            <summary>Aviso de transparencia</summary>
+            <div class="fr-disclosure-body">
+              <ComplianceNotice variant="colaboracion" />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+  .web3-frontier .fr-card .fr-step-ico-img { width: 96px; height: 96px; margin-bottom: 14px; }
+</style>

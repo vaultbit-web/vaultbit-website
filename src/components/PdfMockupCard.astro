@@ -1,0 +1,131 @@
+---
+// Mockup visual del PDF de la guía. Reutilizable en home, recursos hub y landing del lead magnet.
+// title/titleHtml admite <br/> y <strong>. Si no se pasa, mantiene el default histórico (7 errores).
+interface Props {
+  rotate?: number;
+  meta?: string;
+  badge?: string;
+  /** Título de portada. Admite HTML inline: <br/> y <strong>. */
+  titleHtml?: string;
+  /** Subtítulo bajo el título. */
+  subtitle?: string;
+  /** Bloque de autor (label en mayúsculas, color naranja). */
+  authorLabel?: string;
+  /** Rol del autor, segunda línea. */
+  authorRole?: string;
+}
+const {
+  rotate = -1.5,
+  meta = 'PDF · 16 páginas · 40 KB',
+  badge = '● GUÍA TÉCNICA',
+  titleHtml = '7 errores que destruyen<br/><strong>patrimonio cripto.</strong>',
+  subtitle = 'y cómo no cometerlos',
+  authorLabel = 'POR DANIEL BROSED GIRAL',
+  authorRole = 'Fundador de VaultBit Advisory',
+} = Astro.props;
+---
+<div class="pdf-mockup-card" style={`--rot:${rotate}deg`} aria-hidden="true">
+  <div class="pdf-mockup-cover">
+    <span class="pdf-mockup-badge">{badge}</span>
+    <h3 class="pdf-mockup-title" set:html={titleHtml}></h3>
+    <p class="pdf-mockup-sub">{subtitle}</p>
+    <div class="pdf-mockup-author">
+      <span class="pdf-mockup-author-label">{authorLabel}</span>
+      <span class="pdf-mockup-author-role">{authorRole}</span>
+    </div>
+    <div class="pdf-mockup-glow"></div>
+  </div>
+  <div class="pdf-mockup-meta">
+    <span>{meta}</span>
+    <span>vaultbit.es</span>
+  </div>
+</div>
+
+<style>
+  .pdf-mockup-card {
+    width: 100%;
+    max-width: min(320px, 72vw); /* en móvil no domina la pantalla; full en tablet+ */
+    background: var(--anthracite-800);
+    border: 1px solid rgba(46,55,64,0.5);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), 0 0 0 1px rgba(242,118,26,0.1);
+    transform: rotate(var(--rot, -1.5deg));
+    transition: transform 0.4s ease;
+  }
+  .pdf-mockup-card:hover { transform: rotate(0deg) translateY(-4px); }
+
+  .pdf-mockup-cover {
+    background: linear-gradient(160deg, var(--anthracite-950) 0%, var(--anthracite-900) 100%);
+    padding: 40px 28px 56px;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 595/841;
+  }
+  .pdf-mockup-glow {
+    position: absolute; top: 30%; left: 50%;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(242,118,26,0.18) 0%, transparent 70%);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .pdf-mockup-badge {
+    display: inline-block;
+    background: rgba(242,118,26,0.12);
+    color: var(--brand-orange-400);
+    border: 1px solid rgba(242,118,26,0.3);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    position: relative;
+    z-index: 1;
+  }
+  .pdf-mockup-title {
+    color: #fff !important;
+    font-size: 28px !important;
+    font-weight: 300 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -1px !important;
+    margin: 28px 0 8px !important;
+    position: relative;
+    z-index: 1;
+  }
+  .pdf-mockup-title strong { font-weight: 800 !important; }
+  .pdf-mockup-sub {
+    color: var(--anthracite-100) !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+    position: relative;
+    z-index: 1;
+  }
+  .pdf-mockup-author {
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .pdf-mockup-author-label {
+    display: block;
+    color: var(--brand-orange-400);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+  }
+  .pdf-mockup-author-role {
+    display: block;
+    color: var(--anthracite-200);
+    font-size: 11px;
+  }
+  .pdf-mockup-meta {
+    background: var(--anthracite-900);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--anthracite-200);
+    border-top: 1px solid rgba(46,55,64,0.4);
+  }
+  .pdf-mockup-meta span:last-child { color: var(--brand-orange-400); font-weight: 600; }
+</style>

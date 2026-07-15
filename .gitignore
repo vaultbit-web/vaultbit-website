@@ -1,0 +1,15 @@
+# deps / build
+node_modules/
+dist/
+.astro/
+
+# env & secrets — never commit
+.env
+.env.*
+*.local
+*.pem
+*.key
+
+# OS noise
+.DS_Store
+Thumbs.db

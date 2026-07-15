@@ -1,0 +1,107 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import FrontierHero from '~/components/web3/FrontierHero.astro';
+import FrontierIntent from '~/components/web3/FrontierIntent.astro';
+import OrchestrationFlow from '~/components/web3/OrchestrationFlow.astro';
+import CuratedPartners from '~/components/web3/CuratedPartners.astro';
+import FrontierSectors from '~/components/web3/FrontierSectors.astro';
+import FrontierCTA from '~/components/web3/FrontierCTA.astro';
+import { SITE_URL, ORGANIZATION } from '~/data/organization';
+import type { ServiceDetail } from '~/data/service-details';
+import '~/styles/frontier.css';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+const url = `${SITE_URL}/servicios/${service.slug}`;
+
+// ─── Schemas JSON-LD (replicados de ServiceLayout para no perder structured data) ───
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: service.name,
+  alternateName: service.shortName,
+  description: service.intro,
+  serviceType: service.shortName,
+  category: 'Consultoría tecnológica de criptoactivos',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  audience: { '@type': 'Audience', audienceType: service.whoFor.join('; ') },
+  url,
+  termsOfService: `${SITE_URL}/aviso-legal`,
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      priceCurrency: 'EUR',
+      description: 'Tarifa adaptada al alcance de cada proyecto.',
+    },
+    seller: { '@id': ORGANIZATION.id },
+    url,
+    eligibleRegion: { '@type': 'Country', name: 'Spain' },
+  },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `Componentes de ${service.shortName}`,
+    itemListElement: service.includes.map((inc) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: inc },
+    })),
+  },
+};
+
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: `Cómo trabajamos en ${service.shortName} · Proceso paso a paso`,
+  description: service.intro,
+  inLanguage: 'es-ES',
+  step: service.process.map((p) => ({
+    '@type': 'HowToStep',
+    position: parseInt(p.step, 10) || undefined,
+    name: p.title,
+    text: p.body,
+  })),
+};
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: service.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={`${service.name} · VaultBit Advisory`}
+  description={service.tagline}
+  canonical={url}
+  keywords={service.keywords.join(', ')}
+  ogImage={service.ogImage ? `${SITE_URL}${service.ogImage}` : undefined}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: service.shortName, href: `/servicios/${service.slug}` },
+      ]} />
+    </div>
+
+    <FrontierHero service={service} />
+    <FrontierIntent service={service} />
+    <OrchestrationFlow service={service} />
+    <CuratedPartners service={service} />
+    <FrontierSectors />
+    <FrontierCTA service={service} />
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>

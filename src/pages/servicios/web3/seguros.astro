@@ -1,0 +1,391 @@
+---
+// Página flagship del servicio "Seguros" (pillar: /servicios/web3-b2b).
+// Dedicada y autocontenida. Voz híbrida: hero cercano; cuerpo profesional con keywords
+// (seguro paramétrico, smart contracts, oráculos, riesgo de base, liquidación automatizada).
+// Compliance: diseñamos y dirigimos la capa técnica; NO somos aseguradora ni mediador, NO suscribimos
+// riesgo, NO emitimos pólizas, NO cobramos primas, NO pagamos siniestros. La actividad aseguradora la
+// ejerce una entidad habilitada y supervisada por la DGSFP (Ley 20/2015; contrato Ley 50/1980, interés
+// asegurable art. 25 y principio indemnizatorio art. 26; distribución RDL 3/2020). El parámetrico sigue
+// siendo seguro, no apuesta. La cadena ejecuta la regla, el oráculo aporta el dato (problema del oráculo).
+// Copy verificado a fuente primaria (BOE/EUR-Lex/EIOPA). Copy SIN guiones largos (—) entre palabras.
+import fs from 'node:fs';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+const slug = 'seguros';
+const url = `${SITE_URL}/servicios/web3/${slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink('Interés: Proyectos Web3 · Seguros paramétricos. (Cuéntanos en una línea qué quieres asegurar o automatizar)');
+const wa = waLink('Hola, vengo de la web de Vaultbit. Quiero un proyecto de seguro paramétrico con blockchain (vuelo, agro, catástrofe) y quiero que dirijáis la parte técnica. Os cuento:');
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== slug);
+
+const exists = (p: string) => fs.existsSync(`${process.cwd()}/public${p}`);
+const bgSectores = '/assets/web3/frontier-seguros-sectores.jpeg';
+const bgOraculo = '/assets/web3/frontier-seguros-oraculo.jpeg';
+const bgCasos = '/assets/web3/frontier-seguros-casos.jpeg';
+const bgCta = '/assets/web3/frontier-seguros-cta.jpeg';
+const hasSectoresBg = exists(bgSectores);
+const hasOraculoBg = exists(bgOraculo);
+const hasCasosBg = exists(bgCasos);
+const hasCtaBg = exists(bgCta);
+const iconExists = (name: string) => exists(`/assets/web3/icons/icon-step-${name}.png`);
+
+// ─── Datos de las secciones ───
+const capacidades = [
+  { icon: 'vuelo', h3: 'Retraso o cancelación de vuelo', text: 'La aseguradora habilitada cubre el retraso por encima de un umbral, por ejemplo varias horas. Vaultbit diseña y dirige el smart contract y el oráculo que lee el estado oficial del vuelo, para que la liquidación se dispare al confirmarse el retraso, sin que el cliente reclame.' },
+  { icon: 'cosecha', h3: 'Sequía y cosecha agraria', text: 'La entidad aseguradora cubre al agricultor frente a la sequía con un índice objetivo, como la lluvia acumulada o el índice de vegetación por satélite. Vaultbit diseña la arquitectura de oráculos meteo y satélite y la regla que ejecuta la liquidación cuando el índice cruza el umbral que define la aseguradora.' },
+  { icon: 'terremoto', h3: 'Catástrofe natural', text: 'La aseguradora habilitada emite una cobertura paramétrica que se activa según la magnitud del sismo, la velocidad del viento o los milímetros de lluvia en un área definida. Vaultbit diseña el contrato y los oráculos sísmicos y meteorológicos, reduciendo el riesgo de base con mejor calibración y varios disparadores. Complementa al seguro tradicional y al Consorcio, no los sustituye.' },
+  { icon: 'pago-automatico', h3: 'Liquidación automatizada, sin reclamación', text: 'Diseñamos el flujo que automatiza la liquidación una vez la aseguradora ha definido cobertura, índice, umbral y suma asegurada. El pago lo decide y lo asume la aseguradora; nosotros automatizamos su ejecución al cumplirse el parámetro, acortando los plazos de meses a días.' },
+  { icon: 'trazabilidad', h3: 'Trazabilidad y antifraude', text: 'Registro inmutable y auditable de parámetros, fuentes y disparos. Como el criterio es objetivo y predefinido, baja la disputa y queda evidencia del porqué se pagó, útil para la aseguradora, el reasegurador y el supervisor.' },
+];
+
+const steps = [
+  { title: 'Diagnóstico y encaje honesto', body: 'Miramos tu caso y te decimos de frente si el paramétrico y la blockchain aportan algo, o si con un seguro indemnizatorio clásico y una base de datos normal te vale. No vendemos tecnología que no necesitas.' },
+  { title: 'Encaje legal junto a la entidad aseguradora', body: 'La aseguradora habilitada define cobertura, índice, umbral, suma asegurada y exclusiones dentro de la Ley 20/2015 y la Ley 50/1980. Nosotros traducimos ese parámetro a lógica de software; no decidimos la cobertura ni el riesgo.' },
+  { title: 'Capa de oráculos fiable en origen', body: 'Aquí está lo difícil: fuentes oficiales o auditadas, redundancia de varios oráculos, sello de tiempo y firma del dato. La fiabilidad del pago automático nace del oráculo, no de la cadena.' },
+  { title: 'Desarrollo dirigido del smart contract', body: 'Elegimos la red, normalmente permisionada, diseñamos el contrato que ejecuta "si el dato cruza el umbral, se libera el pago", los mecanismos de fallback y revisión humana, y dirigimos al equipo que lo construye y lo audita.' },
+  { title: 'Lanzamiento, liquidación automatizada y traspaso', body: 'Lo ponemos en marcha, dejamos la liquidación y el reporting listos, formamos a tu equipo y te traspasamos el sistema. Tú tratas con un solo interlocutor. La responsabilidad frente al tomador sigue siendo de la aseguradora.' },
+];
+
+const oraculo = [
+  { kicker: 'El problema', h3: 'Garbage in, garbage out', text: 'La blockchain garantiza que la regla se ejecuta sin manipulación y de forma trazable, pero no verifica el evento del mundo real. Si el oráculo da un dato erróneo, retrasado o manipulado, el contrato pagará mal o no pagará con total corrección técnica. La fiabilidad nace de la calidad del dato, no de la cadena.' },
+  { kicker: 'La solución', h3: 'Oráculos robustos y parámetro vinculado al daño', text: 'Diseñamos redundancia de fuentes oficiales, firma de datos y mecanismos de fallback y revisión humana. Y trabajamos con la aseguradora para que el parámetro sea un proxy del daño previsible del asegurado, con interés asegurable real. Así el pago aproxima la pérdida en lugar de ser una ganancia desconectada de ella, y la operación sigue siendo seguro, no apuesta ni derivado.' },
+];
+
+const casos = [
+  { h3: 'Retraso de vuelo', text: 'La aseguradora habilitada ofrece una póliza que indemniza si el vuelo se retrasa por encima de un umbral. Vaultbit diseña y dirige el smart contract y el oráculo que lee el estado oficial del vuelo, de modo que la liquidación se dispara al confirmarse el retraso, sin reclamación. Patrón probado técnicamente por AXA Fizzy en su día y hoy por Etherisc FlightDelay, con pagos automáticos desde 45 minutos de retraso vía oráculos.' },
+  { h3: 'Sequía y cosecha', text: 'La aseguradora, o un intermediario licenciado como ACRE Africa en el caso keniata, cubre al agricultor frente a la sequía con un índice objetivo, como la lluvia acumulada o la vegetación por satélite. Vaultbit diseña la arquitectura de oráculos y la regla que ejecuta la liquidación cuando el índice cruza el umbral. La aseguradora pone la póliza y el capital. Caso vivo documentado: Etherisc con ACRE Africa en Kenia, con decenas de miles de agricultores incorporados según datos de 2021 y 2022.' },
+  { h3: 'Terremoto y catástrofe', text: 'La aseguradora habilitada emite una cobertura paramétrica que se activa según la magnitud del sismo, el viento o la lluvia en un área donde el cliente declara sus bienes e interés asegurable. Vaultbit diseña el contrato y los oráculos sísmicos y meteo, reduciendo el riesgo de base con mejor calibración y varios disparadores. En España, complementa al seguro tradicional y al Consorcio de Compensación de Seguros, no los sustituye.' },
+];
+
+const faqs = [
+  { q: '¿Qué es un seguro paramétrico y cómo funciona?', a: 'Es un seguro que no indemniza la pérdida real, sino que pacta por adelantado un pago que se dispara cuando ocurre un evento objetivo, medible y predefinido: horas de retraso de un vuelo, magnitud de un sismo, milímetros de lluvia, velocidad del viento. La aseguradora define ese parámetro y el umbral; Vaultbit diseña la capa técnica, smart contract y oráculos, que ejecuta la regla y automatiza la liquidación.' },
+  { q: '¿Vaultbit es una aseguradora o vende seguros?', a: 'No. No somos aseguradora ni mediador de seguros. No suscribimos riesgo, no emitimos pólizas, no cobramos primas y no pagamos siniestros. Construimos la infraestructura técnica para la aseguradora; no intermediamos entre la aseguradora y el cliente final. Quien asegura, define la cobertura y responde frente al tomador es una entidad autorizada y supervisada por la DGSFP.' },
+  { q: '¿El paramétrico es un seguro de verdad o una apuesta?', a: 'Es un seguro siempre que el tomador tenga una exposición económica real al evento, es decir interés asegurable, y el parámetro funcione como proxy del daño previsible. Si el pago se desvinculara por completo del daño, la operación podría recalificarse como apuesta o derivado y dejar de ser seguro. Por eso la aseguradora estructura el producto respetando el interés asegurable (art. 25 LCS) y el principio indemnizatorio que prohíbe el enriquecimiento injusto (art. 26 LCS).' },
+  { q: '¿Qué es un oráculo y por qué es el núcleo del sistema?', a: 'El oráculo es la fuente de datos externa que lleva el evento del mundo real al contrato: una API de estado de vuelos, sensores IoT, una agencia meteorológica o una red sísmica. La cadena no verifica por sí misma que el evento ocurrió; depende del oráculo. Por eso la fiabilidad del pago automático nace de la calidad del oráculo, no de la cadena, y diseñamos redundancia de fuentes, firma de datos y mecanismos de fallback.' },
+  { q: '¿Qué es el riesgo de base y cómo se mitiga?', a: 'Es la diferencia entre la pérdida real del asegurado y el pago paramétrico: puede haber daño sin cobro o cobro sin daño cuando el parámetro no correlaciona bien con la pérdida. No se elimina del todo. El diseño técnico lo reduce con mejores fuentes de datos, varios disparadores escalonados y mejor calibración del umbral, pero conviene desconfiar de quien prometa eliminarlo.' },
+  { q: '¿El pago es siempre automático, inmediato y garantizado?', a: 'No prometemos pago garantizado. El smart contract automatiza la liquidación cuando se cumple el parámetro definido por la aseguradora, lo que acorta los plazos de meses a días. Pero el oráculo puede fallar y existe el riesgo de base, y la responsabilidad frente al tomador sigue siendo de la aseguradora, con su vía de revisión y reclamación. La automatización no sustituye esa responsabilidad ni la supervisión de la DGSFP.' },
+  { q: '¿La blockchain verifica que el evento ocurrió y elimina el fraude?', a: 'No. La cadena garantiza que la regla se ejecuta sin manipulación y que el histórico es inmutable y auditable, pero no comprueba el hecho físico: eso depende del oráculo. La trazabilidad ayuda contra el fraude porque el criterio es objetivo y queda registrado, pero nadie debería decirte que la blockchain por sí sola verifica la realidad.' },
+  { q: '¿Es legal el seguro paramétrico en España y necesito una aseguradora?', a: 'Sí, necesitas una entidad aseguradora habilitada. La actividad aseguradora está reservada por la Ley 20/2015 a entidades autorizadas y supervisadas por la DGSFP, y el contrato de seguro se rige por la Ley 50/1980. El paramétrico se comercializa en España, sobre todo en agro, dentro de ese marco. Vaultbit aporta la capa técnica; la cobertura y el riesgo son de la aseguradora.' },
+];
+
+// ─── SEO / meta ───
+const metaTitle = 'Seguro paramétrico con blockchain · VaultBit Advisory';
+const metaDescription =
+  'Diseñamos y dirigimos la capa técnica del seguro paramétrico (smart contracts, oráculos, pago automático). No somos aseguradora ni mediador; asegura la entidad habilitada y supervisada por la DGSFP.';
+const keywords = [
+  'seguro paramétrico',
+  'seguro paramétrico qué es',
+  'seguro paramétrico cómo funciona',
+  'smart contracts seguros',
+  'oráculos blockchain seguros',
+  'seguro paramétrico agrícola',
+  'seguro paramétrico vuelo retrasado',
+  'seguro paramétrico catástrofe',
+  'riesgo de base seguro paramétrico',
+  'blockchain en seguros',
+  'trazabilidad blockchain seguros',
+  'seguro paramétrico climático',
+];
+const ogImage = `${SITE_URL}/og/og-web3-seguros.jpg`;
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: 'Seguro paramétrico con blockchain: diseño y dirección de la capa técnica',
+  description: metaDescription,
+  serviceType: 'Diseño técnico de seguros paramétricos, oráculos y smart contracts',
+  category: 'Diseño y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Qué se puede hacer con el seguro paramétrico y blockchain',
+    itemListElement: capacidades.map((c) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: c.h3 },
+    })),
+  },
+};
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: 'Cómo dirigimos un proyecto de seguro paramétrico con blockchain, paso a paso',
+  description: 'Proceso de diseño y dirección de la capa técnica de un seguro paramétrico con VaultBit Advisory, junto a la entidad aseguradora habilitada.',
+  inLanguage: 'es-ES',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+  })),
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={url}
+  keywords={keywords.join(', ')}
+  ogImage={ogImage}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: 'Seguros', href: `/servicios/web3/${slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── 1 · HERO ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style="background-image:url('/assets/web3/sector-seguros.jpeg')" aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">Proyectos Web3 · Seguros</span>
+          <h1>El pago se dispara solo cuando se cumple el parámetro, <strong>con pruebas.</strong></h1>
+          <p class="fh-sub">El seguro paramétrico no indemniza la pérdida real: paga al cumplirse un evento objetivo y medible, como horas de retraso de un vuelo o la magnitud de un sismo. Nosotros diseñamos y dirigimos la capa técnica: el smart contract, los oráculos y la automatización del pago. No somos aseguradora ni mediador. Quien asegura es la entidad habilitada y supervisada por la DGSFP.</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 2 · Qué es ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Qué es</span>
+          <h2>Qué es el seguro paramétrico con blockchain</h2>
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:20px">
+          El seguro paramétrico pacta por adelantado un pago que se dispara cuando ocurre un evento objetivo, medible y predefinido: milímetros de lluvia, magnitud sísmica, velocidad del viento, horas de retraso de un vuelo. La aseguradora define el parámetro y el umbral; el smart contract es un programa determinista que ejecuta la regla "si el dato cruza el umbral, se libera el pago", de forma trazable y sin manipulación.
+        </p>
+        <p class="fr-prose" data-reveal style="margin-top:18px">
+          Y aquí lo que casi nadie cuenta claro: la cadena ejecuta la regla, pero no sabe si el evento ocurrió de verdad. Ese dato lo aporta el oráculo, la fuente externa que conecta el mundo real con el contrato. La fiabilidad del pago nace de la calidad del oráculo, no de la cadena. Asegurar, cobrar la prima y pagar el siniestro no es esto, ni es nuestro papel.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 3 · Qué se puede hacer (fondo) ───── -->
+    <section class:list={['fr-section', hasSectoresBg ? 'fr-has-bg' : 'is-darker']} style={hasSectoresBg ? `--fr-bg:url('${bgSectores}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde aplica</span>
+          <h2>Qué se puede hacer: del retraso de un vuelo a la sequía del campo</h2>
+          <p>No todo necesita blockchain, pero hay casos donde un parámetro objetivo y un smart contract bien dirigidos cambian las reglas. Estos son los más sólidos.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {capacidades.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {iconExists(c.icon) && (
+                <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${c.icon}.png`} alt="" width="96" height="96" loading="lazy" decoding="async" />
+              )}
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 4 · Cómo lo dirigimos, paso a paso ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El proceso</span>
+          <h2>Cómo dirigimos tu proyecto de seguro paramétrico, paso a paso</h2>
+          <p>Un único interlocutor. Diseñamos, encajamos lo legal junto a la aseguradora habilitada y dirigimos al equipo que lo construye.</p>
+        </div>
+        <div class="fr-flow">
+          {steps.map((s, i) => (
+            <div class="fr-step" data-reveal>
+              <div class="fr-step-num fr-chrome-num">{i + 1}</div>
+              <div class="fr-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 5 · El oráculo (fondo) ───── -->
+    <section class:list={['fr-section', hasOraculoBg ? 'fr-has-bg' : 'is-darker']} style={hasOraculoBg ? `--fr-bg:url('${bgOraculo}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El núcleo técnico real</span>
+          <h2>El oráculo: el parámetro que dispara el pago</h2>
+          <p>El smart contract es determinista: ejecuta la regla "si el dato cruza el umbral, se libera el pago". Pero la cadena no sabe si el evento ocurrió de verdad. Eso lo aporta el oráculo. Y por eso el paramétrico sigue siendo seguro, y no una apuesta.</p>
+        </div>
+        <div class="fr-grid">
+          {oraculo.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{c.kicker}</span>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:28px">
+          La automatización no sustituye la responsabilidad de la entidad aseguradora frente al tomador ni elimina la supervisión de la DGSFP. EIOPA, en su documento de consulta de 2021, considera que el marco vigente es en su mayor parte efectivo y no crea un régimen nuevo: usar blockchain no cambia las reglas del seguro.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 6 · Los límites, sin humo ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Hablemos claro</span>
+          <h2>Los límites, sin humo: la cadena ejecuta la regla, no verifica el evento</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Hace inmutable la regla. No garantiza el pago ni verifica el daño.</h3>
+          <p>Un registro inmutable no significa un dato verdadero ni un pago seguro. Existe el riesgo de base: el parámetro puede no correlacionar con la pérdida real, y puede haber daño sin cobro o cobro sin daño. El diseño técnico lo reduce con mejores fuentes y varios disparadores, pero no lo elimina del todo, y nadie honesto te prometerá lo contrario.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No somos aseguradora ni mediador de seguros: no suscribimos riesgo, no emitimos pólizas, no cobramos primas y no pagamos siniestros.</li>
+          <li>No prometemos cobertura ni pago garantizado: quien define la cobertura, asume el riesgo y responde del pago es la entidad aseguradora habilitada.</li>
+          <li>No vendemos seguros ni intermediamos en su contratación: no asesoramos, no proponemos pólizas, no comparamos para vender.</li>
+          <li>No eliminamos el riesgo de base ni el del oráculo: lo reducimos por ingeniería y lo contamos con honestidad.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 7 · Por qué Vaultbit ───── -->
+    <section class="fr-section">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Por qué Vaultbit</span>
+          <h2>Diseñamos y dirigimos. No somos aseguradora ni mediador.</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Consultoría técnica independiente. No suscribimos tu riesgo.</h3>
+          <p>El mercado serio ya aprendió la lección: AXA Fizzy demostró que la tecnología funciona, pero murió por falta de demanda y de canal, no por el código. Nosotros no entramos a competir como aseguradora. Estructuramos el proyecto, elegimos la red y la tecnología que de verdad encajan y dirigimos al equipo que lo construye y lo audita, junto a la entidad habilitada que asegura. Tú tratas con un solo interlocutor, y como no asumimos riesgo ni vendemos pólizas, no hay conflicto de interés.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No usamos denominaciones reservadas: no somos Vaultbit Seguros ni tu agente o corredor.</li>
+          <li>No tenemos conflicto de interés: no suscribimos riesgo ni cobramos comisión por colocar seguros.</li>
+          <li>Lo que es de la aseguradora se queda en la aseguradora: cobertura, prima, suma asegurada, exclusiones y pago al tomador.</li>
+          <li>No te vendemos blockchain por moda: si un seguro indemnizatorio clásico te resuelve, te lo decimos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 8 · Casos (fondo) ───── -->
+    <section class:list={['fr-section', hasCasosBg ? 'fr-has-bg' : 'is-darker']} style={hasCasosBg ? `--fr-bg:url('${bgCasos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde encaja</span>
+          <h2>Casos donde el seguro paramétrico aporta de verdad</h2>
+          <p>Escenarios reales en los que un parámetro objetivo y un pago automatizado cambian las reglas. La aseguradora habilitada pone la póliza y el capital; nosotros, la capa técnica.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {casos.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 9 · FAQ ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Preguntas frecuentes</span>
+          <h2>Preguntas frecuentes sobre seguros paramétricos</h2>
+        </div>
+        <div class="fr-faq" data-reveal>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 10 · CTA final (fondo) ───── -->
+    <section class:list={['fr-cta', hasCtaBg && 'has-bg']} style={hasCtaBg ? `--cta-bg:url('${bgCta}')` : undefined}>
+      <div class="container">
+        <h2 data-reveal>¿Quieres automatizar un seguro paramétrico?</h2>
+        <p data-reveal>30 minutos para mirar tu caso y decirte de frente si el paramétrico aporta algo, qué parámetro y qué oráculos haría falta y por dónde empezar, junto a tu aseguradora. Sin presentación de ventas.</p>
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="seguros" />
+        </div>
+
+        <div class="fr-cta-extras" data-reveal>
+          <details class="fr-disclosure">
+            <summary>Aviso legal e informativo</summary>
+            <div class="fr-disclosure-body">
+              <p style="font-size:13px;line-height:1.7;color:var(--steel-300);margin:4px 0 0">
+                VaultBit Advisory es una consultoría técnica especializada en el diseño y la dirección de proyectos web3. En seguros paramétricos y trazabilidad asegurada, Vaultbit diseña y dirige únicamente la capa técnica del proyecto: la arquitectura del smart contract, la integración y orquestación de oráculos y fuentes de datos, y la automatización de la liquidación del pago, así como la trazabilidad, auditabilidad y seguridad de esa infraestructura. Vaultbit no es entidad aseguradora ni reaseguradora, ni distribuidor o mediador de seguros: no suscribe ni asume riesgo, no emite pólizas, no cobra primas, no paga siniestros con cargo a riesgo propio, no distribuye, asesora, propone ni compara para vender seguros, y no promete ni garantiza coberturas, capitales o indemnizaciones. La actividad aseguradora está reservada por la Ley 20/2015, de 14 de julio, de ordenación, supervisión y solvencia de las entidades aseguradoras y reaseguradoras, a entidades con autorización administrativa previa supervisadas por la Dirección General de Seguros y Fondos de Pensiones (DGSFP). La distribución y mediación se rige por el Real Decreto-ley 3/2020, de 4 de febrero, que transpone la Directiva (UE) 2016/97 (IDD) y exige inscripción en el registro de la DGSFP. El contrato de seguro se rige por la Ley 50/1980, de 8 de octubre, de Contrato de Seguro, incluidos el interés asegurable (art. 25) y el principio indemnizatorio que prohíbe el enriquecimiento injusto (art. 26). En todo proyecto, la cobertura, el riesgo, el índice o parámetro de activación, los umbrales, la suma asegurada, las exclusiones y el pago al tomador son definidos, suscritos y asumidos por una entidad aseguradora habilitada, única responsable frente al tomador, asegurado o beneficiario. El uso de blockchain o de contratos inteligentes no altera el marco regulatorio aplicable ni traslada a Vaultbit responsabilidad aseguradora alguna; la ejecución automática del pago depende de la fiabilidad de los oráculos, y la cadena no verifica por sí misma la ocurrencia del evento real. EIOPA aborda estos casos de uso en su documento de consulta de 2021 sin crear un régimen nuevo. Contenido informativo; no es asesoramiento jurídico, financiero ni de seguros. La normativa citada puede haber sido modificada con posterioridad; debe verificarse la versión vigente en el BOE y, en su caso, recabar asesoramiento profesional.
+              </p>
+            </div>
+          </details>
+
+          <details class="fr-disclosure">
+            <summary>Aviso de transparencia</summary>
+            <div class="fr-disclosure-body">
+              <ComplianceNotice variant="colaboracion" />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+  .web3-frontier .fr-card .fr-step-ico-img { width: 96px; height: 96px; margin-bottom: 14px; }
+</style>

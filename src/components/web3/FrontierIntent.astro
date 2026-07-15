@@ -1,0 +1,33 @@
+---
+import type { ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+const fr = service.frontier;
+
+const title = fr?.intentTitle ?? 'Qué proyectos buscamos';
+// Si no hay projectTypes, caemos a whoFor (sin blurb).
+const items =
+  fr?.projectTypes ?? service.whoFor.map((w) => ({ label: w, blurb: '' }));
+---
+<section class="fr-section">
+  <div class="container">
+    <div class="fr-head" data-reveal>
+      <span class="frontier-eyebrow">Buscamos builders</span>
+      <h2>{title}</h2>
+      <p>{service.intro}</p>
+    </div>
+
+    <div class="fr-grid">
+      {items.map((it, i) => (
+        <article class="fr-card" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+          <span class="fr-card-kicker">0{i + 1}</span>
+          <h3>{it.label}</h3>
+          {it.blurb && <p>{it.blurb}</p>}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

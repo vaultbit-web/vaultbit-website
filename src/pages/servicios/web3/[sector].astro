@@ -1,0 +1,17 @@
+---
+import Web3SectorLayout from '~/layouts/Web3SectorLayout.astro';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+
+export function getStaticPaths() {
+  // Slugs con página dedicada (flagship) en ./<slug>.astro; se excluyen aquí para no duplicar
+  // ruta. Debe declararse DENTRO de getStaticPaths (Astro la extrae y no ve el scope de módulo).
+  const dedicated = ['tokenizacion-inmobiliaria', 'logistica-trazabilidad', 'energia', 'tokenizacion-financiera', 'seguros'];
+  return WEB3_SECTORS.filter((s) => !dedicated.includes(s.slug)).map((s) => ({
+    params: { sector: s.slug },
+    props: { sector: s },
+  }));
+}
+
+const { sector } = Astro.props;
+---
+<Web3SectorLayout sector={sector} />

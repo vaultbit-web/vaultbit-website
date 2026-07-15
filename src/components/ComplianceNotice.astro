@@ -1,0 +1,86 @@
+---
+interface Props {
+  variant?: 'inline' | 'banner' | 'colaboracion' | 'tokenizacion' | 'tokenizacion-financiera' | 'trazabilidad' | 'energia' | 'seguros';
+}
+const { variant = 'inline' } = Astro.props;
+---
+{variant === 'energia' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso:</strong> VaultBit Advisory diseña y dirige proyectos técnicos de trazabilidad y
+    registro (web3) en energía. No es comercializadora, distribuidora ni productora, no opera el
+    mercado eléctrico ni emite garantías de origen, que emite en exclusiva la CNMC. La blockchain
+    garantiza la integridad del dato registrado, no la veracidad de la medición física ni que la
+    energía sea renovable. Información orientativa.
+  </aside>
+) : variant === 'trazabilidad' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso:</strong> VaultBit Advisory diseña y dirige el proyecto técnico de trazabilidad y
+    coordina al equipo de desarrollo. No opera la cadena de suministro, no manipula la mercancía, no
+    certifica productos ni emite sellos de calidad o de origen. La blockchain hace inmutable y
+    transparente lo que se registra; no verifica por sí misma la veracidad del dato físico que cada
+    operador introduce. Complementa, no sustituye, las obligaciones legales del operador. Información
+    orientativa.
+  </aside>
+) : variant === 'seguros' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso:</strong> VaultBit Advisory diseña y dirige la capa técnica del proyecto web3 de
+    seguros paramétricos: smart contract, integración de oráculos y automatización de la liquidación.
+    No es entidad aseguradora ni mediador de seguros; no suscribe riesgo, no emite pólizas, no cobra
+    primas ni paga siniestros. La cobertura, el riesgo y el pago al tomador los asume una entidad
+    aseguradora habilitada y supervisada por la DGSFP. Información orientativa.
+  </aside>
+) : variant === 'tokenizacion-financiera' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso:</strong> VaultBit Advisory diseña y dirige el proyecto técnico web3 de
+    tokenización. No emite valores ni criptoactivos, no realiza ofertas públicas, no capta inversión
+    ni ahorro del público, no presta servicios de inversión ni servicios sobre criptoactivos, no
+    custodia y no promete rentabilidad ni liquidez. La emisión, el folleto, el registro (ERIR) y la
+    custodia los realizan entidades habilitadas y supervisadas por la CNMV y el Banco de España.
+    Contenido informativo; no es asesoramiento jurídico, fiscal ni de inversión.
+  </aside>
+) : variant === 'tokenizacion' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso:</strong> VaultBit Advisory diseña y dirige proyectos técnicos de tokenización.
+    No emite valores, no comercializa instrumentos financieros, no capta inversión ni asesora sobre
+    inversiones. La emisión, el registro y la custodia, y la formalización del inmueble ante notario,
+    corresponden a entidades y profesionales habilitados. Información orientativa, no es asesoramiento
+    de inversión.
+  </aside>
+) : variant === 'banner' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso de transparencia:</strong> VaultBit Advisory no es asesor financiero registrado, ni despacho de abogados, ni entidad de custodia.
+    Diseñamos arquitectura técnica y derivamos a profesionales colegiados cuando procede.
+  </aside>
+) : variant === 'colaboracion' ? (
+  <aside class="compliance-banner" role="note">
+    <strong>Aviso de transparencia:</strong> VaultBit Advisory no presta servicios jurídicos ni fiscales.
+    Estos los prestan despachos y asesorías independientes (colegiados cuando la materia lo exige), con
+    quienes colaboramos comercialmente; cada profesional presta y firma su servicio con plena responsabilidad.
+    Nuestra labor es la consultoría técnica de custodia y herencia y la coordinación entre tú y el profesional.
+  </aside>
+) : (
+  <p class="compliance-inline">
+    VaultBit Advisory · No somos asesor financiero registrado · Información orientativa.
+  </p>
+)}
+
+<style>
+  .compliance-banner {
+    background: rgba(242,118,26,0.06);
+    border: 1px solid rgba(242,118,26,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--anthracite-100);
+    max-width: 80ch;
+  }
+  .compliance-banner strong { color: var(--brand-orange-400); }
+
+  .compliance-inline {
+    font-size: 12px;
+    color: var(--anthracite-400);
+    margin: 0;
+    text-align: center;
+  }
+</style>

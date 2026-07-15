@@ -1,0 +1,84 @@
+---
+title: "Cómo se hereda el Bitcoin: el relevo que casi nadie ha preparado"
+description: "Qué ocurre con tus claves el día que no estés. Las fases de un protocolo de herencia de Bitcoin explicadas sin tecnicismos: inventario, fragmentación Shamir, Manual del Heredero y la capa legal y fiscal en España."
+slug: como-se-hereda-el-bitcoin
+date: 2026-05-17
+author: "Daniel Brosed Giral · VaultBit Advisory"
+canal: "LinkedIn Newsletter + vaultbit.es"
+heroImage: "/images/newsletter/como-se-hereda-el-bitcoin.png"
+heroAlt: "Cómo se hereda el Bitcoin · VaultBit Newsletter"
+readingTimeMin: 9
+keywords:
+  - herencia bitcoin
+  - heredar bitcoin españa
+  - protocolo de herencia digital
+  - custodia bitcoin
+  - manual del heredero
+  - impuesto de sucesiones criptomonedas
+---
+
+Durante años trabajé en una UCI. En cuidados intensivos nada depende de una sola persona ni de un solo gesto. Cada fármaco se comprueba dos veces, cada turno deja por escrito lo que ha pasado y, si alguien falta, otro puede leer la historia y continuar sin que el paciente lo note. Esa es la idea entera de un protocolo: un sistema que sobrevive a la ausencia de cualquiera de sus piezas.
+
+Cuando llegaba a casa, mi Bitcoin estaba en un único dispositivo, dentro de un cajón, con una sola copia de la semilla escrita en un papel. Ni rastro de protocolo. Si me pasaba algo, nadie en mi familia habría sabido siquiera por dónde empezar.
+
+En 2018 perdí alrededor del 20% de mi posición en Bitcoin. No me hackearon. Fue mi propia custodia, mal montada. Esa es la única razón por la que hoy diseño protocolos para otros: no tengo una certificación financiera, tengo la experiencia de haber perdido Bitcoin por no haber escrito un manual.
+
+## El problema no es técnico. Es de relevo.
+
+La autocustodia, tal y como la monta casi todo el mundo, tiene un punto débil que no se ve hasta que es tarde: **el propio titular**. Mientras está, todo funciona. Conoce el dispositivo, recuerda el PIN, sabe dónde guarda la semilla. El sistema entero vive dentro de su cabeza.
+
+El día que esa persona falta, el patrimonio no se transfiere. Se queda quieto. Y el Bitcoin no tiene un servicio de atención al cliente al que llamar para recuperar un acceso.
+
+El caso más conocido es **QuadrigaCX**. En 2018 murió el único responsable de las claves frías de la plataforma y alrededor de 190 millones de dólares quedaron irrecuperables. No hubo un robo ni un ataque informático. Hubo una ausencia que nadie había previsto. A escala personal, ese mismo error se repite cada día sin salir en las noticias. Se estima que en torno al **4% de todo el Bitcoin que existe está perdido para siempre**, y buena parte se perdió porque alguien no dejó instrucciones.
+
+## Empieza por el inventario
+
+Nadie hereda lo que no sabe que existe. El primer fallo de la herencia cripto no es criptográfico, es de información: la familia no sabe cuánto hay, ni en cuántos sitios, ni cómo se llega.
+
+Un protocolo serio arranca por un inventario, un mapa de cada wallet, cada dirección pública y cada exchange. Conviene insistir en un punto: ese mapa contiene solo información pública. **Nunca claves privadas, nunca la semilla.** El inventario es la lista de habitaciones de la casa, no la llave de la caja fuerte.
+
+## Repartir la llave sin entregarla entera
+
+Aquí está la decisión más delicada de todas. Dar la semilla completa a un heredero es entregarle todo el poder y todo el riesgo desde hoy mismo. No dársela a nadie condena el patrimonio a desaparecer contigo. Las dos opciones son malas.
+
+La salida consiste en dejar de tratar la llave como un objeto único. Con **Shamir Secret Sharing**, la semilla se parte en tres fragmentos. Hacen falta dos cualesquiera para reconstruirla. Con uno solo no se revela absolutamente nada. Es el mismo principio que la cámara acorazada de un banco suizo: dos llaves, dos personas, nunca una sola.
+
+Fragmentar, sin embargo, no basta. Hay que dispersar bien. Si los tres fragmentos terminan en la misma casa, un incendio acaba con todo a la vez. Cada fragmento debe vivir en una ubicación de naturaleza distinta, de modo que ningún suceso aislado alcance a dos al mismo tiempo.
+
+## El Manual del Heredero
+
+Toda esta arquitectura es inútil si la persona que algún día tenga que ejecutarla no entiende qué tiene delante. Y esa persona, casi siempre, estará en duelo, probablemente no será joven y con casi total seguridad no sabrá nada de Bitcoin.
+
+El **Manual del Heredero** es la pieza que vuelve humano el protocolo. Es un documento escrito en lenguaje llano que explica dónde están los fragmentos, cómo se reconstruye la semilla, a quién llamar y, con la misma importancia, qué no se debe hacer bajo ningún concepto. Incluye una sección dedicada a las primeras 24 horas: los primeros pasos a dar, sin prisa y sin errores.
+
+Un detalle define un buen Manual: **es un mapa hacia el tesoro, nunca el tesoro**. No contiene jamás la semilla ni los fragmentos. Indica dónde está cada cosa, nunca la cosa en sí. El secreto no sale del mundo físico.
+
+La prueba para saber si el tuyo sirve es incómoda, pero sencilla. ¿Sabría tu heredero exactamente qué hacer el día que abra ese documento, sin poder llamarte?
+
+## La parte legal y fiscal, que casi todos olvidan
+
+Un protocolo técnico impecable que no se refleja en un testamento válido es jurídicamente frágil. La capa técnica y la legal tienen que encajar. **El testamento apunta al protocolo, nunca lo contiene.** El derecho español ya reconoce esta realidad: el artículo 96 de la LOPDGDD contempla el testamento digital y la figura del albacea digital.
+
+Y hay un reloj en marcha que poca gente tiene presente. El Impuesto de Sucesiones se calcula sobre el valor de los activos a fecha de fallecimiento, y la autoliquidación tiene un plazo de **seis meses**. Si los herederos no consiguen el acceso a tiempo, pueden encontrarse con una deuda fiscal sobre una riqueza que todavía no pueden tocar. El relevo, además de funcionar, tiene que funcionar pronto.
+
+Esta parte no la firma una consultora tecnológica. La firman un notario y un fiscalista colegiados. El trabajo nuestro es dejarles el caso técnicamente ordenado para que ellos hagan el suyo.
+
+## Un protocolo es un sistema vivo
+
+Un protocolo de herencia no se monta una vez y se olvida en un cajón. Los dispositivos fallan, las casas se venden, los herederos se mudan. Un esquema perfecto de hace cinco años puede estar hoy lleno de referencias a sitios que ya no existen.
+
+Por eso se revisa. Una revisión anual y un mecanismo de prueba de vida mantienen el protocolo alineado con la realidad, para que se active cuando debe y no antes.
+
+## Por dónde empezar
+
+Si has llegado hasta aquí y te has reconocido en algún punto del texto, el primer paso no es contratar nada. Es hacer inventario. Sentarte una hora y responder con honestidad a tres preguntas: **qué tengo, dónde está y sabría mi familia llegar hasta ahí sin mí**.
+
+Ese ejercicio se puede hacer en solitario, y mucha gente debería hacerlo este fin de semana. Si prefieres hacerlo acompañado, el [Diagnóstico 360 de VaultBit](/servicios/diagnostico-360) es exactamente esa hora, ordenada, con un mapa patrimonial por escrito al final. Lo importante no es quién te acompañe. Es no dejar el relevo sin preparar.
+
+Diseño protocolos de custodia porque viví el error. Preferiría que tú no tuvieras que vivirlo para entenderlo.
+
+---
+
+*Daniel Brosed Giral · Founder, VaultBit Advisory · [vaultbit.es](https://vaultbit.es)*
+
+*Información orientativa. No constituye asesoramiento financiero ni fiscal. La planificación legal y fiscal de la sucesión se presta junto a notario y fiscalista colegiados. VaultBit aporta la arquitectura técnica. Protocolo Conocimiento Cero: la semilla la genera y la custodia exclusivamente el cliente. VaultBit no accede a claves ni a semillas en ningún momento.*

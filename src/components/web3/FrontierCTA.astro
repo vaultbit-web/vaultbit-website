@@ -1,0 +1,58 @@
+---
+import fs from 'node:fs';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { serviceLeadLinks, type ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+
+const { wa: waHref, cal: ctaHref } = serviceLeadLinks(service);
+
+// Fondo cinematográfico opcional para el CTA (se activa al existir el archivo).
+const ctaBg = '/assets/web3/frontier-cta-bg.jpeg';
+const hasBg = fs.existsSync(`${process.cwd()}/public${ctaBg}`);
+---
+<section class:list={['fr-cta', hasBg && 'has-bg']} style={hasBg ? `--cta-bg:url('${ctaBg}')` : undefined}>
+  <div class="container">
+    <h2 data-reveal>¿Tienes un proyecto Web3 entre manos?</h2>
+    <p data-reveal>30 minutos para entenderlo y decirte de frente si tiene sentido, qué equipo haría falta y por dónde empezaríamos. Sin presentación de ventas.</p>
+    <div class="fr-cta-actions" data-reveal>
+      <a class="btn btn-primary btn-lg" href={ctaHref} target="_blank" rel="noopener noreferrer">
+        Reservar 30 minutos
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a class="btn btn-ghost btn-lg" href={waHref} target="_blank" rel="noopener noreferrer">
+        Escribir por WhatsApp
+      </a>
+    </div>
+
+    <div class="fr-cta-extras" data-reveal>
+      <details class="fr-disclosure">
+        <summary>Preguntas frecuentes</summary>
+        <div class="fr-disclosure-body">
+          <div class="fr-faq">
+            {service.faqs.map((f) => (
+              <details>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <details class="fr-disclosure">
+        <summary>Aviso de transparencia</summary>
+        <div class="fr-disclosure-body">
+          <ComplianceNotice variant="colaboracion" />
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+</style>

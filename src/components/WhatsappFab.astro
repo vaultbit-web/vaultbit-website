@@ -1,0 +1,211 @@
+---
+/**
+ * WhatsappFab — botón flotante de WhatsApp (estilo "burbuja de chat", no es un
+ * chat real) presente en toda la web vía BaseLayout. Abre WhatsApp Business con
+ * un mensaje predefinido distinto según la página (whatsappMessageForPath).
+ *
+ * - `message`: override opcional del mensaje (por defecto se deriva de la ruta).
+ * - `hide`: oculta el botón en páginas concretas.
+ */
+import { waLink } from '~/data/organization';
+import { whatsappMessageForPath } from '~/data/whatsapp';
+
+interface Props {
+  message?: string;
+  hide?: boolean;
+}
+const { message, hide = false } = Astro.props;
+const href = waLink(message ?? whatsappMessageForPath(Astro.url.pathname));
+---
+{!hide && (
+  <div class="wa-fab-wrap" data-wa-fab>
+    <div class="wa-bubble" id="wa-bubble" hidden>
+      <button type="button" class="wa-bubble-close" id="wa-bubble-close" aria-label="Cerrar mensaje">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+      <a class="wa-bubble-link" href={href} target="_blank" rel="noopener noreferrer">
+        <span class="wa-bubble-title">👋 ¿Hablamos por WhatsApp?</span>
+        <span class="wa-bubble-sub">Cuéntanos tu caso, te respondemos enseguida.</span>
+      </a>
+    </div>
+
+    <a class="wa-fab" href={href} target="_blank" rel="noopener noreferrer" aria-label="Escríbenos por WhatsApp">
+      <span class="wa-fab-ring" aria-hidden="true"></span>
+      <svg class="wa-fab-icon" viewBox="0 0 32 32" width="30" height="30" fill="currentColor" aria-hidden="true">
+        <path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.7 5.4 2 7.7L.5 31.5l8-2.1c2.2 1.2 4.8 1.9 7.5 1.9 8.6 0 15.5-6.9 15.5-15.5S24.6.5 16 .5zm0 28.3c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.7 1.2 1.3-4.6-.3-.5c-1.3-2.1-2-4.5-2-7 0-7.2 5.9-13.1 13.1-13.1 3.5 0 6.8 1.4 9.3 3.8 2.5 2.5 3.8 5.8 3.8 9.3 0 7.2-5.9 13-13.3 13zm7.2-9.8c-.4-.2-2.3-1.1-2.7-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.7-.6-3.2-2-1.2-1.1-2-2.4-2.2-2.8-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7-.1-.2-.9-2.1-1.2-2.9-.3-.8-.6-.7-.9-.7h-.7c-.2 0-.6.1-1 .5-.3.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.9.3-.9.3-1.7.2-1.9-.1-.1-.3-.2-.7-.4z" />
+      </svg>
+    </a>
+  </div>
+)}
+
+<style>
+  .wa-fab-wrap {
+    position: fixed;
+    right: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    pointer-events: none; /* solo los hijos reciben clics */
+    transition: bottom 0.3s ease;
+  }
+  /* Mientras el banner de cookies esté visible (abajo a la derecha), subimos. */
+  .wa-fab-wrap.is-raised {
+    bottom: calc(116px + env(safe-area-inset-bottom));
+  }
+
+  .wa-fab {
+    pointer-events: auto;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    background: var(--whatsapp-green, #25D366);
+    color: #fff;
+    box-shadow: var(--shadow-deep);
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .wa-fab:hover,
+  .wa-fab:focus-visible {
+    background: var(--whatsapp-green-dark, #1EBE5D);
+    transform: scale(1.06);
+    box-shadow: 0 12px 36px rgba(37, 211, 102, 0.4);
+  }
+  .wa-fab:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 2px;
+  }
+  .wa-fab-icon { display: block; }
+
+  /* Anillo de pulso sutil */
+  .wa-fab-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+    animation: wa-pulse 2.6s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes wa-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.45); }
+    70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  }
+
+  /* Burbuja de saludo */
+  .wa-bubble {
+    pointer-events: auto;
+    position: relative;
+    max-width: 250px;
+    padding: 14px 16px;
+    background: var(--surface-white, #fff);
+    color: var(--anthracite-950, #0D0F11);
+    border-radius: 16px;
+    box-shadow: var(--shadow-deep);
+    transform: translateY(8px) scale(0.96);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .wa-bubble.is-in { transform: translateY(0) scale(1); opacity: 1; }
+  .wa-bubble[hidden] { display: none; }
+
+  .wa-bubble-link {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .wa-bubble-title { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .wa-bubble-sub { font-size: 12.5px; line-height: 1.4; color: var(--anthracite-400, #4A5562); }
+
+  .wa-bubble-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--anthracite-900, #13171A);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: background 0.15s ease;
+  }
+  .wa-bubble-close:hover { background: var(--anthracite-700, #252C33); }
+
+  @media (max-width: 640px) {
+    .wa-fab-wrap { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); }
+    .wa-fab-wrap.is-raised { bottom: calc(150px + env(safe-area-inset-bottom)); }
+    .wa-fab { width: 52px; height: 52px; }
+    .wa-bubble { max-width: 220px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-fab-ring { animation: none; }
+    .wa-fab, .wa-bubble, .wa-fab-wrap { transition: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var wrap = document.querySelector('[data-wa-fab]');
+    if (!wrap) return;
+
+    // Burbuja de saludo (aparece a los ~4 s; recuerda si se cerró)
+    var bubble = document.getElementById('wa-bubble');
+    var closeBtn = document.getElementById('wa-bubble-close');
+    var GKEY = 'vb_wa_greeting';
+    try {
+      if (bubble && localStorage.getItem(GKEY) !== 'dismissed') {
+        setTimeout(function () {
+          bubble.hidden = false;
+          // fuerza reflow para activar la transición de entrada
+          void bubble.offsetWidth;
+          bubble.classList.add('is-in');
+        }, 4000);
+      }
+    } catch (e) {}
+    if (closeBtn && bubble) {
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        bubble.classList.remove('is-in');
+        bubble.hidden = true;
+        try { localStorage.setItem(GKEY, 'dismissed'); } catch (e) {}
+      });
+    }
+
+    // No tapar el banner de cookies: subir mientras esté visible
+    var banner = document.getElementById('cookie-banner');
+    if (banner) {
+      var sync = function () {
+        wrap.classList.toggle('is-raised', !banner.hidden);
+      };
+      sync();
+      try {
+        new MutationObserver(sync).observe(banner, {
+          attributes: true,
+          attributeFilter: ['hidden'],
+        });
+      } catch (e) {}
+    }
+
+    // Tracking opcional (solo si el pixel ya está cargado tras consentimiento)
+    wrap.addEventListener('click', function (ev) {
+      if (ev.target && ev.target.closest && ev.target.closest('a')) {
+        try { if (window.fbq) window.fbq('track', 'Contact'); } catch (e) {}
+      }
+    });
+  })();
+</script>

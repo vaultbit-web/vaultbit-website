@@ -1,0 +1,223 @@
+---
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_LAST_UPDATED,
+  ORGANIZATION,
+  FOUNDER,
+} from '~/data/organization';
+import JsonLd from './JsonLd.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  schemas?: Record<string, any>[];
+  keywords?: string;
+  /** Si true, NO emite el schema Organization (página ya lo trae como ProfessionalService completo) */
+  skipOrgSchema?: boolean;
+  /** ISO date — fecha de última revisión editorial de esta página. Defecto: SITE_LAST_UPDATED. */
+  dateModified?: string;
+  /** ISO date — fecha de publicación original de la página. Defecto: igual que dateModified. */
+  datePublished?: string;
+  /** Imagen a precargar para mejorar LCP (ej. la primera foto del hero narrativo). */
+  preloadImage?: string;
+  /** Tipo MIME de la imagen precargada (defecto: image/webp). */
+  preloadImageType?: string;
+  /** Srcset responsive para el preload (alternativa a preloadImage si la hero es responsive). */
+  preloadImageSrcset?: string;
+  /** Sizes responsive para el preload (acompaña a preloadImageSrcset). */
+  preloadImageSizes?: string;
+}
+
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  canonical,
+  ogImage = `${SITE_URL}/og/default.jpg`,
+  ogType = 'website',
+  noindex = false,
+  keywords = '',
+  schemas = [],
+  skipOrgSchema = false,
+  dateModified = SITE_LAST_UPDATED,
+  datePublished = SITE_LAST_UPDATED,
+  preloadImage,
+  preloadImageType = 'image/webp',
+  preloadImageSrcset,
+  preloadImageSizes,
+} = Astro.props;
+
+const fullTitle = title.includes(SITE_NAME) ? title : `${title} · ${SITE_NAME}`;
+const url = canonical ?? new URL(Astro.url.pathname, SITE_URL).toString();
+
+const orgSchema = {
+  '@type': 'Organization',
+  '@id': ORGANIZATION.id,
+  name: ORGANIZATION.name,
+  alternateName: ['VaultBit', 'Vaultbit Advisory'],
+  legalName: ORGANIZATION.legalName,
+  url: ORGANIZATION.url,
+  logo: {
+    '@type': 'ImageObject',
+    url: ORGANIZATION.logo,
+    width: 512,
+    height: 512,
+  },
+  image: ORGANIZATION.logo,
+  description: ORGANIZATION.description,
+  disambiguatingDescription:
+    'VaultBit Advisory es una consultoría tecnológica española (dominio oficial único vaultbit.es). NO es un servicio de bóveda física, ni un exchange, ni una plataforma de trading. Los dominios vaultbit.org, vaultbit.net, vaultbit.pro, vaultbit.top y similares NO pertenecen a esta firma. La red de bóvedas físicas Grado VII mencionada en el sitio es proyecto futuro, no servicio operativo.',
+  slogan: ORGANIZATION.slogan,
+  foundingDate: ORGANIZATION.foundingDate,
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: ORGANIZATION.address.addressCountry,
+    addressLocality: ORGANIZATION.address.addressLocality,
+    addressRegion: ORGANIZATION.address.addressRegion,
+  },
+  priceRange: ORGANIZATION.priceRange,
+  knowsAbout: ORGANIZATION.knowsAbout,
+  founder: { '@id': FOUNDER.id },
+  email: ORGANIZATION.email,
+  telephone: ORGANIZATION.telephone,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: ORGANIZATION.contactPoint.email,
+    telephone: ORGANIZATION.contactPoint.telephone,
+    availableLanguage: ['es', 'en'],
+    areaServed: 'ES',
+  },
+  sameAs: ORGANIZATION.sameAs,
+  disclaimer: ORGANIZATION.disclaimer,
+};
+
+const websiteSchema = {
+  '@type': 'WebSite',
+  '@id': `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: SITE_NAME,
+  inLanguage: 'es-ES',
+  publisher: { '@id': ORGANIZATION.id },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${SITE_URL}/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const personSchema = {
+  '@type': 'Person',
+  '@id': FOUNDER.id,
+  name: FOUNDER.name,
+  givenName: FOUNDER.givenName,
+  familyName: FOUNDER.familyName,
+  jobTitle: FOUNDER.jobTitle,
+  description: FOUNDER.description,
+  image: FOUNDER.image,
+  worksFor: { '@id': ORGANIZATION.id },
+  knowsAbout: FOUNDER.knowsAbout,
+  knowsLanguage: FOUNDER.knowsLanguage,
+  hasOccupation: {
+    '@type': 'Occupation',
+    name: FOUNDER.hasOccupation.name,
+    occupationLocation: {
+      '@type': 'Country',
+      name: FOUNDER.hasOccupation.occupationLocation.name,
+    },
+  },
+  alumniOf: FOUNDER.alumniOf.map((edu) => ({
+    '@type': edu.type,
+    name: edu.name,
+  })),
+  nationality: { '@type': 'Country', name: 'Spain' },
+  sameAs: FOUNDER.sameAs,
+};
+
+const webPageSchema = {
+  '@type': 'WebPage',
+  '@id': `${url}#webpage`,
+  url,
+  name: fullTitle,
+  description,
+  inLanguage: 'es-ES',
+  isPartOf: { '@id': `${SITE_URL}/#website` },
+  about: { '@id': ORGANIZATION.id },
+  publisher: { '@id': ORGANIZATION.id },
+  primaryImageOfPage: { '@type': 'ImageObject', url: ogImage },
+  datePublished,
+  dateModified,
+};
+
+const allSchemas = [
+  ...(skipOrgSchema ? [] : [orgSchema, websiteSchema, personSchema]),
+  webPageSchema,
+  ...schemas,
+];
+---
+<!-- Primary meta -->
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+{noindex
+  ? <meta name="robots" content="noindex, nofollow" />
+  : <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />}
+{keywords && <meta name="keywords" content={keywords} />}
+<meta name="author" content="Daniel Brosed Giral" />
+<meta name="publisher" content={SITE_NAME} />
+<meta http-equiv="content-language" content="es-ES" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={fullTitle} />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content={SITE_NAME} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="es-ES" href={url} />
+<link rel="alternate" hreflang="x-default" href={url} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="msapplication-TileColor" content="#F2761A" />
+
+{preloadImage && preloadImageSrcset && (
+  <Fragment set:html={`<link rel="preload" as="image" href="${preloadImage}" type="${preloadImageType}" fetchpriority="high" imagesrcset="${preloadImageSrcset}"${preloadImageSizes ? ` imagesizes="${preloadImageSizes}"` : ''}>`} />
+)}
+{preloadImage && !preloadImageSrcset && (
+  <link
+    rel="preload"
+    as="image"
+    href={preloadImage}
+    type={preloadImageType}
+    fetchpriority="high"
+  />
+)}
+
+<!-- Schema.org JSON-LD -->
+<JsonLd data={allSchemas} />

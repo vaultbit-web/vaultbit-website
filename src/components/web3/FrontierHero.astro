@@ -1,0 +1,115 @@
+---
+import { serviceLeadLinks, type ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+const { service } = Astro.props;
+const fr = service.frontier;
+
+const hook = fr?.hook ?? service.name;
+const hookAccent = fr?.hookAccent ?? '';
+const subtitle = fr?.heroSubtitle ?? service.tagline;
+const wordmark = fr?.wordmarkImage;
+const wordmarkAlt = fr?.wordmarkAlt ?? 'Web3';
+const { wa: waHref, cal: ctaHref } = serviceLeadLinks(service);
+
+// Capas de imagen IA: solo se renderizan si existe el set (heroImageBase).
+// Imagen única por capa (sin variantes responsive). Si falta, el hero usa el
+// fondo atmosférico en CSS.
+const base = fr?.heroImageBase;
+const layers = base
+  ? [
+      { src: `${base}-bg.jpeg`, depth: '0.2', mdepth: '0.35', cls: 'fh-layer-bg', prio: 'high' as const },
+      { src: `${base}-mid.png`, depth: '0.45', mdepth: '0.65', cls: 'fh-layer-mid', prio: 'low' as const },
+      { src: `${base}-fore.png`, depth: '0.65', mdepth: '1', cls: 'fh-layer-fore', prio: 'low' as const },
+    ]
+  : [];
+const hasImages = layers.length > 0;
+---
+<section class:list={['frontier-hero', hasImages && 'has-images']} data-frontier-hero>
+  {/* Capas de imagen (parallax) — solo si hay set generado por IA */}
+  {layers.map((l) => (
+    <div class:list={['fh-layer', l.cls]} data-parallax data-depth={l.depth} aria-hidden="true">
+      <div class="fh-mouse" data-mouse data-depth={l.mdepth}>
+        <img
+          src={l.src}
+          alt=""
+          width="2752"
+          height="1536"
+          loading="eager"
+          fetchpriority={l.prio}
+          decoding="async"
+        />
+      </div>
+    </div>
+  ))}
+
+  {hasImages ? (
+    <div class="fh-overlay" aria-hidden="true"></div>
+  ) : (
+    <>
+      {/* Atmósfera en CSS (fallback sin imágenes) */}
+      <div class="fh-sky" aria-hidden="true"></div>
+      <div class="fh-horizon" aria-hidden="true"></div>
+      <div class="fh-glow" aria-hidden="true"></div>
+    </>
+  )}
+  <div class="fh-grain" aria-hidden="true"></div>
+  <div class="fh-vignette" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class:list={['fh-content', wordmark && 'is-centered']}>
+      <span class="frontier-eyebrow">{service.eyebrow}</span>
+      {wordmark ? (
+        <h1 class="fh-headline">
+          <span class="fh-kicker">{hook}</span>
+          <span class="fh-wordmark-wrap" data-parallax data-depth="0.22">
+            <span class="fh-mouse-inline" data-mouse data-depth="0.5">
+              <img
+                class="fh-wordmark"
+                src={wordmark}
+                alt={wordmarkAlt}
+                width="2249"
+                height="943"
+                fetchpriority="high"
+                decoding="async"
+              />
+            </span>
+          </span>
+          {hookAccent && <span class="fh-after">{hookAccent}</span>}
+        </h1>
+      ) : (
+        <h1 class="frontier-title">
+          {hook}{hookAccent && <span class="accent">{hookAccent}</span>}
+        </h1>
+      )}
+      <p class="fh-sub">{subtitle}</p>
+      <div class="fh-ctas">
+        <a class="btn btn-primary btn-lg" href={ctaHref} target="_blank" rel="noopener noreferrer">
+          Cuéntanos tu proyecto
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+        <a class="btn btn-ghost btn-lg" href={waHref} target="_blank" rel="noopener noreferrer">
+          WhatsApp
+        </a>
+      </div>
+      <span class="fh-trust">
+        <span class="dot" aria-hidden="true"></span>
+        Primera sesión sin compromiso · respondemos con criterio, no con humo
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initFrontierParallax } from '~/scripts/frontier-parallax';
+  const hero = document.querySelector<HTMLElement>('[data-frontier-hero]');
+  if (hero) initFrontierParallax(hero);
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+</style>

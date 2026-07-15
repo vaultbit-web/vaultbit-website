@@ -1,0 +1,129 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import HistoriaChapter from '~/components/HistoriaChapter.astro';
+import { CONTACT } from '~/data/organization';
+
+const wa = `https://wa.me/${CONTACT.whatsappRaw}`;
+const cal = CONTACT.calCom;
+---
+<BaseLayout
+  title="La historia de VaultBit · Por qué existe"
+  description="Monté VaultBit porque yo perdí mi propio bitcoin por una mala copia en papel. Esta es la historia, contada de frente, por Daniel Brosed."
+>
+  <div class="historia-page">
+    <!-- Intro -->
+    <header class="section section-dark historia-hero">
+      <div class="container">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>La historia</span>
+        <h1 class="h1-hero mt-6 max-w-prose">Monté esto porque <strong>yo lo perdí</strong> primero.</h1>
+      </div>
+    </header>
+
+    <section class="section-darker historia-chapters">
+      <HistoriaChapter
+        numero="01"
+        titulo="Yo trabajaba en la UCI"
+        imagenLado="der"
+        imagenes={[
+          { src: '/historia/cap-01-uci-sant-pau.jpeg', alt: 'Daniel Brosed en la UCI del Hospital Sant Pau de Barcelona', caption: 'UCI · Hospital Sant Pau, Barcelona' },
+          { src: '/historia/cap-01-quirofano-huesca.jpeg', alt: 'Daniel Brosed en el quirófano del Hospital San Jorge de Huesca', caption: 'Quirófano · Hospital San Jorge, Huesca' },
+        ]}
+      >
+        <p>Era auxiliar de enfermería. Iba de hospital en hospital, donde podían contratarme: Barcelona, Huesca, donde saliera. Casi siempre en cuidados intensivos.</p>
+        <p>De cada nómina, lo que me sobraba lo metía en bitcoin. Nunca vendía. Compraba, guardaba, y a la siguiente nómina otra vez. Pensaba a largo plazo, aunque en mi entorno casi nadie lo veía así.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="02"
+        titulo="Lo guardaba y no lo tocaba"
+        imagenLado="izq"
+        imagen="/historia/cap-02-primer-btc.jpeg"
+        imagenAlt="Primer día de Daniel Brosed invirtiendo en bitcoin, en Huesca"
+        imagenCaption="Mi primer día invirtiendo · Huesca"
+      >
+        <p>Lo metí todo en una cartera fría: un aparato pequeño, sin conexión a internet, con las claves bajo mi control. Para abrirlo hace falta una lista de 24 palabras. Yo las apunté en un papel.</p>
+        <p>Un papel. Una sola copia. Un solo lugar.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="03"
+        titulo="El día que el papel desapareció"
+        imagenLado="der"
+        imagen="/historia/cap-03-setup-perdido.jpeg"
+        imagenAlt="El equipo que tenía Daniel Brosed antes de perder el acceso a su bitcoin"
+        imagenCaption="Lo que tenía antes · casa de Huesca"
+        cierre="No fue un robo. No fue un fallo de internet. Fue un papel que ya no estaba."
+      >
+        <p>Volví a casa un día y el papel no estaba. Busqué por todas partes, cajón a cajón, libro a libro. No apareció nunca.</p>
+        <p>Sin esas 24 palabras, el aparato es plástico. El bitcoin sigue ahí, pero <strong>ya nadie puede tocarlo</strong>.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="04"
+        titulo="¿Cómo se guarda algo que vale una fortuna?"
+        frase="¿Cómo se guarda el oro? En una cámara acorazada."
+      >
+        <p>Cuando lo perdí, me prometí que no me volvería a pasar. Ni a mí ni a nadie a quien pudiera ayudar.</p>
+        <p>Así que busqué cómo guardar el bitcoin con la misma seriedad con la que se guarda el oro, y en España no encontré casi nada.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="05"
+        titulo="Así empezó VaultBit"
+        frase="Si el oro se guarda en bóvedas, el bitcoin no debería ser distinto."
+        fondoIcono="/historia/bitcoin-fondo.png"
+      >
+        <p>Empecé a darle forma a la idea: un sitio de verdad donde guardar lo que abre el acceso a tu bitcoin, con un método claro y ordenado.</p>
+        <p>Pero antes de construir nada grande, había algo más urgente: la mayoría de la gente ni siquiera sabe que su bitcoin corre peligro hasta que lo pierde. Como me pasó a mí.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="06"
+        titulo="Y de ahí nació la consultoría"
+        imagenLado="izq"
+        imagen="/historia/cap-07-hoy.jpeg"
+        imagenAlt="Daniel Brosed Giral, fundador de VaultBit, hoy"
+        imagenCaption="Hoy, acompañando a clientes"
+        cierre="Cobro por acompañarte, nunca por tus claves. No las veo en ningún momento."
+      >
+        <p>Para quien todavía no entiende por qué hace falta todo esto, o lo entiende pero no sabe por dónde empezar, está VaultBit. La consultoría.</p>
+        <p>Miramos cómo tienes hoy tu bitcoin, te explicamos lo que haga falta sin tecnicismos y te lo dejamos bien montado. Preparamos, con un notario, cómo lo recibe tu familia el día de mañana. Yo no soy abogado ni asesor fiscal: para eso trabajo con profesionales que firman cada cosa en su sitio. Yo coordino y tú tratas con una sola persona.</p>
+      </HistoriaChapter>
+
+      <HistoriaChapter
+        numero="07"
+        titulo="Y a futuro, vuelvo a la idea original"
+        frase="Lo que perdí yo, tú no tienes por qué perderlo."
+      >
+        <p>El plan a largo plazo sigue ahí: cuando hayamos acompañado a mucha gente y la idea esté bien probada, construir ese sitio de verdad donde guardar lo más importante con la seguridad de una cámara acorazada.</p>
+        <p>Mientras tanto, hago lo que de verdad importa hoy: que no pierdas tu bitcoin, y que tu familia no se quede fuera el día de mañana.</p>
+      </HistoriaChapter>
+    </section>
+
+    <!-- Cierre -->
+    <section class="section section-dark historia-cta">
+      <div class="container text-center">
+        <h2 class="h2-section">¿Te suena de algo mi historia?</h2>
+        <p class="body-text mt-4 max-w-2xl mx-auto">
+          Si tienes bitcoin y nunca te has parado a pensar qué pasaría si pierdes el acceso, o si tú faltas, hablemos. Sin compromiso.
+        </p>
+        <div class="hero-ctas mt-8 justify-center">
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener">Cuéntame tu caso</a>
+          <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .historia-page { background: var(--anthracite-900); }
+  .historia-hero { padding-top: 96px; padding-bottom: 56px; }
+  @media (min-width: 1024px) { .historia-hero { padding-top: 140px; padding-bottom: 72px; } }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+</style>

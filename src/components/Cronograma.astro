@@ -1,0 +1,262 @@
+---
+/**
+ * Cronograma — línea de tiempo con onda de progreso e icono DENTRO de la tarjeta.
+ *
+ * - Escritorio (≥1024px): la sección se fija (pin) y la fila de tarjetas se desliza de
+ *   derecha a izquierda de forma pausada. Cada tarjeta pasa por el CENTRO (la primera
+ *   centrada al empezar, la última centrada al final) → todas se resaltan y la última
+ *   queda entera. Por encima, una onda fina con relleno naranja y un punto que avanza.
+ * - Móvil (<1024px) y `prefers-reduced-motion`: cronograma vertical, revelado al hacer
+ *   scroll, con una línea que se rellena.
+ *
+ * Icono: set "naranja" (oscuro + toque naranja) LIMPIO, dentro de la tarjeta.
+ */
+export interface Paso {
+  num: string;
+  titulo: string;
+  texto: string;
+  icono?: string;
+}
+interface Props {
+  pasos: Paso[];
+  eyebrow?: string;
+  titulo?: string;
+  intro?: string;
+  /** Multiplica la longitud del pin horizontal. Por defecto 1.5 (comportamiento actual). */
+  scrollMultiplier?: number;
+  /** Fracción de scroll final en la que TODO queda quieto tras centrar la última tarjeta (0..1). */
+  settle?: number;
+}
+const { pasos, eyebrow, titulo, intro, scrollMultiplier = 1.5, settle = 0.18 } = Astro.props;
+
+// ───── Geometría ─────
+const N = pasos.length;
+const stepW = 360;
+const lead = 340;
+const tail = 150;
+const trackW = lead + Math.max(N - 1, 0) * stepW + tail;
+const waveBandH = 80;
+const waveMidY = 44;
+const amp = 18;
+
+const nodes = pasos.map((_, i) => ({
+  x: lead + i * stepW,
+  y: waveMidY - amp * Math.cos(Math.PI * i),
+}));
+
+let waveD = '';
+for (let x = 0; x <= trackW; x += 6) {
+  const y = waveMidY - amp * Math.cos((Math.PI * (x - lead)) / stepW);
+  waveD += (x === 0 ? 'M' : ' L') + ` ${x} ${y.toFixed(1)}`;
+}
+---
+<section class="crono" data-cronograma data-trackw={trackW} data-lead={lead} data-mult={scrollMultiplier} data-settle={settle} style={`--track-w:${trackW}px; --wave-h:${waveBandH}px;`}>
+  {(eyebrow || titulo || intro) && (
+    <div class="container crono-head">
+      {eyebrow && <span class="eyebrow"><span class="eyebrow-dot"></span>{eyebrow}</span>}
+      {titulo && <h2 class="h2-section mt-4">{titulo}</h2>}
+      {intro && <p class="crono-intro mt-4">{intro}</p>}
+    </div>
+  )}
+
+  <div class="crono-viewport" data-crono-viewport>
+    <div class="crono-track" data-crono-track>
+      <svg class="crono-wave" viewBox={`0 0 ${trackW} ${waveBandH}`} width={trackW} height={waveBandH} aria-hidden="true" preserveAspectRatio="none">
+        <path class="crono-wave-base" data-crono-base d={waveD} />
+        <path class="crono-wave-fill" data-crono-fill d={waveD} pathLength="1" />
+        {nodes.map((n) => (
+          <circle class="crono-dot" data-fx={(n.x / trackW).toFixed(4)} cx={n.x} cy={n.y} r="5" />
+        ))}
+        <g class="crono-marker" data-crono-marker><circle r="8" /></g>
+      </svg>
+
+      {pasos.map((p, i) => (
+        <article class="crono-step" data-crono-step data-nx={nodes[i].x} style={`--nx:${nodes[i].x}px;`}>
+          <div class="crono-card">
+            {p.icono && <img class="crono-ico" src={p.icono} alt="" width="58" height="58" loading="lazy" decoding="async" />}
+            <span class="crono-num">{p.num}</span>
+            <h3 class="crono-step-title">{p.titulo}</h3>
+            <p class="crono-step-text">{p.texto}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <p class="crono-hint" aria-hidden="true">Desliza para recorrer el proceso</p>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initCronograma(section: HTMLElement) {
+    const viewport = section.querySelector<HTMLElement>('[data-crono-viewport]');
+    const track = section.querySelector<HTMLElement>('[data-crono-track]');
+    const fill = section.querySelector<SVGPathElement>('[data-crono-fill]');
+    const base = section.querySelector<SVGPathElement>('[data-crono-base]');
+    const marker = section.querySelector<SVGGElement>('[data-crono-marker]');
+    const dots = Array.from(section.querySelectorAll<SVGCircleElement>('.crono-dot'));
+    const steps = Array.from(section.querySelectorAll<HTMLElement>('[data-crono-step]'));
+    if (!viewport || !track) return;
+
+    const trackW = parseFloat(section.dataset.trackw || '0');
+    const lead = parseFloat(section.dataset.lead || '0');
+    const mult = parseFloat(section.dataset.mult || '1.5');
+    const settle = Math.min(Math.max(parseFloat(section.dataset.settle || '0'), 0), 0.9);
+    const nodeXs = steps.map((s) => parseFloat(s.dataset.nx || '0'));
+    const distance = nodeXs.length > 1 ? nodeXs[nodeXs.length - 1] - nodeXs[0] : 1;
+    const fillEnd = trackW > 0 ? (lead + distance) / trackW : 1; // fracción de onda en el último nodo (≈0.93)
+
+    const paint = (p: number) => {
+      const wf = trackW > 0 ? (lead + distance * p) / trackW : p; // fracción cruda (geometría intacta)
+      const ff = fillEnd > 0 ? Math.min(wf / fillEnd, 1) : wf;     // normalizada: p=1 → relleno completo
+      if (fill) fill.style.strokeDashoffset = String(1 - ff);
+      if (marker && base) {
+        const len = base.getTotalLength();
+        const pt = base.getPointAtLength(len * Math.min(Math.max(wf, 0), 1)); // marcador sobre el punto crudo
+        marker.setAttribute('transform', `translate(${pt.x} ${pt.y})`);
+        // Fundir el marcador cuando está prácticamente sobre un punto (deja de leerse como círculo extra)
+        let near = Infinity;
+        for (const d of dots) {
+          const dx = parseFloat(d.getAttribute('cx') || '0') - pt.x;
+          const dy = parseFloat(d.getAttribute('cy') || '0') - pt.y;
+          near = Math.min(near, Math.hypot(dx, dy));
+        }
+        marker.style.opacity = near < 14 ? '0' : '1';
+      }
+      dots.forEach((d) => d.classList.toggle('is-passed', parseFloat(d.dataset.fx || '1') <= wf + 0.005));
+    };
+    const emphasize = (tx: number) => {
+      const vw = viewport.clientWidth;
+      const center = vw / 2;
+      steps.forEach((stp, i) => {
+        const t = Math.max(0, 1 - Math.abs(nodeXs[i] + tx - center) / (vw * 0.42));
+        stp.style.opacity = (0.4 + 0.6 * t).toFixed(3);
+        stp.classList.toggle('is-active', t > 0.82);
+      });
+    };
+
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      const startX = () => viewport.clientWidth / 2 - lead; // primera tarjeta centrada
+      // El recorrido se completa en el primer (1 - settle) del scroll; el resto se queda quieto.
+      const travel = (p: number) => (settle >= 1 ? 1 : Math.min(p / (1 - settle), 1));
+      const st = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: () => '+=' + Math.round((distance * mult) / Math.max(1 - settle, 0.1)), // recorrido largo + pausa final
+        pin: viewport,
+        scrub: 1.1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const tp = travel(self.progress); // 0..1, se completa antes del final
+          const tx = startX() - distance * tp;
+          gsap.set(track, { x: tx });
+          paint(tp);
+          emphasize(tx);
+        },
+      });
+      paint(0);
+      requestAnimationFrame(() => { gsap.set(track, { x: startX() }); emphasize(startX()); });
+      return () => st.kill();
+    });
+    mm.add('(max-width: 1023px)', () => {
+      steps.forEach((stp) => {
+        stp.style.opacity = '';
+        ScrollTrigger.create({ trigger: stp, start: 'top 84%', onEnter: () => stp.classList.add('is-visible') });
+      });
+      const st = ScrollTrigger.create({
+        trigger: track, start: 'top 75%', end: 'bottom 80%', scrub: 0.5,
+        onUpdate: (self) => section.style.setProperty('--crono-progress-v', String(self.progress)),
+      });
+      return () => st.kill();
+    });
+  }
+
+  function boot() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll<HTMLElement>('[data-cronograma]').forEach((section) => {
+      if (reduce) {
+        section.classList.add('crono-static');
+        section.querySelectorAll('[data-crono-step]').forEach((s) => s.classList.add('is-visible'));
+        return;
+      }
+      initCronograma(section);
+    });
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+  }
+  boot();
+</script>
+
+<style>
+  .crono { background: var(--surface-white); color: var(--anthracite-700); padding-top: 64px; padding-bottom: 64px; }
+  @media (min-width: 1024px) { .crono { padding-top: 88px; padding-bottom: 0; } }
+
+  .crono-head { max-width: 720px; text-align: center; margin-left: auto; margin-right: auto; }
+  .crono-head .eyebrow { color: var(--anthracite-400); }
+  .crono-head .h2-section { color: var(--anthracite-950); }
+  .crono-intro { font-size: 17px; line-height: 1.6; color: var(--anthracite-400); }
+
+  .crono-viewport { position: relative; margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .crono-viewport { height: clamp(560px, 78vh, 720px); overflow: hidden; display: flex; align-items: flex-start; padding-top: 40px; }
+  }
+
+  .crono-track { position: relative; }
+  @media (min-width: 1024px) { .crono-track { width: var(--track-w); flex-shrink: 0; height: 560px; will-change: transform; } }
+
+  /* Onda de progreso (arriba; solo escritorio) */
+  /* max-width:none anula el `img, svg { max-width:100% }` global, que comprimía el viewBox de 2290u */
+  .crono-wave { position: absolute; top: 8px; left: 0; width: var(--track-w); max-width: none; height: var(--wave-h); overflow: visible; z-index: 1; }
+  .crono-wave-base { fill: none; stroke: rgba(13,15,17,0.12); stroke-width: 2.5; stroke-linecap: round; }
+  .crono-wave-fill { fill: none; stroke: var(--brand-orange-500); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .crono-dot { fill: #fff; stroke: rgba(13,15,17,0.18); stroke-width: 2; transition: fill 0.2s ease, stroke 0.2s ease; }
+  .crono-dot:not(.is-passed) { stroke: rgba(13,15,17,0.12); }
+  .crono-dot.is-passed { fill: var(--brand-orange-500); stroke: var(--brand-orange-500); }
+  .crono-marker { transition: opacity 0.2s ease; }
+  .crono-marker circle { fill: var(--brand-orange-500); stroke: #fff; stroke-width: 3; filter: drop-shadow(0 2px 8px rgba(242,118,26,0.5)); }
+
+  /* Paso = tarjeta con icono dentro */
+  .crono-step { position: absolute; left: var(--nx); top: 120px; transform: translateX(-50%); width: 300px; transition: opacity 0.2s linear; }
+  .crono-card {
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 22px 22px 24px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .crono-step.is-active .crono-card {
+    transform: translateY(-8px);
+    border-color: rgba(242,118,26,0.40);
+    box-shadow: 0 22px 42px -16px rgba(13,15,17,0.22);
+  }
+  .crono-ico { width: 58px; height: 58px; object-fit: contain; display: block; margin-bottom: 14px; }
+  .crono-num { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--brand-orange-500); margin-bottom: 8px; }
+  .crono-step-title { font-size: 17px; font-weight: 700; color: var(--anthracite-950); margin: 0 0 8px; line-height: 1.3; letter-spacing: -0.3px; }
+  .crono-step-text { font-size: 13.5px; line-height: 1.55; color: var(--anthracite-400); margin: 0; }
+
+  .crono-hint { text-align: center; font-size: 13px; color: var(--anthracite-200); margin: 28px 0 0; }
+  @media (min-width: 1024px) { .crono-hint { margin: 0; padding: 16px 0 30px; } }
+
+  /* ───── Móvil / estático: vertical ───── */
+  @media (max-width: 1023px) {
+    .crono-track { width: 100% !important; transform: none !important; height: auto !important; display: flex; flex-direction: column; gap: 20px; padding-left: 30px; }
+    .crono-track::before { content: ''; position: absolute; left: 6px; top: 10px; bottom: 10px; width: 2px; background: rgba(13,15,17,0.10); }
+    .crono-track::after { content: ''; position: absolute; left: 6px; top: 10px; width: 2px; height: calc(var(--crono-progress-v, 0) * 100%); max-height: calc(100% - 20px); background: var(--brand-orange-500); transition: height 0.1s linear; }
+    .crono-wave { display: none; }
+    .crono-step { position: relative !important; left: auto !important; top: auto !important; transform: none !important; width: auto !important; opacity: 0; translate: 0 20px; transition: opacity 0.6s ease, translate 0.6s ease; }
+    .crono-step.is-visible { opacity: 1; translate: 0 0; }
+    .crono-ico { width: 50px; height: 50px; }
+  }
+
+  /* Estático (reduced-motion) */
+  .crono.crono-static .crono-track { width: 100% !important; transform: none !important; height: auto !important; display: flex; flex-direction: column; gap: 20px; padding-left: 30px; }
+  .crono.crono-static .crono-viewport { height: auto !important; overflow: visible !important; }
+  .crono.crono-static .crono-wave { display: none; }
+  .crono.crono-static .crono-step { position: relative !important; left: auto !important; top: auto !important; transform: none !important; width: auto !important; opacity: 1; translate: 0 0; }
+  .crono.crono-static .crono-track::before { content: ''; position: absolute; left: 6px; top: 10px; bottom: 10px; width: 2px; background: rgba(13,15,17,0.10); }
+</style>

@@ -1,0 +1,305 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import ServiceIcon from '~/components/ServiceIcon.astro';
+import HeritageTiers from '~/components/HeritageTiers.astro';
+import Cronograma from '~/components/Cronograma.astro';
+import { SITE_URL, ORGANIZATION } from '~/data/organization';
+import { serviceLeadLinks, type ServiceDetail } from '~/data/service-details';
+
+interface Props {
+  service: ServiceDetail;
+}
+
+const { service } = Astro.props;
+const { wa, cal } = serviceLeadLinks(service);
+
+const url = `${SITE_URL}/servicios/${service.slug}`;
+const isHeritage = service.slug === 'heritage-protocol' && Array.isArray(service.tiers);
+const primaryCtaHref = cal;
+const primaryCtaLabel = 'Hablar con Daniel';
+const finalCtaTitle = 'El primer paso es una conversación.';
+const finalCtaBody = 'Sin presentación de ventas y sin compromiso: 30 minutos para entender tu caso y ver si tiene sentido seguir. Si no encaja, te lo digo de frente.';
+const finalCtaLabel = 'Reservar 30 minutos';
+
+// Iconos del set naranja (trazo claro + toques naranjas) para cada paso del
+// cronograma, por servicio. Uno distinto por paso (sin repetir dentro de la ficha).
+const STEP_ICONS: Record<string, string[]> = {
+  'heritage-protocol': ['n-10', 'n-21', 'n-09', 'n-12', 'n-14', 'n-03'],
+  'arquitectura-custodia': ['n-10', 'n-08', 'n-01', 'n-09', 'n-12'],
+  'diagnostico-360': ['n-18', 'n-21', 'n-13', 'n-17', 'n-16'],
+  'conexion-fiscal': ['n-12', 'n-11', 'n-06', 'n-17', 'n-13'],
+  'web3-b2b': ['n-13', 'n-11', 'n-19', 'n-21', 'n-17'],
+};
+const iconList = STEP_ICONS[service.slug] ?? [];
+const pasos = service.process.map((p, i) => ({
+  num: p.step,
+  titulo: p.title,
+  texto: p.body,
+  icono: iconList[i] ? `/assets/icons/naranja/${iconList[i]}.png` : undefined,
+}));
+
+// Si el servicio tiene niveles (Protocolo de Herencia), modelamos cada nivel como Offer separada.
+const offerCatalog = isHeritage && service.tiers
+  ? {
+      '@type': 'OfferCatalog',
+      name: `Niveles del ${service.shortName}`,
+      itemListElement: service.tiers.map((tier) => ({
+        '@type': 'Offer',
+        name: `${service.shortName} · ${tier.name}`,
+        availability: 'https://schema.org/InStock',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          priceCurrency: 'EUR',
+          description: `Nivel ${tier.name} · ${tier.patrimonyRange}`,
+        },
+        itemOffered: {
+          '@type': 'Service',
+          name: `Protocolo de Herencia ${tier.name}`,
+          description: tier.idealFor,
+        },
+      })),
+    }
+  : {
+      '@type': 'OfferCatalog',
+      name: `Componentes de ${service.shortName}`,
+      itemListElement: service.includes.map((inc) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: inc },
+      })),
+    };
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: service.name,
+  alternateName: service.shortName,
+  description: service.intro,
+  serviceType: service.shortName,
+  category: 'Consultoría tecnológica de criptoactivos',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  audience: { '@type': 'Audience', audienceType: service.whoFor.join('; ') },
+  url,
+  termsOfService: `${SITE_URL}/aviso-legal`,
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      priceCurrency: 'EUR',
+      description: isHeritage
+        ? 'Protocolo de Herencia en tres niveles: Esencial, Patrimonio y Legado. Tarifa adaptada a cada caso.'
+        : 'Tarifa adaptada al alcance de cada proyecto.',
+    },
+    seller: { '@id': ORGANIZATION.id },
+    url,
+    eligibleRegion: { '@type': 'Country', name: 'Spain' },
+  },
+  hasOfferCatalog: offerCatalog,
+};
+
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: `Cómo trabajamos en ${service.shortName} · Proceso paso a paso`,
+  description: service.intro,
+  inLanguage: 'es-ES',
+  step: service.process.map((p) => ({
+    '@type': 'HowToStep',
+    position: parseInt(p.step, 10) || undefined,
+    name: p.title,
+    text: p.body,
+  })),
+};
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: service.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={`${service.name} · VaultBit Advisory`}
+  description={service.tagline}
+  canonical={url}
+  keywords={service.keywords.join(', ')}
+  ogImage={service.ogImage ? `${SITE_URL}${service.ogImage}` : undefined}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Servicios', href: '/servicios' },
+      { label: service.shortName, href: `/servicios/${service.slug}` },
+    ]} />
+  </div>
+
+  <!-- ───── HERO (imagen de fondo) ───── -->
+  <section class:list={['svc-hero', service.heroImage && 'svc-hero-bg']} style={service.heroImage ? `--svc-hero-img: url('${service.heroImage}')` : undefined}>
+    <div class="svc-hero-overlay" aria-hidden="true"></div>
+    <div class="container svc-hero-inner">
+      <div class="svc-hero-icon">
+        <ServiceIcon type={service.icon} size={80} variant="dark" />
+      </div>
+      <span class="eyebrow svc-hero-eyebrow">{service.eyebrow}</span>
+      <h1 class="h1-hero mt-4">{service.name}</h1>
+      <p class="svc-tagline mt-6">{service.tagline}</p>
+      <div class="hero-ctas mt-8">
+        <a class="btn btn-primary btn-lg" href={primaryCtaHref} target="_blank" rel="noopener noreferrer">
+          {primaryCtaLabel}
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+        <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener noreferrer">
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── CRONOGRAMA (proceso paso a paso) ───── -->
+  <Cronograma
+    eyebrow="Cómo trabajamos"
+    titulo="Así lo hacemos contigo"
+    pasos={pasos}
+    scrollMultiplier={isHeritage ? 1.8 : 1.5}
+    settle={isHeritage ? 0.22 : 0.18}
+  />
+
+  <!-- ───── NIVELES (solo Protocolo de Herencia) ───── -->
+  {isHeritage && service.tiers && <HeritageTiers tiers={service.tiers} />}
+
+  <!-- ───── FAQ ───── -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2 class="h2-section mt-4">Lo que la gente nos pregunta</h2>
+      </div>
+      <div class="svc-faq-list">
+        {service.faqs.map((f) => (
+          <details class="svc-faq-item">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── CTA FINAL ───── -->
+  <section class="section section-dark svc-cta-final">
+    <div class="container text-center">
+      <h2 class="h2-section">{finalCtaTitle}</h2>
+      <p class="body-text mt-4 max-w-2xl mx-auto">{finalCtaBody}</p>
+      <div class="mt-8 flex justify-center gap-4 flex-wrap">
+        <a class="btn btn-primary btn-lg" href={primaryCtaHref} target="_blank" rel="noopener noreferrer">
+          {finalCtaLabel}
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener noreferrer">
+          Escribir por WhatsApp
+        </a>
+      </div>
+      <div class="mt-12 mx-auto max-w-2xl">
+        <ComplianceNotice variant="banner" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ───── HERO con imagen de fondo ───── */
+  .svc-hero {
+    position: relative;
+    isolation: isolate;
+    background: var(--anthracite-950);
+    padding-top: 72px;
+    padding-bottom: 72px;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) { .svc-hero { padding-top: 120px; padding-bottom: 120px; } }
+  .svc-hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--svc-hero-img);
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+  }
+  .svc-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, rgba(13,15,17,0.92) 0%, rgba(13,15,17,0.78) 45%, rgba(13,15,17,0.45) 100%),
+      linear-gradient(0deg, rgba(13,15,17,0.85) 0%, rgba(13,15,17,0.30) 60%);
+  }
+  .svc-hero:not(.svc-hero-bg) { background: var(--anthracite-900); }
+
+  .svc-hero-inner { max-width: 760px; }
+  /* Icono del hero: limpio (sin caja), blanco sobre la foto. */
+  .svc-hero-icon {
+    display: inline-flex;
+    margin-bottom: 4px;
+  }
+  .svc-hero-eyebrow { display: block; color: var(--brand-orange-400); margin-top: 8px; }
+  .svc-tagline {
+    font-size: clamp(18px, 2.6vw, 24px);
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 640px;
+  }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+
+  /* ───── FAQ ───── */
+  .svc-faq-list {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .svc-faq-item {
+    background: var(--anthracite-800);
+    border: 1px solid rgba(46,55,64,0.4);
+    border-radius: var(--radius-md);
+  }
+  .svc-faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 22px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+  }
+  .svc-faq-item summary::-webkit-details-marker { display: none; }
+  .svc-faq-item summary::after {
+    content: '+';
+    color: var(--brand-orange-400);
+    font-size: 22px;
+    font-weight: 300;
+    flex-shrink: 0;
+  }
+  .svc-faq-item[open] summary::after { content: '−'; }
+  .svc-faq-item p {
+    padding: 0 22px 20px;
+    margin: 0;
+    color: var(--anthracite-200);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+</style>

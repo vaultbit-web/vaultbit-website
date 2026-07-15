@@ -1,0 +1,101 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ContactForm from '~/components/ContactForm.astro';
+import { INVESTOR_CONTACT, SITE_URL } from '~/data/organization';
+
+const url = `${SITE_URL}/inversores`;
+---
+<BaseLayout
+  title="Inversores · Próximamente"
+  description="Sección para inversores en preparación tras el pivote estratégico del proyecto. Déjanos tus datos y te avisamos en cuanto esté disponible."
+  canonical={url}
+  noindex={true}
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Inversores', href: '/inversores' },
+    ]} />
+  </div>
+
+  <section class="section section-dark hero-decor invest-coming">
+    <div class="container">
+      <div class="invest-coming-grid">
+        <div class="invest-coming-text">
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Inversores</span>
+          <h1 class="h1-hero mt-6">Próximamente.</h1>
+          <p class="body-text mt-6 max-w-prose">
+            Estamos preparando una nueva sección para inversores tras el pivote estratégico
+            del proyecto. Si quieres que te avisemos en cuanto esté lista, déjanos tus datos
+            y te contactamos directamente.
+          </p>
+          <p class="body-text mt-4 max-w-prose">
+            No enviamos newsletters ni contenido masivo. Solo un aviso cuando la información
+            esté disponible.
+          </p>
+        </div>
+
+        <aside class="invest-coming-form card-dark">
+          <h2 class="h3-card">Avísame cuando esté disponible</h2>
+          <p class="invest-coming-form-sub">
+            Email, perfil del vehículo y, si quieres, una nota breve. Confidencial.
+          </p>
+          <div class="mt-6">
+            <ContactForm
+              table="investor_interest"
+              source="page-inversores-coming-soon"
+              buttonLabel="Avisarme cuando esté disponible"
+              successMsg="✓ Te avisaremos en cuanto publiquemos la nueva sección para inversores."
+              mailtoFallback={INVESTOR_CONTACT.primaryEmail}
+              mailtoSubject="Interés en futura sección para inversores de VaultBit"
+              showOrganization={true}
+              showLinkedin={true}
+              extraFields={[
+                {
+                  name: 'vehicle_type',
+                  label: 'Perfil (opcional)',
+                  type: 'select',
+                  options: [
+                    { value: 'business-angel', label: 'Business angel' },
+                    { value: 'family-office', label: 'Family office' },
+                    { value: 'fondo-vc', label: 'Fondo VC / venture' },
+                    { value: 'club-deal', label: 'Club deal / Roundtable' },
+                    { value: 'corporate', label: 'Corporativo' },
+                    { value: 'otro', label: 'Otro' },
+                  ],
+                },
+              ]}
+              variant="dark"
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .invest-coming { padding-top: 72px; padding-bottom: 96px; }
+  @media (min-width: 1024px) { .invest-coming { padding-top: 112px; padding-bottom: 128px; } }
+  .invest-coming-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .invest-coming-grid { grid-template-columns: 1fr 1fr; gap: 72px; }
+  }
+  .invest-coming-form {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+  }
+  @media (min-width: 640px) { .invest-coming-form { padding: 36px; } }
+  .invest-coming-form-sub {
+    font-size: 13px;
+    color: var(--anthracite-200);
+    line-height: 1.6;
+    margin: 6px 0 0;
+  }
+</style>

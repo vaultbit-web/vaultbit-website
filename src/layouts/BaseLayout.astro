@@ -1,0 +1,87 @@
+---
+import '~/styles/base.css';
+import SEO from '~/components/SEO.astro';
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+import CookieBanner from '~/components/CookieBanner.astro';
+import WhatsappFab from '~/components/WhatsappFab.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  schemas?: Record<string, any>[];
+  bodyClass?: string;
+  dateModified?: string;
+  datePublished?: string;
+  keywords?: string;
+  preloadImage?: string;
+  preloadImageType?: string;
+  preloadImageSrcset?: string;
+  preloadImageSizes?: string;
+  /** Override del mensaje del botón flotante de WhatsApp (por defecto se deriva de la ruta). */
+  waMessage?: string;
+  /** Oculta el botón flotante de WhatsApp en esta página. */
+  hideWhatsapp?: boolean;
+}
+
+const props = Astro.props;
+---
+<!doctype html>
+<html lang="es-ES">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0D0F11" />
+    <meta name="format-detection" content="telephone=no" />
+    <SEO
+      title={props.title}
+      description={props.description}
+      canonical={props.canonical}
+      ogImage={props.ogImage}
+      ogType={props.ogType}
+      noindex={props.noindex}
+      schemas={props.schemas}
+      dateModified={props.dateModified}
+      datePublished={props.datePublished}
+      keywords={props.keywords}
+      preloadImage={props.preloadImage}
+      preloadImageType={props.preloadImageType}
+      preloadImageSrcset={props.preloadImageSrcset}
+      preloadImageSizes={props.preloadImageSizes}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="VaultBit Newsletter"
+      href="/newsletter/rss.xml"
+    />
+  </head>
+  <body class={props.bodyClass}>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <CookieBanner />
+    <WhatsappFab message={props.waMessage} hide={props.hideWhatsapp} />
+
+    <style is:global>
+      .skip-link {
+        position: absolute;
+        left: -10000px;
+        top: 8px;
+        background: var(--brand-orange-500);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        z-index: 100;
+      }
+      .skip-link:focus { left: 16px; }
+    </style>
+  </body>
+</html>

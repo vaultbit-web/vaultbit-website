@@ -1,0 +1,96 @@
+---
+/**
+ * VideoEmbed — sección con el vídeo personal de presentación.
+ * Mientras no haya vídeo subido, muestra un marcador con la misma estética.
+ * Para activarlo: pon el ID de YouTube en `videoId` (la parte tras "watch?v=").
+ */
+interface Props {
+  videoId?: string;
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+}
+const {
+  videoId = '',
+  eyebrow = 'Te lo cuento yo',
+  title = 'Por qué existe Vaultbit',
+  subtitle = 'Mi historia y lo que hacemos, contado de frente. En tres minutos.',
+} = Astro.props;
+---
+<section class="section section-darker video-intro hero-decor" aria-label="Vídeo de presentación">
+  <div class="container">
+    <div class="text-center mb-8">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>{eyebrow}</span>
+      <h2 class="h2-section mt-4">{title}</h2>
+      {subtitle && <p class="body-text mt-4 max-w-2xl mx-auto">{subtitle}</p>}
+    </div>
+
+    <div class="video-frame">
+      {videoId ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`}
+          title="Presentación de Vaultbit"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      ) : (
+        <div class="video-placeholder" role="img" aria-label="Vídeo de presentación, próximamente">
+          <span class="video-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+          <p>Estamos preparando el vídeo. Muy pronto, aquí.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .video-frame {
+    max-width: 880px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid rgba(46, 55, 64, 0.5);
+    box-shadow: var(--shadow-xl);
+    background: var(--anthracite-950);
+  }
+  .video-frame iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+  }
+  .video-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    color: var(--anthracite-200);
+    background:
+      radial-gradient(ellipse at center, rgba(242, 118, 26, 0.10) 0%, transparent 65%),
+      var(--anthracite-950);
+  }
+  .video-play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--brand-orange-500);
+    box-shadow: var(--shadow-orange);
+  }
+  .video-play svg { margin-left: 4px; }
+  .video-placeholder p {
+    margin: 0;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+</style>

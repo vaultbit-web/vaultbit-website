@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>VaultBit · Carrusel · Herencia cripto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --anthracite-950:#0D0F11;
+    --anthracite-900:#15181B;
+    --anthracite-800:#1E2227;
+    --anthracite-700:#2A2F35;
+    --anthracite-200:#9CA3AB;
+    --anthracite-100:#D5D9DD;
+    --orange-500:#F2761A;
+    --orange-400:#FF8A33;
+    --orange-300:#FFB373;
+    --success:#16A34A;
+    --error:#DC2626;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  html,body{
+    margin:0;padding:0;
+    background:#000;
+    overflow-x:hidden;
+    /* Ocultar todas las barras de scroll para captura limpia */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  *::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
+  }
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:#fff;
+  }
+  .slide{
+    width:1080px;
+    height:1080px;
+    position:relative;
+    overflow:hidden;
+    color:#fff;
+    background:
+      radial-gradient(circle at 80% 0%, rgba(242,118,26,0.16), transparent 55%),
+      radial-gradient(circle at 0% 100%, rgba(242,118,26,0.08), transparent 50%),
+      linear-gradient(135deg, #0D0F11 0%, #15181B 100%);
+    padding:64px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .slide::before{
+    content:'';
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:60px 60px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .slide > *{position:relative; z-index:1;}
+
+  /* HEADER común */
+  .top{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:10px;
+    background:linear-gradient(135deg, var(--orange-500), var(--orange-400));
+    display:flex;align-items:center;justify-content:center;
+    color:#000;font-weight:800;font-size:18px;letter-spacing:-0.5px;
+    box-shadow: 0 0 0 1px rgba(242,118,26,0.3), 0 8px 24px -4px rgba(242,118,26,0.4);
+  }
+  .brand-text{font-weight:600;font-size:15px;letter-spacing:0.16em;text-transform:uppercase;color:#fff;}
+  .brand-sub{font-weight:400;font-size:12px;letter-spacing:0.06em;color:var(--anthracite-200);margin-top:2px;}
+
+  .slide-pill{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 16px;
+    border:1px solid rgba(242,118,26,0.4);
+    background:rgba(242,118,26,0.08);
+    border-radius:999px;
+    font-size:12px;font-weight:600;letter-spacing:0.14em;color:var(--orange-400);text-transform:uppercase;
+  }
+  .slide-pill .num{
+    font-weight:800;color:#fff;font-size:13px;letter-spacing:0;
+    background:rgba(242,118,26,0.25);
+    padding:2px 10px;border-radius:6px;
+    margin-right:2px;
+  }
+
+  /* MAIN común */
+  .main{display:flex; flex-direction:column; gap:28px;}
+  h1{font-size:96px;line-height:1.05;font-weight:700;letter-spacing:-2.5px;color:#fff;}
+  h1 .accent{color:var(--orange-500);position:relative;}
+  h1 .accent::after{
+    content:'';position:absolute;left:0;right:0;bottom:8px;height:8px;
+    background:linear-gradient(90deg, transparent, rgba(242,118,26,0.4), transparent);border-radius:4px;
+  }
+  h2{font-size:60px;line-height:1.1;font-weight:700;letter-spacing:-1.5px;color:#fff;}
+  h2 .accent{color:var(--orange-500);}
+  h3{font-size:42px;line-height:1.15;font-weight:600;letter-spacing:-1px;color:#fff;}
+  .lead{
+    font-size:30px;line-height:1.45;color:var(--anthracite-100);font-weight:400;max-width:920px;
+    border-left:3px solid var(--orange-500);padding-left:24px;
+  }
+  .lead strong{color:#fff;font-weight:600;}
+  .body-text{font-size:24px;line-height:1.55;color:var(--anthracite-100);font-weight:400;max-width:920px;}
+  .body-text strong{color:#fff;font-weight:600;}
+  .body-text em{color:var(--orange-400);font-style:normal;font-weight:600;}
+
+  /* FOOTER común */
+  .bottom{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .bottom-left{display:flex;flex-direction:column;gap:4px;}
+  .bottom-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--anthracite-200);font-weight:600;}
+  .bottom-value{font-size:18px;color:#fff;font-weight:500;letter-spacing:-0.2px;}
+  .swipe{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 22px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:12px;
+    color:#fff;font-weight:500;font-size:15px;
+  }
+  .swipe .arrow{color:var(--orange-400);font-size:18px;}
+
+  /* slide 4 — 3 errores */
+  .errors-list{
+    display:flex;flex-direction:column;gap:18px;max-width:920px;
+  }
+  .error-row{
+    display:flex;align-items:flex-start;gap:24px;
+    padding:24px 26px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:18px;
+    border-left:4px solid var(--orange-500);
+  }
+  .error-num{
+    flex-shrink:0;
+    width:60px;height:60px;
+    border-radius:14px;
+    background:rgba(242,118,26,0.14);
+    color:var(--orange-400);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:24px;
+    border:1px solid rgba(242,118,26,0.3);
+  }
+  .error-text{font-size:24px;color:#fff;font-weight:500;line-height:1.4;letter-spacing:-0.3px;padding-top:14px;}
+
+  /* slide 5 — historical cards */
+  .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:920px;}
+  .case-card{
+    padding:24px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:18px;
+  }
+  .case-num{font-size:42px;font-weight:800;color:var(--orange-400);letter-spacing:-1.5px;line-height:1;margin-bottom:8px;}
+  .case-name{font-size:18px;font-weight:600;color:#fff;margin-bottom:6px;}
+  .case-desc{font-size:14px;color:var(--anthracite-200);line-height:1.5;}
+
+  /* slide 6 — obstacles */
+  .obstacles-list{display:flex;flex-direction:column;gap:16px;max-width:920px;}
+  .obstacle{
+    display:flex;align-items:center;gap:20px;
+    padding:20px 24px;
+    background:rgba(220,38,38,0.06);
+    border:1px solid rgba(220,38,38,0.18);
+    border-radius:14px;
+  }
+  .obstacle-icon{
+    flex-shrink:0;width:48px;height:48px;border-radius:12px;
+    background:rgba(220,38,38,0.14);
+    color:var(--error);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:22px;
+  }
+  .obstacle-text{font-size:22px;color:#fff;font-weight:500;}
+
+  /* slide 7 — clinical pillars */
+  .pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px;}
+  .pillar{
+    padding:18px 20px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:14px;
+    border-top:3px solid var(--orange-500);
+  }
+  .pillar-name{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;}
+  .pillar-desc{font-size:13px;color:var(--anthracite-200);line-height:1.5;}
+
+  /* slide 7 — clinical layout: text left, founder photo right */
+  .clinical-layout{
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:40px;
+    align-items:center;
+  }
+  .founder-frame{
+    width:420px;
+    aspect-ratio: 1/1; /* cuadrado equilibrado */
+    border-radius:22px;
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(242,118,26,0.22);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(242,118,26,0.14);
+    justify-self:end;
+    /* Capa interna sutil para suavizar grano del JPG en zonas oscuras */
+    background:linear-gradient(180deg, #1a1d22 0%, #0d0f11 100%);
+  }
+  .founder-frame img{
+    width:100%;height:100%;
+    object-fit:cover;
+    /* Foto 2400x1396 — sujeto a la derecha del original.
+       62% center centra a Daniel en el marco cuadrado. */
+    object-position: 62% center;
+    display:block;
+    /* Anti-grano: leve desaturación + brillo + blur sub-pixel imperceptible
+       en cara pero suficiente para limpiar el ruido del fondo gris. */
+    filter: saturate(0.92) brightness(1.04) blur(0.5px);
+    image-rendering: auto;
+  }
+  /* Vignette superior + inferior para profundidad y para mascarar
+     ligeramente el grano en sombras de fondo. */
+  .founder-frame::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse at 60% 35%, transparent 45%, rgba(13,15,17,0.30) 100%),
+      linear-gradient(180deg, rgba(13,15,17,0.10) 0%, transparent 30%, transparent 70%, rgba(13,15,17,0.45) 100%);
+    pointer-events:none;
+    z-index:1;
+  }
+  .founder-frame .founder-tag{z-index:2;}
+  .founder-frame::after{
+    content:'';
+    position:absolute;inset:0;
+    background: linear-gradient(180deg, transparent 60%, rgba(13,15,17,0.85) 100%);
+    pointer-events:none;
+  }
+  .founder-tag{
+    position:absolute;
+    bottom:16px;left:16px;right:16px;
+    z-index:2;
+    color:#fff;
+  }
+  .founder-tag .name{font-size:18px;font-weight:700;letter-spacing:-0.3px;}
+  .founder-tag .role{font-size:13px;color:var(--anthracite-200);font-weight:500;margin-top:2px;}
+  .clinical-body{display:flex; flex-direction:column; gap:18px;}
+  .clinical-body h3{font-size:34px;line-height:1.15;font-weight:700;letter-spacing:-0.8px;color:#fff;}
+  .clinical-quote{
+    font-size:16px;line-height:1.55;color:var(--anthracite-100);
+    border-left:3px solid var(--orange-500);
+    padding-left:14px;
+    font-style:italic;
+  }
+
+  /* slide 8 — 3 protocol pieces */
+  .protocol-list{display:flex;flex-direction:column;gap:16px;max-width:920px;}
+  .protocol-item{
+    display:flex;align-items:center;gap:22px;
+    padding:22px 26px;
+    background:rgba(22,163,74,0.06);
+    border:1px solid rgba(22,163,74,0.20);
+    border-radius:16px;
+  }
+  .protocol-num{
+    flex-shrink:0;width:54px;height:54px;border-radius:13px;
+    background:rgba(22,163,74,0.18);
+    color:var(--success);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:22px;
+    border:1px solid rgba(22,163,74,0.3);
+  }
+  .protocol-text{font-size:22px;color:#fff;font-weight:500;line-height:1.35;}
+  .protocol-text strong{color:var(--orange-400);}
+
+  /* slide 9 — big stat */
+  .stat-label{font-size:14px;letter-spacing:0.22em;text-transform:uppercase;color:var(--anthracite-200);font-weight:600;}
+  .stat-number{
+    font-size:340px;line-height:0.85;font-weight:800;letter-spacing:-12px;
+    background:linear-gradient(135deg, var(--orange-500) 0%, var(--orange-400) 60%, #FFB373 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    margin-left:-14px;
+  }
+  .stat-number sup{font-size:140px;vertical-align:super;margin-left:8px;letter-spacing:-4px;}
+  .stat-claim{font-size:42px;line-height:1.2;font-weight:600;color:#fff;letter-spacing:-1px;max-width:920px;}
+  .stat-claim .accent{color:var(--orange-400);}
+  .stat-source{font-size:14px;color:var(--anthracite-200);font-weight:400;border-left:2px solid rgba(255,255,255,0.18);padding-left:14px;}
+
+  /* slide 10 — CTA */
+  .cta-card{
+    background:rgba(242,118,26,0.10);
+    border:2px solid rgba(242,118,26,0.5);
+    border-radius:24px;
+    padding:36px 40px;
+    max-width:920px;
+  }
+  .cta-headline{font-size:36px;font-weight:600;color:#fff;line-height:1.25;letter-spacing:-0.6px;margin-bottom:18px;}
+  .cta-headline .accent{color:var(--orange-400);}
+  .cta-button{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:18px 28px;
+    background:var(--orange-500);
+    color:#000;
+    font-weight:700;font-size:18px;letter-spacing:-0.2px;
+    border-radius:14px;
+    margin-top:8px;
+  }
+  .cta-secondary{
+    margin-top:18px;
+    display:inline-flex;align-items:center;gap:10px;
+    color:var(--anthracite-100);font-size:16px;
+  }
+  .cta-secondary code{
+    background:rgba(255,255,255,0.10);
+    color:#fff;
+    padding:4px 12px;border-radius:8px;
+    font-family:'Inter',sans-serif;font-weight:700;letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<!-- ───── SLIDE 1 · HOOK ───── -->
+<section class="slide" id="s1">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Custodia · Herencia · Fiscalidad cripto · España</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">01/10</span> Hilo herencia</span>
+  </header>
+  <div class="main">
+    <h1>Tu Ledger no protege<br/>tu <span class="accent">Bitcoin.</span></h1>
+    <p class="lead">Lo único que lo protege es <strong>el plan que tienes para cuando tú no estés</strong>. Y casi nadie lo tiene.</p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Cuenta del fundador</span>
+      <span class="bottom-value">@danielbrosedemprendedor</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 2 · CASO ───── -->
+<section class="slide" id="s2">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Caso real · anonimizado</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">02/10</span> El caso</span>
+  </header>
+  <div class="main">
+    <h2>Un médico jubilado.<br/><span class="accent">1.4M€ en BTC.</span></h2>
+    <p class="body-text">
+      Ledger comprado en web oficial. Frase semilla en una caja fuerte ignífuga.
+      Multisig 2-de-3.
+    </p>
+    <p class="body-text">
+      <strong>Setup técnico impecable.</strong> Y aun así, su patrimonio estaba muerto.
+    </p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Sigue leyendo</span>
+      <span class="bottom-value">¿Por qué estaba muerto?</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 3 · POR QUÉ ───── -->
+<section class="slide" id="s3">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Diagnóstico</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">03/10</span> Por qué</span>
+  </header>
+  <div class="main">
+    <h2>El problema no era técnico.<br/>Era de <span class="accent">protocolo humano.</span></h2>
+    <p class="body-text">→ Su mujer no sabía que existía esa caja fuerte.</p>
+    <p class="body-text">→ Aunque la abriera, no entendía 24 palabras inglesas en una hoja.</p>
+    <p class="body-text">→ Aunque las entendiera, no sabría qué hacer con ellas.</p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Pregunta clave</span>
+      <span class="bottom-value">¿Y los tuyos sabrían?</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 4 · 3 ERRORES ───── -->
+<section class="slide" id="s4">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Patrón clínico</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">04/10</span> Los 3 errores</span>
+  </header>
+  <div class="main">
+    <h3>Los 3 errores fatales que<br/><span style="color:var(--orange-500)">destruyen patrimonio cripto:</span></h3>
+    <div class="errors-list">
+      <div class="error-row">
+        <div class="error-num">01</div>
+        <div class="error-text">Custodia técnica <strong>sin manual del heredero</strong>.</div>
+      </div>
+      <div class="error-row">
+        <div class="error-num">02</div>
+        <div class="error-text">Frase semilla en <strong>un solo lugar geográfico</strong>.</div>
+      </div>
+      <div class="error-row">
+        <div class="error-num">03</div>
+        <div class="error-text">Testamento legal que <strong>no menciona la arquitectura cripto</strong>.</div>
+      </div>
+    </div>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Verdad incómoda</span>
+      <span class="bottom-value">Cualquiera de los 3 mata el patrimonio.</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 5 · CASOS HISTÓRICOS ───── -->
+<section class="slide" id="s5">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Casos públicos</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">05/10</span> No es teoría</span>
+  </header>
+  <div class="main">
+    <h3>No fueron hackeos.<br/>Fue <span style="color:var(--orange-500)">olvido.</span></h3>
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-num">8.000 BTC</div>
+        <div class="case-name">James Howells · Newport</div>
+        <div class="case-desc">Disco duro con la seed acabó en un vertedero municipal. Hoy: ~700M€ irrecuperables.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-num">190M$</div>
+        <div class="case-name">QuadrigaCX · 2019</div>
+        <div class="case-desc">El único depositario de las claves falleció sin protocolo. Bloqueo definitivo.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-num">500M$</div>
+        <div class="case-name">Matthew Mellon</div>
+        <div class="case-desc">Heredero de fortuna XRP fallecido sin transmitir el acceso. Patrimonio dormido.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-num">~20%</div>
+        <div class="case-name">Todo el bitcoin</div>
+        <div class="case-desc">Estimación Chainalysis del BTC perdido para siempre por estos mismos errores.</div>
+      </div>
+    </div>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Una sola copia</span>
+      <span class="bottom-value">Un solo punto de fallo.</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 6 · OBSTÁCULOS ───── -->
+<section class="slide" id="s6">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Lo que la cripto no te cuenta</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">06/10</span> Por qué falla</span>
+  </header>
+  <div class="main">
+    <h3>Ledger + multisig solos<br/><span style="color:var(--orange-500)">no bastan.</span></h3>
+    <p class="body-text" style="margin-bottom:8px">El día que tú faltes, tus herederos enfrentan <strong>3 obstáculos a la vez:</strong></p>
+    <div class="obstacles-list">
+      <div class="obstacle"><div class="obstacle-icon">×</div><div class="obstacle-text">Localizar el hardware.</div></div>
+      <div class="obstacle"><div class="obstacle-icon">×</div><div class="obstacle-text">Reconstruir las claves.</div></div>
+      <div class="obstacle"><div class="obstacle-icon">×</div><div class="obstacle-text">Justificar legalmente la propiedad.</div></div>
+    </div>
+    <p class="body-text" style="margin-top:8px"><strong>Si fallan en uno, el patrimonio se pierde.</strong></p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">El problema</span>
+      <span class="bottom-value">Todo a la vez. En el peor momento.</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 7 · ANALOGÍA CLÍNICA (con foto del founder) ───── -->
+<section class="slide" id="s7">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Lo que aprendí en quirófano</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">07/10</span> Protocolo clínico</span>
+  </header>
+  <div class="main">
+    <div class="clinical-layout">
+      <div class="clinical-body">
+        <h3>Lo que la cripto ignora<br/>y la <span style="color:var(--orange-500)">medicina sabe.</span></h3>
+        <div class="pillars-grid">
+          <div class="pillar"><div class="pillar-name">Doble control</div><div class="pillar-desc">Ningún paso depende de una sola persona.</div></div>
+          <div class="pillar"><div class="pillar-name">Redundancia</div><div class="pillar-desc">Backups distribuidos geográficamente.</div></div>
+          <div class="pillar"><div class="pillar-name">Documentación</div><div class="pillar-desc">Nada en la cabeza de un solo profesional.</div></div>
+          <div class="pillar"><div class="pillar-name">Separación</div><div class="pillar-desc">Quien diseña no ejecuta. Quien custodia no decide.</div></div>
+        </div>
+        <p class="clinical-quote">
+          Cuando un paciente entra en quirófano, nada se improvisa. Tu frase semilla merece el mismo respeto.
+        </p>
+      </div>
+      <div class="founder-frame">
+        <img src="/og/founder-pro.jpg" alt="Daniel Brosed Giral, fundador de VaultBit Advisory" />
+        <div class="founder-tag">
+          <div class="name">Daniel Brosed Giral</div>
+          <div class="role">Fundador · Ex Técnico Superior en Imagen para el Diagnóstico</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Origen del proyecto</span>
+      <span class="bottom-value">Protocolos clínicos aplicados a custodia cripto</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 8 · PROTOCOLO ───── -->
+<section class="slide" id="s8">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">El protocolo que sí funciona</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">08/10</span> Solución</span>
+  </header>
+  <div class="main">
+    <h3>Un protocolo de herencia<br/>cripto que funciona <span style="color:var(--orange-500)">tiene 3 piezas:</span></h3>
+    <div class="protocol-list">
+      <div class="protocol-item">
+        <div class="protocol-num">01</div>
+        <div class="protocol-text">División criptográfica de la clave · <strong>Shamir Secret Sharing</strong>.</div>
+      </div>
+      <div class="protocol-item">
+        <div class="protocol-num">02</div>
+        <div class="protocol-text"><strong>Manual del Heredero</strong> · documento técnico legible por alguien sin conocimiento cripto.</div>
+      </div>
+      <div class="protocol-item">
+        <div class="protocol-num">03</div>
+        <div class="protocol-text">Integración formal del protocolo dentro del <strong>testamento legal</strong>, vía notario.</div>
+      </div>
+    </div>
+    <p class="body-text"><strong>Sin las 3, no hay herencia.</strong></p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Aviso de honestidad</span>
+      <span class="bottom-value">No es marketing. Es la única arquitectura que aguanta.</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 9 · STAT 47% ───── -->
+<section class="slide" id="s9">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">Dato verificable</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">09/10</span> Magnitud real</span>
+  </header>
+  <div class="main">
+    <span class="stat-label">Hasta el</span>
+    <div class="stat-number">47<sup>%</sup></div>
+    <p class="stat-claim">del valor cripto heredable <span class="accent">se pierde</span> por ausencia de protocolo de transmisión.</p>
+    <p class="stat-source">Estimaciones agregadas Coincover (2024). Es <strong style="color:#fff">más patrimonio del que mata cualquier hackeo</strong>. Y es 100% prevenible.</p>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Conclusión</span>
+      <span class="bottom-value">El enemigo no es el hacker. Es la ausencia de plan.</span>
+    </div>
+    <div class="swipe">Desliza <span class="arrow">→</span></div>
+  </footer>
+</section>
+
+<!-- ───── SLIDE 10 · CTA (sin ManyChat — solo diagnóstico bio) ───── -->
+<section class="slide" id="s10">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <div class="brand-text">VaultBit Advisory</div>
+        <div class="brand-sub">El siguiente paso</div>
+      </div>
+    </div>
+    <span class="slide-pill"><span class="num">10/10</span> Acción</span>
+  </header>
+  <div class="main">
+    <h2>Si llevas años acumulando BTC<br/>y <span class="accent">nunca has hablado de esto</span><br/>con tu familia,</h2>
+    <p class="body-text"><strong>hoy tu plan de herencia cripto está roto.</strong></p>
+    <div class="cta-card">
+      <div class="cta-headline">
+        Diagnóstico gratuito de <span class="accent">90 segundos.</span>
+      </div>
+      <div style="font-size:18px;color:var(--anthracite-100);line-height:1.55;margin-bottom:14px;">
+        Sin coste · sin venta agresiva · te dice exactamente qué piezas de tu plan están flojas y qué prioridad tiene cada una.
+      </div>
+      <div class="cta-button">vaultbit.es/diagnostico <span style="color:#000">→</span></div>
+      <div class="cta-secondary">
+        Enlace en mi bio · 5 preguntas · informe técnico inmediato.
+      </div>
+    </div>
+  </div>
+  <footer class="bottom">
+    <div class="bottom-left">
+      <span class="bottom-label">Daniel Brosed Giral · Fundador</span>
+      <span class="bottom-value">@danielbrosedemprendedor</span>
+    </div>
+    <div class="swipe" style="background:rgba(242,118,26,0.18);border-color:rgba(242,118,26,0.45);color:#fff;">Sígueme · más casos cada semana</div>
+  </footer>
+</section>
+
+</body>
+</html>

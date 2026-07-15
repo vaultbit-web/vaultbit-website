@@ -1,0 +1,180 @@
+---
+title: "Hacienda puede cobrarle por una ganancia de Bitcoin que usted nunca ha tenido"
+description: "El método FIFO global de la Agencia Tributaria puede multiplicar por diez su factura fiscal en Bitcoin. Caso real con cifras, explicación técnica y cómo prepararse antes del cierre de IRPF."
+slug: hacienda-fifo-global-bitcoin-ganancia-ficticia
+date: 2026-05-27
+author: "Daniel Brosed Giral · VaultBit Advisory"
+canal: "LinkedIn Newsletter + vaultbit.es"
+heroImage: "/images/newsletter/hacienda-fifo-global-bitcoin-ganancia-ficticia.png"
+heroAlt: "Escritorio editorial con libro de registros contables abierto, calculadora vintage de cinta, gafas y lámpara de banquero en tonos anthracite y naranja Vaultbit. Cabecera de la newsletter sobre el método FIFO global de Hacienda en Bitcoin."
+ogImage: "/images/newsletter/hacienda-fifo-global-bitcoin-ganancia-ficticia-og.png"
+readingTimeMin: 7
+keywords:
+  - fiscalidad bitcoin
+  - modelo 721
+  - IRPF criptoactivos
+  - FIFO global Hacienda
+  - trazabilidad fiscal cripto
+  - AEAT criptomonedas
+  - patrimonio cripto España
+faqs:
+  - q: "¿Qué es el método FIFO global que aplica Hacienda a Bitcoin?"
+    a: "El método FIFO global es el criterio que la Agencia Tributaria española aplica para calcular ganancias y pérdidas patrimoniales por venta de criptoactivos en el IRPF. Consiste en considerar que el primer Bitcoin comprado por el contribuyente, sumando todas sus carteras y exchanges, es el primero que se vende, independientemente de en qué wallet o exchange esté físicamente. Esto puede generar ganancias fiscales muy superiores a las económicamente reales si el contribuyente tiene Bitcoin antiguo en cold storage."
+  - q: "¿Es legal aplicar un criterio distinto al FIFO global en España?"
+    a: "Existe una sentencia del Tribunal Superior de Justicia del País Vasco, la STSJ PV 37/2025 de 9 de enero de 2025, que rechazó la aplicación del método FIFO a las criptomonedas en territorio foral de Gipuzkoa al no encajar estas en el concepto de valores homogéneos del Reglamento foral del IRPF. Esta sentencia no establece un FIFO por exchange como criterio alternativo: permite la identificación específica del activo vendido por parte del contribuyente, siempre que esté documentada. Aplicar ese criterio en una declaración del IRPF en territorio común conlleva un riesgo elevado de requerimiento por parte de la Agencia Tributaria, con probabilidad muy alta de tener que defender el caso ante un tribunal. No es una vía operativa recomendable para patrimonios que valoren la tranquilidad y la previsibilidad fiscal."
+  - q: "¿Qué es el Modelo 721 y cuándo es obligatorio presentarlo?"
+    a: "El Modelo 721 es una declaración informativa anual obligatoria en España, aprobada por la Orden HFP/886/2023, para residentes fiscales que mantengan criptoactivos custodiados por entidades no españolas y cuyo valor conjunto supere los 50.000 euros a 31 de diciembre del año anterior. El plazo de presentación va del 1 de enero al 31 de marzo del año siguiente. El incumplimiento se sanciona según el régimen general de los artículos 198 y 199 de la Ley General Tributaria (adaptado tras la sentencia del Tribunal de Justicia de la Unión Europea de 27 de enero de 2022, asunto C-788/19, sobre el Modelo 720). Las sanciones habituales van desde 150 euros (presentación fuera de plazo sin requerimiento previo) hasta techos máximos de 10.000-20.000 euros en casos extremos con requerimiento previo y muchos datos omitidos."
+  - q: "¿Pueden compensarse pérdidas por estafa cripto con ganancias por venta de Bitcoin?"
+    a: "No de forma directa. Las ganancias por venta o permuta de criptoactivos tributan en la base del ahorro del IRPF. Las pérdidas patrimoniales derivadas de estafa o robo tributan en la base general. Ambas bases son compartimentos estancos que no se compensan entre sí. Por eso, un inversor que gane 100.000 euros vendiendo Bitcoin y pierda 100.000 euros en una estafa puede acabar tributando sobre la ganancia íntegra, mientras compensa la pérdida lentamente contra el resto de rentas de la base general (rendimientos del trabajo, actividades económicas o alquileres no exentos), con un límite del 25 % en compensación cruzada y arrastre máximo de cuatro ejercicios."
+  - q: "¿Qué es un Informe de Trazabilidad Técnica de Bitcoin?"
+    a: "Un Informe de Trazabilidad Técnica es un documento estructurado que consolida el histórico transaccional de un holder de criptoactivos a lo largo de varios años y varios exchanges, incluye saldos por plataforma, clasificación de operaciones, cálculo de ganancias y pérdidas patrimoniales y justificación de origen de fondos. Su función es servir de input limpio y auditable al fiscalista colegiado que firma la declaración del IRPF y el Modelo 721 ante la Agencia Tributaria. Vaultbit Advisory elabora este informe como servicio técnico, sin presentar declaraciones, que las firma el fiscalista colaborador."
+  - q: "¿Cuándo es el mejor momento del año para planificar la fiscalidad de Bitcoin?"
+    a: "La planificación fiscal eficaz ocurre en el último trimestre del año, entre octubre y diciembre, antes del cierre del ejercicio. En esos meses todavía se pueden tomar decisiones que afecten la factura fiscal: realizar pérdidas latentes, decidir si liquidar una posición en este ejercicio o trasladarla al siguiente, ordenar la trazabilidad. Cuando llega abril o mayo, el ejercicio ya está cerrado y solo queda declarar lo que ocurrió. La planificación no se hace en marzo, se hace en noviembre."
+---
+
+Hay decisiones patrimoniales en Bitcoin que parecen pequeñas y terminan costando cinco cifras. La que voy a contarle hoy es probablemente la más cara que conozco. Y la más invisible.
+
+Esta semana asistí a una sesión técnica sobre fiscalidad de criptoactivos en el IRPF de 2025, impartida por <a href="https://www.linkedin.com/in/claragarciaprieto/" target="_blank" rel="noopener noreferrer">Clara García Prieto</a>, abogada fiscalista especializada en activos digitales y autora del libro *Bitcoin: Una nueva forma de propiedad privada*. La sesión tocó muchos puntos, pero hubo uno que me hizo parar el bolígrafo y rebobinar mentalmente: el método de cálculo que la Agencia Tributaria aplica cuando usted vende Bitcoin.
+
+Le voy a poner un caso de manual. No es un caso real, pero es el patrón que se repite en patrimonios de holders que llevan varios años en esto.
+
+## El caso
+
+Imagine que en 2017 compra usted 1 Bitcoin a 1.000 euros. Lo guarda en un hardware wallet, en cold storage, y no lo toca durante años. Es la posición que usted considera intocable, su reserva a largo plazo.
+
+En 2024 compra usted otro Bitcoin, esta vez a 60.000 euros, directamente desde un exchange centralizado. Lo deja en ese exchange.
+
+En 2025 decide vender ese segundo Bitcoin a 65.000 euros, en el mismo exchange donde lo compró. Usted hace la cuenta intuitiva: 65.000 menos 60.000, ganancia de 5.000 euros, y prepara su declaración pensando que tributará por esa cifra.
+
+Pero Hacienda no hace la cuenta así.
+
+## Lo que aplica la Agencia Tributaria
+
+La Agencia Tributaria aplica el método FIFO global[^1]. En castellano llano: del total de Bitcoin que usted ha comprado a lo largo de su vida, el primero que entró se considera el primero que sale. No importa que el Bitcoin que físicamente vendió fuera el segundo, el que tenía en el exchange. Para Hacienda, usted vendió aquel primer Bitcoin de 2017, el que sigue dormido en su hardware wallet.
+
+Resultado: la ganancia patrimonial que usted declara no es 5.000 euros. Es 64.000 euros. Sesenta y cuatro mil. Sesenta y cuatro mil euros de ganancia ficticia sobre los que tributar, cuando usted creía que tributaba sobre cinco mil. La factura fiscal puede multiplicarse por diez.
+
+Y lo peor de todo: el Bitcoin original ni siquiera se ha movido. Sigue en su cold storage. Pero a efectos de IRPF, ya ha sido vendido.
+
+## Por qué no se conoce este detalle
+
+Porque no aparece en los cursos básicos de criptomonedas. Porque los exchanges no se lo explican. Porque las plataformas le entregan un informe fiscal automático que calcula ganancias por exchange y le da una cifra que parece razonable. Y porque, hasta que alguien le hace la pregunta correcta, usted no tiene motivos para imaginar que la Agencia Tributaria está sumando wallets que para usted son compartimentos estancos.
+
+Existe una sentencia del Tribunal Superior de Justicia del País Vasco (la STSJ PV 37/2025, de 9 de enero de 2025, recaída en el recurso 75/2024) que, en un litigio sobre IRPF 2017 en territorio foral de Gipuzkoa, **rechazó la aplicación obligatoria del método FIFO a las criptomonedas**[^2]. El tribunal razonó que las criptomonedas no encajan en el concepto de "valores homogéneos" del Reglamento foral del IRPF, dada su novedad y singularidad. La consecuencia práctica es que el contribuyente puede identificar específicamente qué unidades vende, siempre que pueda documentarlo, en lugar de tener que aplicar FIFO.
+
+Es una sentencia real, pero solo despliega efectos en Gipuzkoa, y no es vinculante para la AEAT en territorio común. Aplicar ese criterio en una declaración del IRPF fuera del territorio foral hoy es casi una invitación a que Hacienda le requiera, y a defender el caso en tribunal con todos los costes y meses de incertidumbre que eso implica. Para un patrimonio mid-high que valora la tranquilidad, no es una vía operativa. Es una hipótesis legal que esperamos que algún día se equipare al territorio común.
+
+## La trampa de las dos bolsas
+
+El FIFO global no es el único punto invisible. Clara mencionó otro caso que tampoco se ve venir.
+
+Imagine que en el mismo ejercicio usted gana 100.000 euros vendiendo Bitcoin y pierde 100.000 euros en un proyecto cripto fraudulento. La intuición dice: neto cero, no debería tributar nada. Pero el IRPF tiene dos bolsas estancas[^3]. La ganancia por la venta de Bitcoin va a la base del ahorro. La pérdida por estafa va a la base general[^4]. Y esas dos bolsas no se compensan entre sí.
+
+Resultado práctico: Hacienda le exige tributar por la ganancia íntegra de 100.000 euros, mientras la pérdida por estafa solo se puede compensar contra el resto de rentas de la base general (rendimientos del trabajo, actividades económicas o alquileres no exentos), con un límite del 25 % en compensación cruzada y arrastre máximo de cuatro ejercicios[^5]. Si su renta de la base general es modesta, esa pérdida se queda casi inerte en su declaración y puede desaparecer sin haber compensado nada.
+
+## Lo que aprendí en esta sesión
+
+Que la fiscalidad de Bitcoin en España no es solo un asunto de declarar. Es un asunto de orden previo. Y el orden previo se construye antes, no después.
+
+Tres cosas concretas que me llevé de la sesión y que voy a aplicar con mis clientes:
+
+**Primera.** La trazabilidad no se reconstruye, se documenta desde el día uno. Descargar los CSV cada año, aunque ese año no haya habido operaciones, y guardarlos. Reconstruir cinco años de historial a posteriori, con tres exchanges, claims, swaps en DEX y un par de staking olvidados, es exponencialmente más caro y más arriesgado que haberlo guardado desde el principio.
+
+**Segunda.** La planificación fiscal no nace en marzo. Nace en octubre, noviembre y diciembre. Cuando usted llega a abril, lo único que puede hacer es declarar lo que ocurrió. Las decisiones que cambian la factura fiscal, vender o no vender ciertas posiciones, compensar pérdidas latentes, decidir si liquidar un activo en este ejercicio o en el siguiente, todas esas decisiones se toman en el último trimestre del año anterior.
+
+**Tercera.** El informe que entregue al fiscalista determina la calidad de su declaración. Si usted le entrega a su asesor un disco duro con quince carpetas, treinta CSV de varios años y dos hojas Excel sueltas, el resultado va a ser un cálculo aproximado y nervioso. Si le entrega un informe técnico ordenado, con saldos por exchange, histórico transaccional consolidado, clasificación de operaciones y justificación de origen de fondos, el fiscalista colegiado puede hacer su trabajo bien y firmarlo con tranquilidad.
+
+## Por qué le cuento esto
+
+Porque es exactamente el dolor que diseñamos resolver en Vaultbit Advisory.
+
+Yo no soy fiscalista colegiado. No presento declaraciones. No firmo ante Hacienda. Lo que hacemos en Vaultbit es el paso previo: conectamos vía API de lectura a sus exchanges, consolidamos los CSV de los últimos años, reconstruimos la trazabilidad operativa, clasificamos cada movimiento y entregamos un [Informe de Trazabilidad Técnica](/servicios/conexion-fiscal) al fiscalista colegiado de su elección, o al nuestro si no tiene uno especializado en cripto.
+
+Es lo que Clara llamó "doble control", y es la única forma que conozco de dormir tranquilo cuando se tiene un historial activo en criptoactivos y un patrimonio que ya pesa.
+
+Si lleva usted varios años operando, si ha tocado DEX, si ha tenido staking, si ha pasado fondos entre exchanges sin guardar los registros, si ha presentado el Modelo 721 con dudas o no lo ha presentado y empieza a tener inquietud, este es el momento del año para ordenarlo. No el próximo marzo.
+
+La campaña de IRPF cierra el 30 de junio[^6]. Y lo que se documenta hoy es lo que evita la inspección de mañana.
+
+---
+
+Si quiere que revisemos su situación, reserve una sesión de [Diagnóstico 360°](/diagnostico). Una hora, 150 euros, y una idea clara de qué tiene, qué falta y qué se puede ordenar antes de cierre fiscal.
+
+[**Reservar diagnóstico →**](/diagnostico)
+
+---
+
+*Daniel Brosed Giral · Fundador de Vaultbit Advisory · Diseño protocolos de custodia porque viví el error.*
+
+---
+
+## Fuentes y expertos consultados
+
+**Clara García Prieto** · Tax lawyer · Digital Assets · Autora del libro *Bitcoin: Una nueva forma de propiedad privada*. Abogada fiscalista especializada en la tributación de criptoactivos en España. <a href="https://www.linkedin.com/in/claragarciaprieto/" target="_blank" rel="noopener noreferrer">Perfil en LinkedIn ↗</a>
+
+Las dos explicaciones técnicas que sustentan este artículo (el método FIFO global de la Agencia Tributaria y los compartimentos estancos entre base general y base del ahorro) proceden de su sesión técnica sobre fiscalidad de criptoactivos en el IRPF de 2025. Citas literales:
+
+> "Son dos bolsas que no se pueden juntar, son compartimentos estancos. Para compensar pérdidas patrimoniales tenemos un límite de un 25 % de forma cruzada."
+
+> "Hacienda exigirá tributar por esos 100.000 euros de ganancia, mientras tanto la pérdida de la estafa sólo podrá compensarse con las rentas de la base general."
+
+*Clara García Prieto · sesión técnica sobre fiscalidad cripto en IRPF 2025*
+
+### Fuentes normativas y doctrinales
+
+**Normativa (BOE):**
+
+- <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764" target="_blank" rel="noopener noreferrer">Ley 35/2006, de 28 de noviembre, del IRPF</a>: arts. 33, 37.2, 45, 46.b, 47 y 48.
+- <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2003-23186" target="_blank" rel="noopener noreferrer">Ley 58/2003, de 17 de diciembre, General Tributaria</a>: arts. 198 y 199 (régimen sancionador aplicable al Modelo 721).
+- <a href="https://www.boe.es/buscar/doc.php?id=BOE-A-2023-17429" target="_blank" rel="noopener noreferrer">Orden HFP/886/2023, de 26 de julio</a>, por la que se aprueba el Modelo 721.
+- <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2026-7041" target="_blank" rel="noopener noreferrer">Orden HAC/277/2026, de 25 de marzo</a>: plazos de presentación del IRPF 2025.
+
+**Doctrina de la Dirección General de Tributos (consultas vinculantes):**
+
+- <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V0975-22" target="_blank" rel="noopener noreferrer">Consulta V0975-22, de 4 de mayo de 2022</a>: criterio FIFO global para transmisión de criptomonedas.
+- <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V2520-22" target="_blank" rel="noopener noreferrer">Consulta V2520-22, de 6 de diciembre de 2022</a>: confirma criterio FIFO para criptomonedas.
+- <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V1828-24" target="_blank" rel="noopener noreferrer">Consulta V1828-24, de 1 de agosto de 2024</a>: pérdida patrimonial por estafa cripto se integra en la base general.
+
+**Jurisprudencia:**
+
+- <a href="https://www.iberley.es/jurisprudencia/sentencia-contencioso-administrativo-tribunal-superior-justicia-sala-lo-contencioso-administrativo-seccion-primera-9-1-25-48651389" target="_blank" rel="noopener noreferrer">STSJ PV 37/2025, de 9 de enero de 2025</a> (recurso 75/2024). Rechaza FIFO obligatorio para criptomonedas en territorio foral de Gipuzkoa.
+- <a href="https://curia.europa.eu/juris/document/document.jsf?docid=252749" target="_blank" rel="noopener noreferrer">STJUE de 27 de enero de 2022, asunto C-788/19</a> (Comisión vs. España, Modelo 720). Aplicable por analogía al Modelo 721.
+
+**AEAT (criterio administrativo):**
+
+- <a href="https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/irpf-2024/c12-integracion-compensacion-rentas/reglas-integracion-compensacion-rentas/integracion-compensacion-rentas-base-imponible-general.html" target="_blank" rel="noopener noreferrer">Manual práctico IRPF 2024 · Capítulo 12, integración y compensación de rentas</a>.
+
+---
+
+[^1]: <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V0975-22" target="_blank" rel="noopener noreferrer">Consulta vinculante DGT V0975-22, de 4 de mayo de 2022</a>, confirmada por la <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V2520-22" target="_blank" rel="noopener noreferrer">V2520-22, de 6 de diciembre de 2022</a>: las criptomonedas del mismo tipo se consideran bienes homogéneos y se aplica el criterio FIFO en su transmisión.
+
+[^2]: <a href="https://www.iberley.es/jurisprudencia/sentencia-contencioso-administrativo-tribunal-superior-justicia-sala-lo-contencioso-administrativo-seccion-primera-9-1-25-48651389" target="_blank" rel="noopener noreferrer">STSJ del País Vasco 37/2025, de 9 de enero de 2025</a>, Sala de lo Contencioso-Administrativo, Sección Primera, recurso 75/2024. El tribunal concluye que las criptomonedas no encajan en el concepto de "valores homogéneos" del art. 47.1 del Reglamento foral del IRPF.
+
+[^3]: <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764" target="_blank" rel="noopener noreferrer">Arts. 47 y 48 de la Ley 35/2006 del IRPF</a>: base imponible general y base imponible del ahorro son compartimentos estancos.
+
+[^4]: <a href="https://petete.tributos.hacienda.gob.es/consultas/?num_consulta=V1828-24" target="_blank" rel="noopener noreferrer">Consulta vinculante DGT V1828-24, de 1 de agosto de 2024</a>: la pérdida patrimonial por ciberestafa con criptomonedas se integra en la base imponible general como pérdida no derivada de transmisión.
+
+[^5]: <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764" target="_blank" rel="noopener noreferrer">Art. 48.b de la Ley 35/2006 del IRPF</a> y <a href="https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/irpf-2024/c12-integracion-compensacion-rentas/reglas-integracion-compensacion-rentas/integracion-compensacion-rentas-base-imponible-general.html" target="_blank" rel="noopener noreferrer">Manual práctico IRPF 2024 AEAT</a>: el saldo negativo de pérdidas patrimoniales no derivadas de transmisión puede compensar el saldo positivo de rendimientos e imputaciones de renta de la base general con un límite del 25 %; el exceso se arrastra durante los cuatro ejercicios siguientes.
+
+[^6]: <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2026-7041" target="_blank" rel="noopener noreferrer">Orden HAC/277/2026, de 25 de marzo</a> (BOE-A-2026-7041): el plazo de presentación del IRPF ejercicio 2025 finaliza el 30 de junio de 2026 (25 de junio si se domicilia el pago).
+
+<aside class="newsletter-disclaimer" role="note" aria-label="Aviso legal">
+  <p><strong>Información orientativa, no constituye asesoramiento financiero ni fiscal.</strong> Servicio conjunto con un fiscalista colegiado colaborador. Vaultbit aporta la arquitectura técnica.</p>
+  <p>Vaultbit Advisory no es asesor financiero registrado en la CNMV, ni despacho de abogados o fiscalistas colegiados, ni entidad de custodia CASP/VASP bajo MiCA. La información aquí contenida tiene carácter exclusivamente técnico y educativo. Cualquier decisión patrimonial debe consultarse con profesionales colegiados en cada disciplina.</p>
+</aside>
+
+<style>{`
+  .newsletter-disclaimer {
+    margin-top: 32px;
+    background: rgba(46,55,64,0.04);
+    border-left: 4px solid var(--brand-orange-500);
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #4A5560;
+  }
+  .newsletter-disclaimer p { margin: 0 0 8px; }
+  .newsletter-disclaimer p:last-child { margin-bottom: 0; }
+  .newsletter-disclaimer strong { color: var(--anthracite-950); }
+`}</style>

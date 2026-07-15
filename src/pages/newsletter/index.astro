@@ -1,0 +1,406 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import { SITE_URL, SITE_NAME, FOUNDER } from '~/data/organization';
+
+const now = Date.now();
+const allPosts = (await getCollection('newsletter', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const upcomingPosts = allPosts.filter(
+  (p) => p.data.dropDate && p.data.dropDate.getTime() > now,
+);
+const publishedPosts = allPosts.filter(
+  (p) => !p.data.dropDate || p.data.dropDate.getTime() <= now,
+);
+
+const url = `${SITE_URL}/newsletter`;
+
+const blogSchema = {
+  '@type': 'Blog',
+  '@id': `${url}#blog`,
+  url,
+  name: `${SITE_NAME} · Newsletter`,
+  description:
+    'Artículos técnicos sobre custodia, herencia y fiscalidad de criptoactivos en España, escritos por Daniel Brosed Giral, fundador de VaultBit Advisory.',
+  inLanguage: 'es-ES',
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  author: { '@id': FOUNDER.id },
+  blogPost: publishedPosts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.data.title,
+    description: p.data.description,
+    url: `${SITE_URL}/newsletter/${p.slug}`,
+    datePublished: p.data.date.toISOString().slice(0, 10),
+    dateModified: (p.data.updated ?? p.data.date).toISOString().slice(0, 10),
+    image: p.data.heroImage ? `${SITE_URL}${p.data.heroImage}` : `${SITE_URL}/og/default.jpg`,
+    author: { '@id': FOUNDER.id },
+  })),
+};
+
+function fmtDate(d: Date) {
+  return d.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+function fmtDropLabel(d: Date) {
+  const day = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'Europe/Madrid' });
+  const time = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid', hour12: false });
+  return `${day} · ${time} h`;
+}
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<BaseLayout
+  title="Newsletter · VaultBit Advisory"
+  description="Artículos técnicos sobre custodia, herencia y fiscalidad de criptoactivos en España. Escritos por Daniel Brosed Giral, fundador de VaultBit Advisory."
+  canonical={url}
+  schemas={[blogSchema]}
+>
+  <div class="container">
+    <BreadcrumbBar items={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Newsletter', href: '/newsletter' },
+    ]} />
+  </div>
+
+  <section class="section section-light">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="eyebrow">Newsletter</span>
+        <h1 class="h2-section mt-4">Notas técnicas sobre custodia, herencia y fiscalidad cripto</h1>
+        <p class="body-text-light mt-4 max-w-2xl mx-auto">
+          Artículos escritos por Daniel Brosed Giral, fundador de VaultBit Advisory.
+          Sin marketing genérico: protocolos, errores reales y arquitectura técnica.
+        </p>
+        <p class="rss-link mt-4">
+          <a href="/newsletter/rss.xml" rel="alternate" type="application/rss+xml">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+              <path d="M6.18 15.64a2.18 2.18 0 1 1 0 4.36 2.18 2.18 0 0 1 0-4.36zM4 4.44A19.56 19.56 0 0 1 23.56 24h-2.83A16.74 16.74 0 0 0 4 7.27V4.44zm0 5.66a13.9 13.9 0 0 1 13.9 13.9h-2.83A11.07 11.07 0 0 0 4 12.93V10.1z"/>
+            </svg>
+            Suscribirse vía RSS
+          </a>
+        </p>
+      </div>
+
+      {publishedPosts.length === 0 && upcomingPosts.length === 0 ? (
+        <p class="text-center body-text-light">Aún no hay artículos publicados.</p>
+      ) : (
+        <ul class="post-list">
+          {upcomingPosts.map((p) => {
+            const drop = p.data.dropDate!;
+            const diff = Math.max(0, drop.getTime() - now);
+            const d0 = Math.floor(diff / 86400000);
+            const h0 = Math.floor((diff % 86400000) / 3600000);
+            const m0 = Math.floor((diff % 3600000) / 60000);
+            const s0 = Math.floor((diff % 60000) / 1000);
+            return (
+              <li>
+                <a class="post-card post-card--upcoming" href={`/newsletter/${p.slug}`}>
+                  {p.data.heroImage && (
+                    <div class="post-card-img">
+                      <img
+                        src={p.data.heroImage}
+                        alt={p.data.heroAlt ?? p.data.title}
+                        loading="lazy"
+                        decoding="async"
+                        width="640"
+                        height="360"
+                      />
+                      <span class="post-card-ribbon">Próximamente · {fmtDropLabel(drop)}</span>
+                    </div>
+                  )}
+                  <div class="post-card-body">
+                    <p class="post-meta post-meta--upcoming">
+                      <span class="post-meta-dot" aria-hidden="true"></span>
+                      Drop programado
+                    </p>
+                    <h2 class="post-title">{p.data.title}</h2>
+                    <p class="post-desc">{p.data.excerpt ?? p.data.description}</p>
+                    <div
+                      class="mini-countdown"
+                      data-drop-date={drop.toISOString()}
+                      role="timer"
+                      aria-live="polite"
+                    >
+                      <span class="mini-block"><span class="mini-num" data-unit="days">{pad(d0)}</span><span class="mini-lbl">d</span></span>
+                      <span class="mini-sep" aria-hidden="true">·</span>
+                      <span class="mini-block"><span class="mini-num" data-unit="hours">{pad(h0)}</span><span class="mini-lbl">h</span></span>
+                      <span class="mini-sep" aria-hidden="true">·</span>
+                      <span class="mini-block"><span class="mini-num" data-unit="minutes">{pad(m0)}</span><span class="mini-lbl">m</span></span>
+                      <span class="mini-sep" aria-hidden="true">·</span>
+                      <span class="mini-block"><span class="mini-num" data-unit="seconds">{pad(s0)}</span><span class="mini-lbl">s</span></span>
+                    </div>
+                    <span class="post-cta">Ver cuenta atrás →</span>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+          {publishedPosts.map((p) => (
+            <li>
+              <a class="post-card" href={`/newsletter/${p.slug}`}>
+                {p.data.heroImage && (
+                  <div class="post-card-img">
+                    <img
+                      src={p.data.heroImage}
+                      alt={p.data.heroAlt ?? p.data.title}
+                      loading="lazy"
+                      decoding="async"
+                      width="640"
+                      height="360"
+                    />
+                  </div>
+                )}
+                <div class="post-card-body">
+                  <p class="post-meta">
+                    <time datetime={p.data.date.toISOString().slice(0, 10)}>{fmtDate(p.data.date)}</time>
+                    {p.data.readingTimeMin && <span> · {p.data.readingTimeMin} min lectura</span>}
+                  </p>
+                  <h2 class="post-title">{p.data.title}</h2>
+                  <p class="post-desc">{p.data.description}</p>
+                  <span class="post-cta">Leer artículo →</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const cards = document.querySelectorAll('.mini-countdown');
+    if (!cards.length) return;
+    const pad = function (n) { return String(n).padStart(2, '0'); };
+    function tickOne(card) {
+      const dropIso = card.getAttribute('data-drop-date');
+      if (!dropIso) return false;
+      const diff = new Date(dropIso).getTime() - Date.now();
+      const elD = card.querySelector('[data-unit="days"]');
+      const elH = card.querySelector('[data-unit="hours"]');
+      const elM = card.querySelector('[data-unit="minutes"]');
+      const elS = card.querySelector('[data-unit="seconds"]');
+      if (!elD || !elH || !elM || !elS) return false;
+      if (diff <= 0) {
+        elD.textContent = '00';
+        elH.textContent = '00';
+        elM.textContent = '00';
+        elS.textContent = '00';
+        return true;
+      }
+      elD.textContent = pad(Math.floor(diff / 86400000));
+      elH.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      elM.textContent = pad(Math.floor((diff % 3600000) / 60000));
+      elS.textContent = pad(Math.floor((diff % 60000) / 1000));
+      return false;
+    }
+    let timer = null;
+    let reloaded = false;
+    function revealOnce() {
+      // Recarga UNA sola vez por sesion (clave segun los drops pendientes) para
+      // mostrar los articulos ya publicados, sin riesgo de bucle si el build tarda.
+      try {
+        const key = 'vb-nl-idx:' + Array.prototype.map.call(cards, function (c) {
+          return c.getAttribute('data-drop-date');
+        }).join(',');
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, '1');
+          window.location.reload();
+        }
+      } catch (e) { /* sin sessionStorage: no recargar para evitar bucles */ }
+    }
+    function tick() {
+      let allDone = true;
+      cards.forEach(function (card) { if (!tickOne(card)) allDone = false; });
+      if (allDone && !reloaded) {
+        reloaded = true;
+        if (timer) clearInterval(timer);
+        revealOnce();
+      }
+    }
+    tick();
+    if (!reloaded) timer = setInterval(tick, 1000);
+  })();
+</script>
+
+<style>
+  .rss-link {
+    margin-top: 16px;
+    font-size: 13px;
+  }
+  .rss-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--anthracite-400);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid rgba(46,55,64,0.18);
+    border-radius: var(--radius-full);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .rss-link a:hover {
+    color: var(--brand-orange-500);
+    border-color: rgba(242,118,26,0.45);
+  }
+
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 24px;
+    max-width: 1080px;
+    margin-inline: auto;
+  }
+  @media (min-width: 768px) {
+    .post-list { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.10);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+    border-color: rgba(242,118,26,0.35);
+  }
+
+  .post-card--upcoming {
+    border-color: rgba(242,118,26,0.45);
+    box-shadow: 0 4px 24px rgba(242,118,26,0.10), var(--shadow-soft);
+  }
+  .post-card--upcoming:hover {
+    border-color: rgba(242,118,26,0.65);
+    box-shadow: 0 6px 32px rgba(242,118,26,0.18), var(--shadow-xl);
+  }
+
+  .post-card-img {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--anthracite-900);
+    position: relative;
+  }
+  .post-card-ribbon {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--brand-orange-500);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: var(--radius-full, 999px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .post-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .post-card-body {
+    padding: 22px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .post-meta {
+    font-size: 12px;
+    color: var(--anthracite-400);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .post-title {
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--anthracite-950);
+    margin: 4px 0 6px;
+    letter-spacing: -0.3px;
+  }
+  .post-desc {
+    font-size: 15px;
+    color: var(--anthracite-400);
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  .post-cta {
+    margin-top: auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand-orange-500);
+  }
+
+  .post-meta--upcoming {
+    color: var(--brand-orange-500);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .post-meta-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand-orange-500);
+    box-shadow: 0 0 0 4px rgba(242,118,26,0.18);
+    animation: pulse-dot 1.6s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(242,118,26,0.18); }
+    50% { box-shadow: 0 0 0 7px rgba(242,118,26,0.06); }
+  }
+
+  .mini-countdown {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    margin: 4px 0 14px;
+    padding: 11px 14px;
+    background: var(--anthracite-950);
+    border-radius: var(--radius-md, 10px);
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .mini-block {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  .mini-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--brand-orange-500);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .mini-lbl {
+    font-size: 12px;
+    color: var(--anthracite-200, #8A95A0);
+    font-weight: 500;
+    text-transform: lowercase;
+  }
+  .mini-sep {
+    color: rgba(242,118,26,0.45);
+    font-weight: 700;
+  }
+</style>

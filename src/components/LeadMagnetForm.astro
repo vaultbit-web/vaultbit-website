@@ -1,0 +1,244 @@
+---
+// Formulario de captura de email para el lead magnet.
+// Escribe a Supabase tabla `lead_magnet_subscribers` con validación.
+// Tras submit redirige al PDF directo (descarga inmediata) y queda el lead capturado.
+
+interface Props {
+  source?: string;
+  pdfPath?: string;
+  buttonLabel?: string;
+}
+
+const {
+  source = 'guia-7-errores',
+  pdfPath = '/recursos/vaultbit-7-errores-patrimonio-cripto.pdf',
+  buttonLabel = 'Descargar guía gratis',
+} = Astro.props;
+
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+---
+<form class="lead-form" data-source={source} data-pdf={pdfPath} novalidate>
+  <div class="lead-form-row">
+    <div class="lead-form-field">
+      <label for="lm-name" class="sr-only">Tu nombre</label>
+      <input
+        id="lm-name"
+        name="name"
+        type="text"
+        placeholder="Tu nombre"
+        autocomplete="given-name"
+        required
+        maxlength="200"
+      />
+    </div>
+    <div class="lead-form-field">
+      <label for="lm-email" class="sr-only">Tu email</label>
+      <input
+        id="lm-email"
+        name="email"
+        type="email"
+        placeholder="tu@email.com"
+        autocomplete="email"
+        required
+        maxlength="320"
+        inputmode="email"
+      />
+    </div>
+  </div>
+
+  <label class="lead-form-consent">
+    <input type="checkbox" name="consent" required />
+    <span>
+      Acepto recibir la guía y, ocasionalmente, contenido sobre custodia cripto.
+      Puedo darme de baja en cualquier momento. Más en la
+      <a href="/privacidad">política de privacidad</a>.
+    </span>
+  </label>
+
+  <button type="submit" class="btn btn-primary lead-form-submit">
+    {buttonLabel}
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  </button>
+
+  <p class="lead-form-error" role="alert" hidden></p>
+  <p class="lead-form-success" role="status" hidden>
+    ✓ Listo. Tu descarga empezará en un segundo. Te hemos guardado en la lista.
+  </p>
+</form>
+
+<style>
+  .lead-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 540px;
+  }
+  .lead-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  @media (min-width: 600px) {
+    .lead-form-row { flex-direction: row; }
+    .lead-form-field { flex: 1; }
+  }
+  .lead-form input[type="text"],
+  .lead-form input[type="email"] {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(13,15,17,0.4);
+    border: 1px solid rgba(74,85,98,0.4);
+    border-radius: var(--radius-md);
+    color: #fff;
+    font: inherit;
+    font-size: 16px; /* 16px evita el zoom automático de iOS al enfocar */
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .lead-form input::placeholder { color: var(--anthracite-200); }
+  .lead-form input:focus {
+    outline: 2px solid rgba(242,118,26,0.4);
+    outline-offset: 2px;
+    border-color: var(--brand-orange-500);
+    background: rgba(13,15,17,0.6);
+  }
+  .lead-form input.invalid { border-color: var(--error); }
+
+  .lead-form-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--anthracite-200);
+    font-size: 13px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .lead-form-consent input { margin-top: 3px; flex-shrink: 0; accent-color: var(--brand-orange-500); }
+  .lead-form-consent a { color: var(--brand-orange-400); text-decoration: underline; }
+
+  .lead-form-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 28px;
+    font-size: 15px;
+  }
+  @media (min-width: 600px) { .lead-form-submit { width: auto; } }
+
+  .lead-form-error {
+    color: var(--error);
+    font-size: 13px;
+    margin: 0;
+    background: rgba(220,38,38,0.08);
+    border: 1px solid rgba(220,38,38,0.3);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+  }
+  .lead-form-success {
+    color: var(--success);
+    font-size: 13px;
+    margin: 0;
+    background: rgba(22,163,74,0.08);
+    border: 1px solid rgba(22,163,74,0.3);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON }}>
+  document.querySelectorAll('.lead-form').forEach((form) => {
+    const errorEl = form.querySelector('.lead-form-error');
+    const successEl = form.querySelector('.lead-form-success');
+    const submitBtn = form.querySelector('.lead-form-submit');
+    const source = form.dataset.source || 'guia-7-errores';
+    const pdfPath = form.dataset.pdf || '';
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+      successEl.hidden = true;
+    }
+    function clearMessages() {
+      errorEl.hidden = true;
+      successEl.hidden = true;
+    }
+    function getUtm() {
+      const p = new URLSearchParams(window.location.search);
+      return {
+        utm_source: p.get('utm_source'),
+        utm_medium: p.get('utm_medium'),
+        utm_campaign: p.get('utm_campaign'),
+        utm_content: p.get('utm_content'),
+        utm_term: p.get('utm_term'),
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+      };
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+
+      const data = new FormData(form);
+      const name = (data.get('name') || '').toString().trim();
+      const email = (data.get('email') || '').toString().trim();
+      const consent = data.get('consent');
+
+      if (!name || name.length < 1) { showError('Por favor, indica tu nombre.'); return; }
+      const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+      if (!emailOk) { showError('El email no parece válido. Revísalo.'); return; }
+      if (!consent) { showError('Necesitamos tu consentimiento para enviarte la guía.'); return; }
+
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Enviando...';
+
+      try {
+        const payload = { name, email, source, ...getUtm() };
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/lead_magnet_subscribers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          console.warn('Supabase lead magnet error', errText);
+          // Aún así dejamos descargar para no penalizar al usuario por nuestro fallo
+        }
+        // Meta Pixel
+        try {
+          if (typeof fbq !== 'undefined') {
+            fbq('trackCustom', 'LeadMagnetSubscribe', { source });
+          }
+        } catch (_) {}
+
+        successEl.hidden = false;
+        // Iniciar descarga del PDF
+        if (pdfPath) {
+          const a = document.createElement('a');
+          a.href = pdfPath;
+          a.download = '';
+          document.body.appendChild(a);
+          setTimeout(() => { a.click(); document.body.removeChild(a); }, 800);
+        }
+      } catch (err) {
+        showError('Ha habido un problema. Inténtalo de nuevo o escríbenos a info@vaultbit.es.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalLabel;
+      }
+    });
+  });
+</script>

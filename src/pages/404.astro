@@ -1,0 +1,19 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 · Página no encontrada" noindex={true}>
+  <section class="section section-dark hero-decor" style="min-height: 60vh; display: flex; align-items: center;">
+    <div class="container text-center">
+      <span class="eyebrow">404</span>
+      <h1 class="h1-hero mt-6">No hemos encontrado <strong>esa página.</strong></h1>
+      <p class="body-text mt-6 max-w-prose mx-auto">
+        El enlace puede haberse roto o la sección puede haber cambiado de ubicación.
+        Vuelve al inicio o explora las áreas principales del sitio.
+      </p>
+      <div class="mt-8 flex justify-center gap-4 flex-wrap">
+        <a class="btn btn-primary" href="/">Volver al inicio</a>
+        <a class="btn btn-ghost" href="/diagnostico/index.html">Test de Autocustodia · 2 min</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

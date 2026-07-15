@@ -1,0 +1,391 @@
+---
+// Página flagship del servicio "Tokenización financiera" (pillar: /servicios/web3-b2b).
+// Dedicada y autocontenida. Voz híbrida: hero cercano; cuerpo profesional con keywords
+// (tokenización de bonos y fondos, valores tokenizados, ERIR, MiCA vs MiFID II, Ley 6/2023, DvP).
+// Compliance (sector MÁS regulado): diseñamos y dirigimos lo técnico; NO emitimos valores, NO
+// captamos inversión, NO asesoramos, NO custodiamos. La emisión, el folleto, el registro (ERIR) y la
+// custodia los hacen entidades habilitadas y supervisadas por CNMV/BdE. El régimen depende de la
+// CALIFICACIÓN del token (valor MiFID -> LMVSI/CNMV, excluido de MiCA art. 2.4.a; EMT/ART -> MiCA/BdE).
+// La blockchain hace inmutable el registro, no veraz el activo subyacente (problema del oráculo).
+// Copy verificado a fuente primaria (BOE/EUR-Lex/CNMV/ESMA). Copy SIN guiones largos (—) entre palabras.
+import fs from 'node:fs';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+const slug = 'tokenizacion-financiera';
+const url = `${SITE_URL}/servicios/web3/${slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink('Interés: Proyectos Web3 · Tokenización financiera. (Cuéntanos en una línea qué quieres tokenizar)');
+const wa = waLink('Hola, vengo de la web de Vaultbit. Quiero un proyecto de tokenización financiera (un bono, un fondo o un valor sobre blockchain) y quiero que dirijáis la parte técnica. Os cuento:');
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== slug);
+
+const exists = (p: string) => fs.existsSync(`${process.cwd()}/public${p}`);
+const bgSectores = '/assets/web3/frontier-tokenizacion-financiera-sectores.jpeg';
+const bgClasificacion = '/assets/web3/frontier-tokenizacion-financiera-clasificacion.jpeg';
+const bgCasos = '/assets/web3/frontier-tokenizacion-financiera-casos.jpeg';
+const bgCta = '/assets/web3/frontier-tokenizacion-financiera-cta.jpeg';
+const hasSectoresBg = exists(bgSectores);
+const hasClasificacionBg = exists(bgClasificacion);
+const hasCasosBg = exists(bgCasos);
+const hasCtaBg = exists(bgCta);
+const iconExists = (name: string) => exists(`/assets/web3/icons/icon-step-${name}.png`);
+
+// ─── Datos de las secciones ───
+const capacidades = [
+  { icon: 'bono', h3: 'Tokenización de deuda y bonos corporativos', text: 'Diseñamos la arquitectura técnica de un bono representado como token sobre DLT: la lógica del cupón y de la amortización en smart contract y la integración con la infraestructura de mercado. La emisión, el folleto, el registro y la liquidación los realiza la entidad habilitada y supervisada por la CNMV. Precedentes reales en España: el bono BME, BBVA y BID (2022) y el bono de Valorix en el sandbox (2024).' },
+  { icon: 'fondo', h3: 'Tokenización de fondos y participaciones (IIC)', text: 'Diseñamos la capa técnica para representar participaciones de un fondo como tokens y agilizar suscripción, reembolso y registro de partícipes. La gestión la realiza una SGIIC habilitada y la custodia y el registro una entidad autorizada. Precedentes: Renta 4 (fondo Atlas, 2022) y BBVA Asset Management (fondo monetario tokenizado, sandbox CNMV 2024).' },
+  { icon: 'cupon', h3: 'Smart contracts de cupón, dividendo y liquidación DvP', text: 'Programamos la lógica del valor: pago automático del cupón o del dividendo y liquidación atómica entrega contra pago (DvP), en la que el token y el medio de pago se intercambian en la misma transacción o no se intercambian ninguno de los dos. Así la liquidación pasa de días a casi instantánea, frente al ciclo tradicional. No prometemos retorno: eso lo define el emisor en su folleto.' },
+  { icon: 'registro', h3: 'Registro y custodia con entidad habilitada (ERIR)', text: 'Coordinamos la pieza que la Ley 6/2023 exige: la Entidad Responsable de la Inscripción y el Registro (ERIR), habilitada para registrar y custodiar los valores representados mediante DLT. Nosotros diseñamos y dirigimos; el registro y la custodia los presta la entidad supervisada, nunca Vaultbit.' },
+  { icon: 'contrato-inteligente', h3: 'Capa de confianza del activo subyacente', text: 'Ayudamos a integrar oráculos, pruebas de reserva y mecanismos de verificación del activo que respalda el token. La blockchain garantiza la integridad del registro, no la veracidad del dato: esa verificación se hace fuera de la cadena por terceros competentes (valoración independiente, due diligence, custodia del subyacente).' },
+];
+
+const steps = [
+  { title: 'Diagnóstico y encaje honesto', body: 'Miramos tu caso y tu objetivo y te decimos de frente si la tokenización aporta algo o si no te hace falta. No vendemos tecnología que no necesitas, y si el proyecto se parece a una ICO o a una captación encubierta, lo paramos antes de empezar.' },
+  { title: 'Calificación del token con entidad habilitada', body: 'El primer entregable no es técnico: es saber si tu token es un valor negociable (Ley 6/2023 y MiFID II, supervisión CNMV) o un criptoactivo MiCA. Esa calificación la hace una entidad habilitada y, en su caso, la supervisa la CNMV. Nosotros la coordinamos, no la firmamos.' },
+  { title: 'Arquitectura técnica y smart contract', body: 'Diseñamos la red, el smart contract del valor (cupón, dividendo, amortización), la liquidación DvP y las integraciones, con el gobierno del sistema que la Ley 6/2023 exige describir en el documento de la emisión.' },
+  { title: 'Orquestación de los actores habilitados', body: 'Dirigimos el proyecto coordinando al asesor legal, al emisor, a la ERIR, al custodio y, en su caso, al sistema de negociación y liquidación sobre DLT. Dejamos por escrito quién emite, quién registra y quién custodia.' },
+  { title: 'Lanzamiento dirigido y traspaso', body: 'Ponemos el sistema en marcha, dejamos el reporting y la trazabilidad listos, formamos a tu equipo y te lo traspasamos. Tú tratas con un solo interlocutor de principio a fin.' },
+];
+
+const clasificacion = [
+  { kicker: 'El criterio', h3: 'Valor negociable: Ley 6/2023 y MiFID II, supervisión CNMV', text: 'Si el token incorpora derechos económicos transmisibles y expectativa de rentabilidad (un bono, una acción, una participación de fondo), es muy probable que sea un valor negociable o instrumento financiero MiFID. Se rige por la Ley 6/2023, MiFID II y, en su caso, el folleto del Reglamento (UE) 2017/1129, bajo supervisión de la CNMV. El artículo 2.4.a de MiCA lo excluye de su ámbito.' },
+  { kicker: 'La frontera', h3: 'Criptoactivo MiCA: otro régimen, otro supervisor', text: 'Si el token no es un instrumento financiero, entra en el ámbito de MiCA. Las stablecoins se encuadran como ficha de dinero electrónico (EMT) o referenciada a activos (ART) y su emisión corresponde a entidades supervisadas por el Banco de España. Otros criptoactivos quedan bajo la CNMV como autoridad de los proveedores. Confundir un régimen con otro es el error más caro.' },
+];
+
+const casos = [
+  { h3: 'Empresa que tokeniza deuda (bono corporativo)', text: 'Una compañía quiere financiarse emitiendo un bono representado como token sobre DLT, con cupón y amortización automatizados por smart contract y liquidación DvP casi instantánea. Vaultbit diseña la arquitectura técnica y dirige el proyecto; la emisión, el folleto, el registro (ERIR) y la liquidación los realiza la entidad habilitada y supervisada por la CNMV. Precedentes reales en España: bono BME, BBVA y BID (2022) y bono de Valorix en el sandbox (2024). Un precedente es una referencia de carril, no una garantía de resultado.' },
+  { h3: 'Gestora que tokeniza un fondo (IIC)', text: 'Una SGIIC quiere representar las participaciones de un fondo como tokens para agilizar suscripción, reembolso y registro de partícipes. Vaultbit diseña la capa técnica y dirige la implantación; la gestión del fondo la realiza la SGIIC habilitada y la custodia y el registro una entidad autorizada. Precedentes: Renta 4 (fondo Atlas, 2022) y BBVA Asset Management (fondo monetario tokenizado, sandbox CNMV 2024).' },
+  { h3: 'Pyme que digitaliza el registro de sus participaciones', text: 'Una pyme quiere llevar a un registro DLT la titularidad y las transmisiones de sus participaciones para más trazabilidad y eficiencia. Matiz jurídico crítico: las participaciones de una SL no son valores negociables y no encajan como instrumento financiero; además hay una reforma anunciada (aún en tramitación; verificar vigencia) que haría constitutiva su inscripción en el Registro Mercantil. Por eso se plantea como digitalización del registro y la trazabilidad interna, nunca como emisión de valores ni captación, y coordinado con el asesor legal, notarial y registral habilitado.' },
+];
+
+const faqs = [
+  { q: '¿Qué es la tokenización de un activo financiero?', a: 'Es representar un activo financiero (un bono, una participación de fondo, una acción) como un token sobre una tecnología de registro distribuido, de forma que su emisión, su transmisión y sus eventos (cupón, dividendo) puedan gestionarse con smart contracts. Tokenizar no cambia la naturaleza jurídica del activo: un valor sigue siendo un valor, con su régimen y su supervisión.' },
+  { q: '¿Cuál es la diferencia entre tokenizar un valor y emitir una criptomoneda?', a: 'El régimen no depende de la tecnología, depende de la calificación jurídica del token. Si incorpora derechos económicos transmisibles y expectativa de rentabilidad (un bono, una acción, una participación de fondo), probablemente es un valor negociable o instrumento financiero MiFID y se rige por la Ley 6/2023 y MiFID II bajo supervisión de la CNMV, quedando fuera de MiCA. Una criptomoneda o un token que no sea instrumento financiero entra en el ámbito de MiCA.' },
+  { q: '¿Un security token entra en MiCA o en MiFID II?', a: 'El artículo 2.4.a de MiCA excluye de su ámbito los instrumentos financieros, definidos por remisión al artículo 4, apartado 1, punto 15 de MiFID II. Por tanto, si el token es un valor o instrumento financiero, MiCA no se aplica: se rige por la Ley 6/2023, MiFID II y, en su caso, el Reglamento (UE) 2017/1129 de folletos, con supervisión de la CNMV. Esa calificación la realiza una entidad habilitada, no la decide la tecnología ni el promotor.' },
+  { q: '¿Qué necesito para emitir legalmente un valor tokenizado en España?', a: 'Con carácter general: una calificación jurídica del token, un emisor habilitado, el documento de la emisión que exige la Ley 6/2023, una Entidad Responsable de la Inscripción y el Registro (ERIR) habilitada, una solución de custodia autorizada y, cuando hay oferta pública o admisión a negociación, un folleto aprobado por la CNMV salvo que aplique una exención del Reglamento (UE) 2017/1129. Vaultbit diseña y dirige la parte técnica y coordina a esas entidades; no las sustituye.' },
+  { q: '¿Es obligatorio designar una ERIR?', a: 'Para los valores negociables representados mediante tecnología de registro distribuido, la Ley 6/2023 exige designar una o varias entidades responsables de la inscripción y el registro (ERIR), que deben estar habilitadas para registrar y custodiar instrumentos financieros. La ERIR es una entidad supervisada; Vaultbit no presta ese servicio, lo coordina.' },
+  { q: '¿Quién custodia el valor tokenizado, Vaultbit?', a: 'No. La custodia y administración de instrumentos financieros y de criptoactivos es un servicio reservado a entidades habilitadas (empresas de servicios de inversión, entidades de crédito o, para criptoactivos, proveedores autorizados). Vaultbit actúa como dirección técnica del proyecto y nunca custodia activos ni claves de terceros.' },
+  { q: '¿Hay valores tokenizados ya operativos en España?', a: 'Sí hay carril regulado y precedentes verificables. La CNMV autorizó en noviembre de 2024 a la primera ERIR (Ursus-3 Capital) y en noviembre de 2025 el primer Sistema de Negociación y Liquidación sobre DLT (operado por Securitize), cuya primera emisión estaba prevista para inicios de 2026 (verifica el estado real y actual antes de darla por hecha). Hay bonos tokenizados (BME, BBVA y BID en 2022; Valorix en el sandbox en 2024) y fondos tokenizados (Renta 4 Atlas, 2022; BBVA Asset Management, sandbox CNMV 2024). Conviene distinguir autorizado de ya operando: verifica el estado real de cada infraestructura.' },
+  { q: '¿La blockchain garantiza el valor, la rentabilidad o la titularidad real de mi activo?', a: 'No, y desconfía de quien lo prometa. La tecnología de registro distribuido garantiza la integridad y la inmutabilidad del registro, no la veracidad, la existencia, la titularidad ni el valor del activo subyacente. Esa verificación se hace fuera de la cadena por terceros competentes (valoración independiente, due diligence legal, custodia del subyacente). Ni la rentabilidad ni la liquidez las da el token: dependen del emisor, del mercado y de las entidades habilitadas.' },
+];
+
+// ─── SEO / meta ───
+const metaTitle = 'Tokenización financiera en España: bonos y fondos · VaultBit Advisory';
+const metaDescription =
+  'Diseñamos y dirigimos el proyecto técnico de tokenización de bonos, fondos y valores (Ley 6/2023, MiFID II, MiCA). No emitimos valores ni captamos inversión.';
+const keywords = [
+  'tokenización financiera',
+  'tokenización de activos financieros',
+  'tokenización de bonos',
+  'tokenización de deuda',
+  'security token España',
+  'tokenizar un fondo de inversión',
+  'valores tokenizados',
+  'ERIR tokenización',
+  'régimen piloto DLT',
+  'MiCA vs MiFID II',
+  'Ley 6/2023 LMVSI tokenización',
+  'smart contract de cupón',
+];
+const ogImage = `${SITE_URL}/og/og-web3-tokenizacion-financiera.jpg`;
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: 'Tokenización financiera: diseño y dirección del proyecto técnico',
+  description: metaDescription,
+  serviceType: 'Tokenización de valores y activos financieros con blockchain',
+  category: 'Diseño y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Qué se puede hacer con la tokenización financiera',
+    itemListElement: capacidades.map((c) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: c.h3 },
+    })),
+  },
+};
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: 'Cómo dirigimos un proyecto de tokenización financiera, paso a paso',
+  description: 'Proceso de diseño y dirección de un proyecto de tokenización de bonos, fondos y valores con VaultBit Advisory.',
+  inLanguage: 'es-ES',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+  })),
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={url}
+  keywords={keywords.join(', ')}
+  ogImage={ogImage}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: 'Tokenización financiera', href: `/servicios/web3/${slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── 1 · HERO ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style="background-image:url('/assets/web3/sector-finanzas.jpeg')" aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">Proyectos Web3 · Tokenización financiera</span>
+          <h1>Tu bono o tu fondo, sobre blockchain <strong>y cada pieza en su sitio.</strong></h1>
+          <p class="fh-sub">Representar un bono, un fondo o un valor como token sobre blockchain, con el cupón y la liquidación automatizados, es la tokenización financiera. Nosotros diseñamos y dirigimos el proyecto técnico. La emisión, el folleto, el registro y la custodia los realizan entidades habilitadas y supervisadas por la CNMV. No emitimos valores ni captamos inversión.</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 2 · Qué es ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Qué es</span>
+          <h2>Qué es la tokenización financiera</h2>
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:20px">
+          La tokenización financiera es representar un activo financiero (un bono, una participación de fondo, una acción) como un token sobre una tecnología de registro distribuido, de forma que su emisión, su transmisión y sus eventos (cupón, dividendo, amortización) puedan gestionarse con smart contracts en un registro inmutable y auditable.
+        </p>
+        <p class="fr-prose" data-reveal style="margin-top:18px">
+          Y aquí está la clave que casi nadie separa bien: el régimen aplicable no depende de la tecnología, depende de la calificación jurídica del token. Tokenizar no cambia la naturaleza del activo. Un valor sigue siendo un valor, con su ley, su folleto y su supervisor. Emitir el valor, registrarlo o custodiarlo no es esto, ni es nuestro papel.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 3 · Qué se puede hacer (fondo) ───── -->
+    <section class:list={['fr-section', hasSectoresBg ? 'fr-has-bg' : 'is-darker']} style={hasSectoresBg ? `--fr-bg:url('${bgSectores}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde aplica</span>
+          <h2>Qué se puede hacer: de un bono tokenizado a un fondo sobre blockchain</h2>
+          <p>No todo necesita blockchain, pero hay casos donde un registro común e inmutable y unos smart contracts bien dirigidos cambian las reglas. Estos son los más sólidos.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {capacidades.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {iconExists(c.icon) && (
+                <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${c.icon}.png`} alt="" width="96" height="96" loading="lazy" decoding="async" />
+              )}
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 4 · Cómo lo dirigimos, paso a paso ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El proceso</span>
+          <h2>Cómo dirigimos tu proyecto de tokenización financiera, paso a paso</h2>
+          <p>Un único interlocutor. Diseñamos, encajamos lo legal con la entidad habilitada y dirigimos al equipo que lo construye.</p>
+        </div>
+        <div class="fr-flow">
+          {steps.map((s, i) => (
+            <div class="fr-step" data-reveal>
+              <div class="fr-step-num fr-chrome-num">{i + 1}</div>
+              <div class="fr-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 5 · La clasificación legal del token (fondo) ───── -->
+    <section class:list={['fr-section', hasClasificacionBg ? 'fr-has-bg' : 'is-darker']} style={hasClasificacionBg ? `--fr-bg:url('${bgClasificacion}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">La pregunta que lo decide todo</span>
+          <h2>¿Tu token es un valor MiFID o un criptoactivo MiCA?</h2>
+          <p>Es la primera pregunta de cualquier proyecto de tokenización financiera, y la respuesta cambia toda la arquitectura legal: qué ley aplica, quién supervisa, si hace falta folleto y quién puede registrar y custodiar. No la decide la tecnología ni tú, la decide una entidad habilitada.</p>
+        </div>
+        <div class="fr-grid">
+          {clasificacion.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{c.kicker}</span>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:28px">
+          Esta es nuestra palanca y nuestro límite a la vez. Diseñamos y dirigimos la parte técnica y coordinamos la calificación con la entidad habilitada, pero no emitimos un juicio jurídico vinculante ni garantizamos que tu token no sea un valor. Esa frontera, lejos de debilitar el proyecto, es lo que lo mantiene en regla.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 6 · Los límites, sin humo ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Hablemos claro</span>
+          <h2>Los límites, sin humo: la blockchain no crea derechos que no existen</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Hace inmutable el registro. No hace veraz el activo.</h3>
+          <p>Un registro inmutable no significa un dato verdadero. La blockchain garantiza la integridad y la inmutabilidad del registro, no la veracidad, la existencia, la titularidad ni el valor del activo subyacente. Si el dato de entrada es erróneo, el token reflejará ese error para siempre. La fiabilidad nace de la verificación fuera de la cadena (valoración independiente, due diligence legal, custodia del subyacente), no de estar en blockchain. Ni la rentabilidad ni la liquidez las da el token: dependen del emisor, del mercado y de las entidades habilitadas. Quien te promete liquidez o rentabilidad garantizada con un token, no te está contando esto.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No emitimos valores, EMT ni ART, no hacemos ofertas públicas ni captamos inversión del público.</li>
+          <li>No prestamos servicios de inversión ni servicios sobre criptoactivos, y no custodiamos activos ni claves de terceros.</li>
+          <li>No prometemos rentabilidad, revalorización, liquidez ni ausencia de riesgo, ni asesoramos sobre qué comprar o cuándo invertir.</li>
+          <li>No calificamos tu token de forma vinculante ni te decimos que no es un valor para saltarte la regulación.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 7 · Por qué Vaultbit ───── -->
+    <section class="fr-section">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Por qué Vaultbit</span>
+          <h2>El director técnico neutral, no parte interesada</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Independientes y agnósticos. No emitimos ni captamos.</h3>
+          <p>En este sector cada actor es juez y parte: la plataforma cobra por operar el mercado, el custodio por custodiar, el emisor por emitir. Nosotros no. Diseñamos la arquitectura, elegimos la red y la tecnología que de verdad te encajan y coordinamos a las entidades habilitadas (asesor legal, emisor, ERIR, custodio, infraestructura de mercado) en tu interés, no en el de una plataforma concreta. Como no emitimos valores, no captamos inversión ni tocamos el dinero del inversor, no hay conflicto de interés. Convertimos la frontera legal en propuesta de valor: separamos con claridad lo técnico (diseño, integración, smart contract) de lo regulado (emisión, folleto, ERIR, custodia), que ejecutan terceros habilitados.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No te atamos a una plataforma ni a una red propia: integramos la que encaje con tu proyecto.</li>
+          <li>No tenemos conflicto de interés: no operamos el mercado, no custodiamos ni captamos inversión.</li>
+          <li>Lo que es de entidades habilitadas se queda en ellas: la emisión, el registro, la custodia y lo legal y fiscal, a quien corresponde.</li>
+          <li>No usamos sellos que no nos pertenecen: Vaultbit no está autorizado por la CNMV, lo están las entidades que coordinamos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 8 · Casos (fondo) ───── -->
+    <section class:list={['fr-section', hasCasosBg ? 'fr-has-bg' : 'is-darker']} style={hasCasosBg ? `--fr-bg:url('${bgCasos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde encaja</span>
+          <h2>Casos donde la tokenización financiera aporta de verdad</h2>
+          <p>Escenarios reales en los que un registro común e inmutable y unos smart contracts bien dirigidos cambian las reglas. Cada uno se valida, y se califica con la entidad habilitada, antes de construir nada.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {casos.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 9 · FAQ ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Preguntas frecuentes</span>
+          <h2>Preguntas frecuentes sobre tokenización financiera</h2>
+        </div>
+        <div class="fr-faq" data-reveal>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 10 · CTA final (fondo) ───── -->
+    <section class:list={['fr-cta', hasCtaBg && 'has-bg']} style={hasCtaBg ? `--cta-bg:url('${bgCta}')` : undefined}>
+      <div class="container">
+        <h2 data-reveal>¿Quieres tokenizar un bono, un fondo o un valor?</h2>
+        <p data-reveal>30 minutos para mirar tu caso y decirte de frente si la tokenización aporta algo, qué vía de calificación seguiría tu token (valor MiFID o criptoactivo MiCA) y por dónde empezar. Sin presentación de ventas.</p>
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="tokenizacion-financiera" />
+        </div>
+
+        <div class="fr-cta-extras" data-reveal>
+          <details class="fr-disclosure">
+            <summary>Aviso legal e informativo</summary>
+            <div class="fr-disclosure-body">
+              <p style="font-size:13px;line-height:1.7;color:var(--steel-300);margin:4px 0 0">
+                Aviso legal y de alcance (tokenización financiera). VaultBit Advisory es una consultoría técnica. En los proyectos de tokenización, VaultBit Advisory diseña y dirige exclusivamente la capa técnica y la orquestación del proyecto web3. VaultBit Advisory no emite valores negociables, instrumentos financieros, fichas de dinero electrónico (EMT) ni fichas referenciadas a activos (ART); no realiza ofertas públicas de valores ni de criptoactivos; no capta inversión, fondos ni ahorro del público; no presta servicios de inversión (incluidos colocación, aseguramiento, recepción y transmisión de órdenes, gestión de carteras y asesoramiento de inversión) ni servicios sobre criptoactivos en el sentido del Reglamento (UE) 2023/1114 (MiCA); no custodia ni administra instrumentos financieros o criptoactivos; y no garantiza, promete ni insinúa rentabilidad, revalorización, liquidez o ausencia de riesgo. La emisión, el documento de la emisión o el folleto y su aprobación, el registro de los valores, la inscripción y registro por la entidad responsable (ERIR), la custodia y la prestación de servicios de inversión o sobre criptoactivos corresponden, en su caso, a entidades habilitadas, autorizadas y supervisadas por las autoridades competentes (Comisión Nacional del Mercado de Valores y Banco de España en España, y las autoridades europeas que correspondan). El régimen jurídico aplicable a un token depende de su calificación: si es un valor negociable o instrumento financiero conforme al artículo 4, apartado 1, punto 15 de la Directiva 2014/65/UE (MiFID II), se rige por la Ley 6/2023, por MiFID II y, en su caso, por el Reglamento (UE) 2017/1129 de folletos, bajo supervisión de la CNMV, y queda excluido del ámbito de MiCA (artículo 2 del Reglamento (UE) 2023/1114); si es una ficha de dinero electrónico o referenciada a activos, se rige por MiCA bajo supervisión del Banco de España. Esta calificación la realizan entidades habilitadas y, en su caso, las autoridades competentes; VaultBit Advisory no la determina con carácter vinculante. La tecnología de registro distribuido garantiza la integridad y la inmutabilidad del registro, pero no garantiza la veracidad, la existencia, la titularidad ni el valor del activo subyacente, que dependen de verificaciones realizadas fuera de la cadena por terceros competentes. Las referencias normativas y sus fechas pueden variar; debe verificarse su vigencia con las fuentes oficiales y con asesoramiento profesional habilitado. Este contenido es meramente informativo y divulgativo y no constituye asesoramiento jurídico, fiscal ni de inversión, ni recomendación de adquirir, suscribir o transmitir ningún valor o criptoactivo.
+              </p>
+            </div>
+          </details>
+
+          <details class="fr-disclosure">
+            <summary>Aviso de transparencia</summary>
+            <div class="fr-disclosure-body">
+              <ComplianceNotice variant="colaboracion" />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+  .web3-frontier .fr-card .fr-step-ico-img { width: 96px; height: 96px; margin-bottom: 14px; }
+</style>

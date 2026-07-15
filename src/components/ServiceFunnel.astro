@@ -1,0 +1,121 @@
+---
+/**
+ * Embudo de tres escalones visible en la home y en servicios/index.
+ * Reunión → Diagnóstico 360º → Protocolo de Herencia.
+ * Cada paso muestra su número grande y difuminado en el cuadrante superior izquierdo.
+ */
+const PASOS = [
+  {
+    num: '01',
+    tag: 'Paso 1 · 30 min',
+    name: 'Nos tomamos un café',
+    body: 'Me cuentas tu situación y tus inquietudes. Una charla tranquila conmigo, no una reunión de ventas.',
+    cta: { label: 'Reservar el café', href: 'https://cal.com/infovaultbit/30min', external: true },
+  },
+  {
+    num: '02',
+    tag: 'Paso 2',
+    name: 'Estudiamos tu caso a fondo',
+    body: 'Miramos qué tienes y cómo lo tienes, y diseñamos el plan a tu medida. Te lo explicamos en idioma humano, sin tecnicismos.',
+    cta: { label: 'Ver el diagnóstico', href: '/servicios/diagnostico-360', external: false },
+  },
+  {
+    num: '03',
+    tag: 'Paso 3',
+    name: 'Lo dejamos montado y funcionando',
+    body: 'Implementamos tu custodia y tu legado con los protocolos necesarios, con un notario de por medio, y te acompañamos en el tiempo.',
+    cta: { label: 'Ver el Protocolo de Herencia', href: '/servicios/heritage-protocol', external: false },
+  },
+];
+---
+<section class="section section-light funnel-section">
+  <div class="container">
+    <div class="text-center mb-8 funnel-intro">
+      <span class="eyebrow">Cómo trabajamos</span>
+      <h2 class="h2-section mt-4">Así trabajamos contigo</h2>
+      <p class="body-text-light mt-4 max-w-2xl mx-auto">
+        Nos conocemos sin compromiso y seguimos solo si tiene sentido, a tu ritmo y en lenguaje claro.
+      </p>
+    </div>
+
+    <ol class="funnel-steps">
+      {PASOS.map((p, i) => (
+        <>
+          {i > 0 && (
+            <li class="funnel-arrow" aria-hidden="true">
+              <svg viewBox="0 0 32 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h28"/><path d="m24 2 6 6-6 6"/></svg>
+            </li>
+          )}
+          <li class={`funnel-step funnel-step-${i + 1}`}>
+            <span class="funnel-bignum" aria-hidden="true">{p.num}</span>
+            <span class="funnel-step-tag">{p.tag}</span>
+            <h3 class="funnel-step-name">{p.name}</h3>
+            <p class="funnel-step-body">{p.body}</p>
+            <a class="funnel-step-cta" href={p.cta.href} {...(p.cta.external ? { target: '_blank', rel: 'noopener' } : {})}>
+              {p.cta.label}
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </li>
+        </>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .funnel-section { padding-top: 64px; padding-bottom: 64px; }
+  @media (min-width: 768px) { .funnel-section { padding-top: 88px; padding-bottom: 88px; } }
+  .funnel-intro { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+  .funnel-steps {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  @media (min-width: 980px) { .funnel-steps { grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; } }
+
+  .funnel-step {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 24px;
+    background: #fff;
+    border: 1px solid rgba(46,55,64,0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    height: 100%;
+    isolation: isolate;
+  }
+  .funnel-step-3 { border-color: rgba(242,118,26,0.4); box-shadow: 0 0 0 1px rgba(242,118,26,0.12), var(--shadow-soft); }
+
+  /* Número gigante difuminado como marca de agua de fondo (esquina inferior derecha, desbordando) */
+  .funnel-bignum {
+    position: absolute;
+    right: -8px;
+    bottom: -28px;
+    font-size: clamp(150px, 26vw, 230px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -6px;
+    color: rgba(242,118,26,0.10);
+    filter: blur(1px);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .funnel-step-tag { position: relative; z-index: 1; align-self: flex-start; font-size: 11px; font-weight: 600; color: var(--brand-orange-500); background: rgba(242,118,26,0.10); padding: 4px 10px; border-radius: var(--radius-full); margin-top: 0; }
+  .funnel-step-name { position: relative; z-index: 1; font-size: 22px; font-weight: 700; color: var(--anthracite-950); margin: 0; letter-spacing: -0.3px; }
+  .funnel-step-body { position: relative; z-index: 1; font-size: 14px; line-height: 1.6; color: var(--anthracite-400); margin: 0; flex: 1; }
+  .funnel-step-cta { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; color: var(--brand-orange-500); text-decoration: none; font-weight: 600; font-size: 14px; margin-top: auto; transition: gap 0.2s ease; }
+  .funnel-step-cta:hover { gap: 10px; }
+
+  .funnel-arrow { display: none; align-items: center; justify-content: center; color: var(--brand-orange-500); opacity: 0.6; }
+  @media (min-width: 980px) { .funnel-arrow { display: flex; } }
+</style>

@@ -1,0 +1,386 @@
+---
+// Página flagship del servicio "Logística y trazabilidad" (pillar: /servicios/web3-b2b).
+// Dedicada y autocontenida. Voz híbrida: hero cercano; cuerpo profesional con keywords
+// (trazabilidad, registro inmutable, GS1/EPCIS, cadena de suministro). Compliance: diseñamos y
+// dirigimos; NO operamos la cadena, NO certificamos productos, NO emitimos sellos. La blockchain
+// hace inmutable lo que se apunta, no lo convierte en verdad (problema del oráculo). Copy SIN
+// guiones largos (—) entre palabras.
+import fs from 'node:fs';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+const slug = 'logistica-trazabilidad';
+const url = `${SITE_URL}/servicios/web3/${slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink('Interés: Proyectos Web3 · Logística y trazabilidad. (Cuéntanos en una línea qué quieres trazar)');
+const wa = waLink('Hola, vengo de la web de Vaultbit. Quiero trazar mi cadena de suministro con blockchain y quiero que me ayudéis. Os cuento:');
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== slug);
+
+const exists = (p: string) => fs.existsSync(`${process.cwd()}/public${p}`);
+const bgSectores = '/assets/web3/frontier-logi-sectores.jpeg';
+const bgIntegracion = '/assets/web3/frontier-logi-integracion.jpeg';
+const bgCasos = '/assets/web3/frontier-logi-casos.jpeg';
+const bgCta = '/assets/web3/frontier-logi-cta.jpeg';
+const hasSectoresBg = exists(bgSectores);
+const hasIntegracionBg = exists(bgIntegracion);
+const hasCasosBg = exists(bgCasos);
+const hasCtaBg = exists(bgCta);
+const iconExists = (name: string) => exists(`/assets/web3/icons/icon-step-${name}.png`);
+
+// ─── Datos de las secciones ───
+const sectores = [
+  { icon: 'alimentacion', h3: 'Alimentación y agro', text: 'Del campo a la mesa. Apuntar lotes, traslados y temperaturas para responder en minutos ante una retirada y dar confianza al consumidor.' },
+  { icon: 'cadena-frio', h3: 'Cadena de frío', text: 'Productos que dependen de la temperatura. Con sensores se registra cada tramo y se ve dónde se rompió la cadena, no a quién creer.' },
+  { icon: 'farma', h3: 'Farmacéutico', text: 'Medicamentos y producto sanitario. Se apoya en la serialización legal (identificador único, dispositivo anti-manipulación), no la sustituye.' },
+  { icon: 'lujo', h3: 'Lujo y antifalsificación', text: 'Producto de alto valor. Un histórico de la pieza, ligado a su identidad física, útil para el cliente y para el mercado de segunda mano.' },
+  { icon: 'industrial', h3: 'Industrial y materias primas', text: 'Componentes y lotes en cadenas largas. Saber el origen y el recorrido de cada partida, lote a lote, sin la versión de cada empresa por separado.' },
+  { icon: 'camion', h3: 'Transporte y comercio', text: 'Mercancía en tránsito y su documentación, como el conocimiento de embarque electrónico (eBL). Trazar el recorrido y los papeles sin depender de la versión de cada parte.' },
+];
+
+const steps = [
+  { title: 'Diagnóstico y encaje', body: 'Miramos tu cadena y tu objetivo, y te decimos de frente si blockchain aporta algo o si con una base de datos normal te vale. No vendemos tecnología que no necesitas.' },
+  { title: 'Estándares y modelo de datos', body: 'Diseñamos qué se captura y cómo se nombra apoyándonos en estándares GS1 y EPCIS, para que la trazabilidad sea portable entre empresas y no un silo más.' },
+  { title: 'Capa físico-digital en origen', body: 'Aquí está lo difícil y donde de verdad aportamos: sensores, lectura automática, precintos e identidad de quién aporta cada dato, para reducir el error y la manipulación en el origen.' },
+  { title: 'Desarrollo dirigido', body: 'Elegimos la red (normalmente permisionada), diseñamos los contratos y la integración con tu ERP, y dirigimos al equipo de confianza que lo construye y lo audita.' },
+  { title: 'Lanzamiento y formación', body: 'Lo ponemos en marcha, formamos a tu equipo y te traspasamos el sistema. Tú tratas con un solo interlocutor y nosotros respondemos del conjunto.' },
+];
+
+const integracion = [
+  { kicker: 'Con lo que ya tienes', h3: 'Tu ERP y tus sistemas', text: 'No reemplaza tu SAP ni tu sistema actual. Se conecta a ellos y añade la capa de registro inmutable solo donde aporta.' },
+  { kicker: 'Sobre estándares', h3: 'GS1 y EPCIS', text: 'La blockchain no sustituye al estándar, se apoya en él. GS1 define qué dato y cómo se nombra; EPCIS, qué evento; la cadena, cómo se guarda.' },
+  { kicker: 'Dato en origen', h3: 'Sensores e IoT', text: 'Temperatura, ubicación o estado entran de forma automática en la propia línea, para reducir el trabajo manual y el error humano.' },
+];
+
+const casos = [
+  { h3: 'Del campo a la mesa', text: 'Un productor de alimentación quiere demostrar origen y trazar lotes para responder en minutos ante una alerta. Se diseña la captura en origen y el registro por eventos.' },
+  { h3: 'Antifalsificación en farma', text: 'Un laboratorio quiere reforzar su trazabilidad apoyándose en la serialización legal. Se integra el sistema sin sustituir SEVeM ni el identificador único.' },
+  { h3: 'Autenticidad en lujo', text: 'Una marca quiere dar a cada pieza un histórico verificable ligado a su identidad física, para la confianza del cliente y el mercado de segunda mano.' },
+];
+
+const faqs = [
+  { q: '¿Qué es la trazabilidad con blockchain?', a: 'Es apuntar cada paso de un producto (de dónde sale, por dónde pasa y cuándo) en un registro compartido que, una vez escrito, no se puede alterar sin que se note. Da integridad y transparencia al histórico, con sello de tiempo y autoría.' },
+  { q: '¿Se pueden falsear o manipular los datos?', a: 'Una vez escrito, alterar un registro sin que se note es muy difícil: esa es la fuerza de la blockchain. Pero que sea inmutable no significa que sea verdad: si entra un dato falso, queda guardado igual. Por eso trabajamos sobre todo la captura en origen, que es donde de verdad se juega.' },
+  { q: '¿Se integra con mi ERP (SAP, etc.)?', a: 'Sí. No sustituye a tu sistema actual: se conecta a él y añade la capa de registro inmutable donde aporta. La idea no es cambiarlo todo, sino sumar trazabilidad donde hace falta.' },
+  { q: '¿Qué blockchain se usa, pública o privada?', a: 'Depende del caso. Para cadenas de empresa solemos usar redes permisionadas (privadas o de consorcio), que encajan mejor con el control de acceso y el RGPD. Elegimos la red que convenga; no te atamos a una plataforma.' },
+  { q: '¿Esto garantiza que el producto es auténtico?', a: 'No, y desconfía de quien lo prometa. La blockchain garantiza la integridad del registro, no la veracidad del mundo físico. Lo que sí hacemos es diseñar la capa de origen (sensores, precintos, identidad) que reduce el riesgo de fraude en el dato de partida.' },
+  { q: '¿Sustituye a la normativa que ya tengo que cumplir?', a: 'No, la complementa. Tus obligaciones legales (por ejemplo el Reglamento 178/2002 en alimentación o la serialización en farma) siguen siendo tuyas. La trazabilidad con blockchain va más allá del mínimo legal, no lo reemplaza.' },
+  { q: '¿Y los datos personales?', a: 'Si la cadena toca datos personales, se diseña con cuidado: off-chain y en red permisionada, respetando el RGPD por diseño. La inmutabilidad y el derecho de supresión hay que conciliarlos desde el principio, no después.' },
+  { q: '¿Me sirve para el Pasaporte Digital de Producto (DPP)?', a: 'El DPP, que llega con el reglamento europeo de ecodiseño (ESPR) de forma escalonada por sectores a partir de 2026, exige un identificador único accesible (un QR o GS1 Digital Link), no obligatoriamente blockchain. Te ayudamos a ver cuándo blockchain aporta de verdad y cuándo con una solución más sencilla te vale, y a dejar tus datos listos para el DPP.' },
+  { q: '¿Cuánto cuesta y cuánto tarda?', a: 'Depende del alcance y de la capa de origen. Tras el diagnóstico te decimos claro qué aporta y qué no, y por dónde empezar con una prueba acotada antes de escalar.' },
+];
+
+// ─── SEO / meta ───
+const metaTitle = 'Trazabilidad con blockchain y cadena de suministro · VaultBit Advisory';
+const metaDescription =
+  'Diseñamos y dirigimos el proyecto técnico para trazar tu cadena de suministro con blockchain: registro inmutable de cada paso, apoyado en estándares GS1/EPCIS e integrado con tu ERP. No operamos tu cadena ni certificamos productos.';
+const keywords = [
+  'trazabilidad blockchain',
+  'trazabilidad con blockchain',
+  'blockchain cadena de suministro',
+  'sistema de trazabilidad blockchain',
+  'trazabilidad alimentaria blockchain',
+  'trazabilidad farmacéutica blockchain',
+  'cadena de frío blockchain',
+  'GS1 EPCIS trazabilidad',
+  'registro inmutable cadena de suministro',
+  'antifalsificación blockchain',
+];
+const ogImage = `${SITE_URL}/og/og-web3-logistica-trazabilidad.jpg`;
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: 'Logística y trazabilidad con blockchain',
+  description: metaDescription,
+  serviceType: 'Trazabilidad y cadena de suministro con blockchain',
+  category: 'Diseño y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Sectores donde aplica la trazabilidad con blockchain',
+    itemListElement: sectores.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.h3 },
+    })),
+  },
+};
+const howToSchema = {
+  '@type': 'HowTo',
+  '@id': `${url}#howto`,
+  name: 'Cómo dirigimos un proyecto de trazabilidad con blockchain, paso a paso',
+  description: 'Proceso de diseño y dirección de un proyecto de trazabilidad y cadena de suministro con VaultBit Advisory.',
+  inLanguage: 'es-ES',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+  })),
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={url}
+  keywords={keywords.join(', ')}
+  ogImage={ogImage}
+  schemas={[serviceSchema, howToSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: 'Logística y trazabilidad', href: `/servicios/web3/${slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── 1 · HERO ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style="background-image:url('/assets/web3/sector-logistica.jpeg')" aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">Proyectos Web3 · Logística y trazabilidad</span>
+          <h1>Por dónde ha pasado cada cosa, <strong>anotado para siempre.</strong></h1>
+          <p class="fh-sub">Saber de dónde viene un producto y por dónde ha pasado, con un registro que no se puede cambiar a posteriori. Eso es la trazabilidad con blockchain. Nosotros diseñamos y dirigimos el proyecto técnico. No operamos tu cadena ni certificamos productos.</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 2 · Qué es ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Qué es</span>
+          <h2>Qué es la trazabilidad con blockchain</h2>
+        </div>
+        <p class="fr-prose" data-reveal style="margin-top:20px">
+          La trazabilidad con blockchain es apuntar cada paso de un producto, de dónde sale, por dónde pasa y cuándo, en un registro compartido que, una vez escrito, no se puede alterar sin que se note. Da integridad y transparencia al histórico, con sello de tiempo y autoría.
+        </p>
+        <p class="fr-prose" data-reveal style="margin-top:18px">
+          Y aquí lo que casi nadie dice claro: la blockchain hace inmutable lo que se apunta, no lo convierte en verdad. Si el dato que entra es falso, queda guardado como un dato falso imposible de borrar. Por eso lo que de verdad importa es cómo entra el dato en origen, y ahí es donde diseñamos la parte difícil.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 3 · Qué se puede trazar (fondo) ───── -->
+    <section class:list={['fr-section', hasSectoresBg ? 'fr-has-bg' : 'is-darker']} style={hasSectoresBg ? `--fr-bg:url('${bgSectores}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde aplica</span>
+          <h2>Qué se puede trazar, de la alimentación al lujo</h2>
+          <p>No todo necesita blockchain, pero hay cadenas donde un registro común e inmutable cambia las reglas. Estos son los casos más habituales.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {sectores.map((s, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {iconExists(s.icon) && (
+                <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${s.icon}.png`} alt="" width="96" height="96" loading="lazy" decoding="async" />
+              )}
+              <h3>{s.h3}</h3>
+              <p>{s.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 4 · Cómo lo dirigimos, paso a paso ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">El proceso</span>
+          <h2>Cómo dirigimos tu proyecto de trazabilidad, paso a paso</h2>
+          <p>Un único interlocutor. Diseñamos, nos apoyamos en estándares y dirigimos al equipo que lo construye.</p>
+        </div>
+        <div class="fr-flow">
+          {steps.map((s, i) => (
+            <div class="fr-step" data-reveal>
+              <div class="fr-step-num fr-chrome-num">{i + 1}</div>
+              <div class="fr-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 5 · Integración (fondo) ───── -->
+    <section class:list={['fr-section', hasIntegracionBg ? 'fr-has-bg' : 'is-darker']} style={hasIntegracionBg ? `--fr-bg:url('${bgIntegracion}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Integración</span>
+          <h2>No reemplaza lo que ya tienes, se apoya en ello</h2>
+          <p>La trazabilidad útil no es la que te obliga a cambiarlo todo, sino la que se suma a tus sistemas y a los estándares del sector.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {integracion.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="fr-card-kicker">{c.kicker}</span>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 6 · Los límites, sin humo ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Hablemos claro</span>
+          <h2>Los límites, sin humo</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>La blockchain hace inmutable lo que se apunta. No lo convierte en verdad.</h3>
+          <p>Una cadena puede guardar de forma permanente un dato falso, y seguirá siendo un dato falso imposible de borrar. Es lo que el sector llama "garbage in, garbage out". El eslabón débil no es la cadena, es quién y cómo mete el dato. Por eso nuestro trabajo está sobre todo en la capa de origen: sensores, precintos, identidad y estándares que reducen, no eliminan, el error. Quien te promete autenticidad garantizada o el fin del fraude, no te está contando esto.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>Garantizamos la integridad y la transparencia del registro, no la veracidad del mundo físico.</li>
+          <li>Reducimos el error y el fraude en origen con la capa físico-digital. No los eliminamos.</li>
+          <li>Nos apoyamos en estándares GS1 y EPCIS, no inventamos un sistema cerrado.</li>
+          <li>Complementamos tus obligaciones legales de trazabilidad. No las sustituimos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 7 · Por qué Vaultbit ───── -->
+    <section class="fr-section">
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Por qué Vaultbit</span>
+          <h2>Dirigimos el proyecto. No operamos tu cadena.</h2>
+        </div>
+        <div class="fr-guarantee" data-reveal style="margin-top:28px">
+          <h3>Consultoría que diseña y dirige, no una plataforma que te quiere atar.</h3>
+          <p>Estructuramos el proyecto, elegimos la red que encaje y coordinamos al equipo técnico de confianza que lo construye y lo audita. Tú tratas con un solo interlocutor. Lo que es de otros se queda en otros: la certificación, lo legal y la operación de tu cadena no son nuestro papel, y eso te protege. Hemos visto grandes plataformas de trazabilidad cerrar y dejar a sus clientes colgados; por eso elegimos la tecnología por tu interés, no para venderte una red propia.</p>
+        </div>
+        <ul class="fr-exclude" data-reveal>
+          <li>No operamos tu cadena de suministro ni manipulamos la mercancía.</li>
+          <li>No certificamos productos ni emitimos sellos de calidad o de origen.</li>
+          <li>No prometemos autenticidad garantizada ni el fin de las falsificaciones.</li>
+          <li>No te vendemos una plataforma cerrada: elegimos la red que encaje, sin atarte.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───── 8 · Casos (fondo) ───── -->
+    <section class:list={['fr-section', hasCasosBg ? 'fr-has-bg' : 'is-darker']} style={hasCasosBg ? `--fr-bg:url('${bgCasos}')` : undefined}>
+      <div class="container">
+        <div class="fr-head" data-reveal>
+          <span class="frontier-eyebrow">Dónde encaja</span>
+          <h2>Casos donde la trazabilidad aporta de verdad</h2>
+          <p>Escenarios reales en los que un registro común e inmutable cambia las reglas. Cada uno se valida antes de construir nada.</p>
+        </div>
+        <div class="fr-grid cols-3">
+          {casos.map((c, i) => (
+            <div class="fr-card" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3>{c.h3}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 9 · FAQ ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Preguntas frecuentes</span>
+          <h2>Preguntas frecuentes sobre trazabilidad con blockchain</h2>
+        </div>
+        <div class="fr-faq" data-reveal>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── 10 · CTA final (fondo) ───── -->
+    <section class:list={['fr-cta', hasCtaBg && 'has-bg']} style={hasCtaBg ? `--cta-bg:url('${bgCta}')` : undefined}>
+      <div class="container">
+        <h2 data-reveal>¿Quieres trazar tu cadena de suministro?</h2>
+        <p data-reveal>30 minutos para mirar tu caso y decirte de frente si blockchain aporta algo, qué haría falta y por dónde empezar. Sin presentación de ventas.</p>
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="trazabilidad" />
+        </div>
+
+        <div class="fr-cta-extras" data-reveal>
+          <details class="fr-disclosure">
+            <summary>Aviso legal e informativo</summary>
+            <div class="fr-disclosure-body">
+              <p style="font-size:13px;line-height:1.7;color:var(--steel-300);margin:4px 0 0">
+                VaultBit Advisory diseña, dirige y coordina el proyecto técnico de trazabilidad y al equipo de desarrollo. No opera la cadena de suministro, no manipula la mercancía, no certifica productos ni emite sellos de calidad o de origen. La tecnología blockchain garantiza la integridad e inmutabilidad de los datos una vez registrados y la transparencia del histórico de eventos; no verifica por sí misma la veracidad de la información del mundo físico que cada operador introduce en el sistema (lo que el sector conoce como "garbage in, garbage out"). Por eso el sistema se diseña sobre estándares de identificación y eventos (GS1 / EPCIS) y, según el caso, sobre mecanismos de captura en origen (sensores, lectura automática, precintos anti-manipulación) e identidad de los actores, que reducen pero no eliminan el riesgo de error o fraude en el dato de partida. La trazabilidad implementada complementa y no sustituye las obligaciones legales del operador (por ejemplo, Reglamento (CE) 178/2002 en alimentación, o Directiva 2011/62/UE y sistema SEVeM en medicamentos). Cuando el sistema procese datos personales, se diseña conforme al RGPD (preferentemente off-chain y en red permisionada). Las características concretas se acuerdan por escrito en cada proyecto.
+              </p>
+            </div>
+          </details>
+
+          <details class="fr-disclosure">
+            <summary>Aviso de transparencia</summary>
+            <div class="fr-disclosure-body">
+              <ComplianceNotice variant="colaboracion" />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+  .web3-frontier .fr-card .fr-step-ico-img { width: 96px; height: 96px; margin-bottom: 14px; }
+</style>

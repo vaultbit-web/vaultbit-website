@@ -1,0 +1,138 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BreadcrumbBar from '~/components/BreadcrumbBar.astro';
+import ComplianceNotice from '~/components/ComplianceNotice.astro';
+import { SITE_URL, ORGANIZATION, calLink, waLink } from '~/data/organization';
+import { WEB3_SECTORS, type Web3Sector } from '~/data/web3-sectors';
+import '~/styles/frontier.css';
+
+interface Props {
+  sector: Web3Sector;
+}
+const { sector } = Astro.props;
+const url = `${SITE_URL}/servicios/web3/${sector.slug}`;
+const pillar = `${SITE_URL}/servicios/web3-b2b`;
+
+const cal = calLink(`Interés: Proyectos Web3 · ${sector.name}. (Cuéntanos en una línea qué tienes en mente)`);
+const wa = waLink(`Hola, vengo de la web de Vaultbit. Tengo una idea de ${sector.name.toLowerCase()} y quiero que me ayudéis. Os cuento:`);
+
+const others = WEB3_SECTORS.filter((s) => s.slug !== sector.slug);
+
+// Iconos: PNG transparentes (blancos) generados y troceados en /assets/web3/icons/icon-step-<nombre>.png
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: `Proyectos Web3 · ${sector.name}`,
+  description: sector.metaDescription,
+  serviceType: sector.name,
+  category: 'Desarrollo y dirección de proyectos Web3',
+  provider: { '@id': ORGANIZATION.id },
+  areaServed: { '@type': 'Country', name: 'Spain' },
+  url,
+  isPartOf: { '@id': `${pillar}#service` },
+};
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: sector.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title={sector.metaTitle}
+  description={sector.metaDescription}
+  canonical={url}
+  keywords={sector.keywords.join(', ')}
+  ogImage={`${SITE_URL}${sector.ogImage}`}
+  schemas={[serviceSchema, faqSchema]}
+>
+  <div class="web3-frontier">
+    <div class="container">
+      <BreadcrumbBar items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Servicios', href: '/servicios' },
+        { label: 'Proyectos Web3', href: '/servicios/web3-b2b' },
+        { label: sector.name, href: `/servicios/web3/${sector.slug}` },
+      ]} />
+    </div>
+
+    <!-- ───── Bloque 1: HERO ───── -->
+    <section class="fr-shero">
+      <div class="fr-shero-bg" style={`background-image:url('${sector.image}')`} aria-hidden="true"></div>
+      <div class="fr-shero-ov" aria-hidden="true"></div>
+      <div class="fh-grain" aria-hidden="true"></div>
+      <div class="container">
+        <div class="fr-shero-in">
+          <span class="frontier-eyebrow">{sector.eyebrow}</span>
+          <h1>{sector.h1Pre}<strong>{sector.h1Strong}</strong></h1>
+          <p class="fh-sub">{sector.subtitle}</p>
+          <div class="fh-ctas">
+            <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+              Cuéntanos tu proyecto
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Bloque 2: Cómo funciona (3 pasos) + FAQ + CTA ───── -->
+    <section class="fr-section is-darker">
+      <div class="container">
+        <div class="fr-head is-center" data-reveal>
+          <span class="frontier-eyebrow">Cómo funciona</span>
+          <h2>En tres pasos, sin líos.</h2>
+        </div>
+
+        <ol class="fr-steps3">
+          {sector.steps.map((s, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <span class="fr-step-n">{i + 1}</span>
+              <img class="fr-step-ico-img" src={`/assets/web3/icons/icon-step-${s.icon}.png`} alt="" width="120" height="120" loading="lazy" decoding="async" />
+              <p>{s.text}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div class="fr-faq" data-reveal>
+          {sector.faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="fr-cta-actions" data-reveal>
+          <a class="btn btn-primary btn-lg" href={cal} target="_blank" rel="noopener noreferrer">
+            Cuéntanos tu proyecto
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </div>
+
+        <div class="fr-others" data-reveal>
+          {others.map((o) => (
+            <a href={`/servicios/web3/${o.slug}`}>{o.tileName}</a>
+          ))}
+        </div>
+
+        <div class="fr-compliance" data-reveal>
+          <ComplianceNotice variant="colaboracion" />
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import '~/scripts/scroll-reveal';
+</script>
+
+<style>
+  .btn-lg { padding: 16px 30px; min-height: 56px; font-size: 16px; }
+</style>

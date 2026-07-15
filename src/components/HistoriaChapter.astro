@@ -1,0 +1,371 @@
+---
+/**
+ * HistoriaChapter — un capítulo de la historia narrativa del founder.
+ * Layout full-bleed con imagen y texto alternados.
+ *
+ * Props:
+ *  - numero      Número del capítulo (string, ej. "01")
+ *  - titulo      Título del capítulo
+ *  - imagenLado  'izq' | 'der' — lado donde se sitúa la imagen en desktop
+ *  - imagen      Ruta de la imagen principal (opcional; si falta usa plan B tipográfico)
+ *  - imagenAlt   Alt text de la imagen
+ *  - imagenes    Array opcional de imágenes para galería de 2 fotos (usado en cap 1)
+ *  - planB       'tipografico' | 'mapa' — variante visual cuando no hay foto
+ *  - frase       (planB tipográfico) Frase grande sobre fondo
+ *  - cierre      (opcional) Frase de cierre destacada al final del capítulo
+ */
+interface ImagenItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+export interface Props {
+  numero: string;
+  titulo: string;
+  imagenLado?: 'izq' | 'der';
+  imagen?: string;
+  imagenAlt?: string;
+  imagenCaption?: string;
+  imagenes?: ImagenItem[];
+  planB?: 'tipografico' | 'mapa' | 'logo';
+  frase?: string;
+  /** Logo (PNG/WebP con alpha) cuando planB === 'logo'. */
+  logoSrc?: string;
+  logoAlt?: string;
+  cierre?: string;
+  /** Icono PNG (transparente) que se pinta difuminado y tenue de fondo, detrás del texto. */
+  fondoIcono?: string;
+}
+
+const {
+  numero,
+  titulo,
+  imagenLado = 'der',
+  imagen,
+  imagenAlt = '',
+  imagenCaption,
+  imagenes,
+  planB,
+  frase,
+  logoSrc,
+  logoAlt,
+  cierre,
+  fondoIcono,
+} = Astro.props;
+
+const tieneFotos = !!imagen || (imagenes && imagenes.length > 0);
+const usaPlanB = !tieneFotos && !!planB;
+const soloTexto = !tieneFotos && !planB; // sin imagen y sin caja → texto a ancho contenido, sin hueco
+---
+<article class:list={['cap', `cap-img-${imagenLado}`, planB && `cap-planb-${planB}`, soloTexto && 'cap-solo-texto']} data-reveal>
+  {fondoIcono && <div class="cap-fondo" style={`background-image:url('${fondoIcono}')`} aria-hidden="true"></div>}
+  <div class="container">
+    <div class="cap-grid">
+      <div class="cap-text">
+        <span class="cap-num" aria-hidden="true">{numero}</span>
+        <h3 class="cap-titulo">{titulo}</h3>
+        {soloTexto && frase && (
+          <p class="cap-frase-lead">{frase}</p>
+        )}
+        <div class="cap-body">
+          <slot />
+        </div>
+        {cierre && (
+          <p class="cap-cierre">{cierre}</p>
+        )}
+      </div>
+
+      <div class="cap-visual">
+        {tieneFotos && imagenes && imagenes.length > 1 && (
+          <div class="cap-galeria">
+            {imagenes.map((img) => (
+              <figure class="cap-foto">
+                <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+              </figure>
+            ))}
+          </div>
+        )}
+        {tieneFotos && imagen && (!imagenes || imagenes.length <= 1) && (
+          <figure class="cap-foto cap-foto-solo">
+            <img src={imagen} alt={imagenAlt} loading="lazy" decoding="async" />
+          </figure>
+        )}
+        {usaPlanB && planB === 'tipografico' && (
+          <div class="cap-tipografico">
+            <p class="cap-tipo-frase">{frase || titulo}</p>
+          </div>
+        )}
+        {usaPlanB && planB === 'logo' && logoSrc && (
+          <div class="cap-logo">
+            <img src={logoSrc} alt={logoAlt || 'VaultBit Sync'} loading="lazy" decoding="async" />
+          </div>
+        )}
+        {usaPlanB && planB === 'mapa' && (
+          <div class="cap-mapa">
+            <svg viewBox="0 0 480 320" role="img" aria-label="Mapa de Europa con ciudades objetivo">
+              <rect x="0" y="0" width="480" height="320" fill="rgba(13,15,17,0)" />
+              <path
+                d="M120 60 L 180 50 L 240 80 L 280 70 L 320 95 L 360 110 L 380 150 L 360 200 L 320 240 L 270 260 L 220 250 L 180 230 L 140 220 L 110 180 L 100 130 Z"
+                fill="rgba(242,118,26,0.10)"
+                stroke="rgba(242,118,26,0.60)"
+                stroke-width="1.2"
+              />
+              <g class="ciudad">
+                <circle cx="220" cy="140" r="5" />
+                <text x="232" y="144">Madrid</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="262" cy="125" r="4" />
+                <text x="272" y="129">Barcelona</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="280" cy="100" r="4" />
+                <text x="290" y="104">París</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="305" cy="80" r="4" />
+                <text x="315" y="84">Berlín</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="330" cy="190" r="4" />
+                <text x="340" y="194">Roma</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="180" cy="100" r="4" />
+                <text x="138" y="94" text-anchor="end">Lisboa</text>
+              </g>
+              <g class="ciudad">
+                <circle cx="295" cy="55" r="4" />
+                <text x="305" y="59">Ámsterdam</text>
+              </g>
+            </svg>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .cap {
+    padding: 64px 0;
+    position: relative;
+  }
+  @media (min-width: 768px) { .cap { padding: 96px 0; } }
+  @media (min-width: 1024px) { .cap { padding: 120px 0; } }
+
+  .cap + .cap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 56px;
+    background: linear-gradient(to bottom, transparent, rgba(242,118,26,0.45), transparent);
+    margin-top: -28px;
+  }
+
+  .cap-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .cap-grid { grid-template-columns: 1fr 1fr; gap: 72px; }
+    .cap-img-izq .cap-grid > .cap-visual { order: -1; }
+  }
+
+  .cap-num {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--brand-orange-400);
+    margin-bottom: 14px;
+  }
+  .cap-num::before {
+    content: 'CAPÍTULO ';
+    color: var(--anthracite-200);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    margin-right: 4px;
+  }
+
+  .cap-titulo {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    line-height: 1.2;
+    color: #fff;
+    margin: 0 0 20px;
+  }
+
+  .cap-body {
+    color: var(--anthracite-100);
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  .cap-body :global(p) { margin: 0 0 14px; }
+  .cap-body :global(p:last-child) { margin-bottom: 0; }
+  .cap-body :global(strong) { color: #fff; font-weight: 600; }
+  .cap-body :global(em) { color: var(--brand-orange-400); font-style: normal; font-weight: 600; }
+
+  .cap-cierre {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(242,118,26,0.25);
+    font-size: 16px;
+    line-height: 1.55;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  /* Marca de agua (icono difuminado) detrás del texto de un capítulo */
+  .cap-fondo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(380px, 62%);
+    aspect-ratio: 1 / 1;
+    background: center / contain no-repeat;
+    opacity: 0.12;
+    filter: blur(2px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Capítulo sin imagen: solo texto, a ancho contenido (sin la columna vacía / hueco) */
+  .cap-solo-texto .cap-grid { grid-template-columns: 1fr; }
+  .cap-solo-texto .cap-visual { display: none; }
+  .cap-solo-texto .cap-text { max-width: 768px; position: relative; z-index: 1; }
+  @media (min-width: 1024px) {
+    .cap-solo-texto .cap-grid { gap: 0; }
+    .cap-solo-texto .cap-text { margin: 0 auto; }
+  }
+  .cap-frase-lead {
+    font-size: clamp(22px, 3.4vw, 32px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    color: #fff;
+    margin: 0 0 22px;
+  }
+  .cap-frase-lead :global(em) { color: var(--brand-orange-400); font-style: normal; }
+
+  .cap-visual { width: 100%; }
+  .cap-foto {
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--anthracite-800);
+    border: 1px solid rgba(242,118,26,0.15);
+    box-shadow: var(--shadow-deep);
+  }
+  .cap-foto img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .cap-foto-solo img { aspect-ratio: 4 / 3; }
+
+  .cap-galeria {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 540px) {
+    .cap-galeria { grid-template-columns: 1fr 1fr; }
+  }
+  .cap-galeria .cap-foto img { aspect-ratio: 3 / 4; }
+
+  .cap-tipografico {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(ellipse at top right, rgba(242,118,26,0.12), transparent 60%),
+      linear-gradient(135deg, var(--anthracite-800), var(--anthracite-900));
+    border: 1px solid rgba(242,118,26,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    box-shadow: var(--shadow-deep);
+  }
+  .cap-tipo-frase {
+    font-size: clamp(22px, 3.5vw, 34px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    letter-spacing: -0.5px;
+    max-width: 22ch;
+  }
+  .cap-tipo-frase :global(em) {
+    color: var(--brand-orange-400);
+    font-style: normal;
+  }
+
+  .cap-logo {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at center, rgba(242,118,26,0.12), transparent 65%),
+      linear-gradient(135deg, var(--anthracite-800), var(--anthracite-900));
+    border: 1px solid rgba(242,118,26,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    box-shadow: var(--shadow-deep);
+  }
+  @media (min-width: 768px) { .cap-logo { padding: 64px; } }
+  .cap-logo img {
+    width: auto;
+    max-width: 70%;
+    height: auto;
+    max-height: 55%;
+    display: block;
+    filter: drop-shadow(0 6px 28px rgba(242,118,26,0.22));
+  }
+
+  .cap-mapa {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--anthracite-800), var(--anthracite-900));
+    border: 1px solid rgba(242,118,26,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-shadow: var(--shadow-deep);
+  }
+  .cap-mapa svg { width: 100%; height: auto; max-width: 480px; }
+  .cap-mapa .ciudad circle { fill: var(--brand-orange-500); }
+  .cap-mapa .ciudad text {
+    fill: #fff;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* ───── Reveal on scroll ───── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+  }
+</style>
