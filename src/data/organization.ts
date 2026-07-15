@@ -35,9 +35,9 @@ export const CONTACT = {
  */
 export const LEGAL = {
   titular: 'Daniel Brosed Giral',
-  nif: '18102130A',
+  nif: '00000000X',
   nombreComercial: 'VaultBit',
-  domicilio: 'Avenida República Argentina 257, 08023 Barcelona',
+  domicilio: 'Dirección fiscal (ver web)',
   actividad: 'Consultoría tecnológica y de sistemas informáticos',
   iae: 'Epígrafe 765, sección 2ª del IAE (actividad profesional). CNAE 6290.',
 };
