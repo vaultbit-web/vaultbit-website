@@ -27,7 +27,7 @@ Production marketing site for [vaultbit.es](https://vaultbit.es): a Spanish advi
 
 ## How it was built
 
-Solo founder + Claude Code, with a docs-as-code workflow: research → verified copy (every claim fact-checked) → data-driven pages → deploy. The same pipeline publishes social/newsletter assets on a schedule.
+Built solo, with a docs-as-code workflow: research → verified copy (every claim fact-checked) → data-driven pages → deploy. The same pipeline publishes social/newsletter assets on a schedule.
 
 ## Environment
 
